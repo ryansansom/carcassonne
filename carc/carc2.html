@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 20px;
+            padding: 0px;
+            background-color: gray
+        }
+        
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body onload="game.play()">
+    <button onclick="getNextTile()">New Tile</button>
+    <br>
+    <img id="newTile" src="">
+    <br>
+    <canvas id="myCanvas" width="500" height="300"></canvas>
+    <div id="demo"></div>
+
+    <script>
+        var TSIZE = 100; //base tile size
+        var tiles = []; //All tiles still in the game
+        var tileMaker;
+        var canvas;
+        var ctx;
+        var currentTile;
+
+        /* The game object.
+         * Used to store and call functions that run the game.
+         */
+        var game = {
+            play: function () {
+                populateTiles(5);
+                setUpCanvas();
+            }
+
+        }
+
+        // function to constroct the generic tile object
+        function makeTiles() {
+            var tileCounter = 0;
+            return function (url, tileSize) {
+                tileCounter++;
+                return {
+                    name: "crcss" + tileCounter,
+                    img: url,
+                    size: tileSize,
+                    gridX: -1,
+                    gridY: -1
+                };
+            }
+        }
+
+        //Simplistic funtion to populate the tiles array with tile objects
+        function populateTiles(deckSize) {
+            tileMaker = makeTiles();
+            for (var i = 0; i < deckSize; i++) {
+                tiles.push(tileMaker("tile" + (i + 1) + ".png", TSIZE));
+            }
+        }
+
+        // Displays the next tile to the player
+        function getNextTile() {
+            if (tiles.length == 0) {
+                alert("No more tiles\nI'll add 5 more just for you!");
+                populateTiles(5); // Re-sets the deck.
+            }
+            currentTile = tiles.shift();
+            document.getElementById("newTile").src = currentTile.img;
+        }
+
+        function setUpCanvas() {
+            canvas = document.getElementById('myCanvas');
+            ctx = canvas.getContext('2d');
+
+            canvas.addEventListener('mousemove', onMouseMove(), false);
+            canvas.addEventListener('click', function (evt) {
+                var mouse = getMousePos(canvas, evt);
+                var gridPos = getGridPos(mouse.x, mouse.y);
+                placeTile(gridPos.x, gridPos.y);
+            }, false);
+
+            drawGrid(5, 3, TSIZE);
+
+            function onMouseMove(evt) {
+
+            }
+
+
+            function drawGrid(gridWidth, gridHeight, tileSize) {
+                for (var i = 0; i < gridHeight; i++) {
+                    for (var j = 0; j < gridWidth; j++) {
+                        ctx.strokeRect(tileSize * j, tileSize * i, tileSize, tileSize);
+                    }
+                }
+            }
+
+            function placeTile(x, y) {
+                if (currentTile) {
+                    if (isGridEmpty(x, y)) {
+                        currentTile.gridX = x;
+                        currentTile.gridY = y;
+                        var imageObj = new Image();
+                        imageObj.src = currentTile.img;
+                        ctx.drawImage(imageObj, x * currentTile.size, y * currentTile.size, currentTile.size, currentTile.size);
+                        getNextTile();
+                    }
+                } else {
+                    getNextTile();
+                }
+            }
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function getGridPos(mx, my) {
+            var gridX = Math.floor(mx / TSIZE);
+            var gridY = Math.floor(my / TSIZE);
+            return {
+                x: gridX,
+                y: gridY
+            };
+
+        }
+        
+        //TODO 
+        function isGridEmpty(x, y) {
+            return true;
+        }
+    </script>
+</body>
+
+</html>

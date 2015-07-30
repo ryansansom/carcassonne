@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 20px;
+            padding: 0px;
+            background-color: gray
+        }
+        
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body onload="game.play()">
+    <button onclick="getNextTile()">New Tile</button>
+    <br>
+    <img id="newTile" src="">
+    <br>
+    <canvas id="myCanvas" width="500" height="300"></canvas>
+    <div id="demo"></div>
+
+    <script>
+        var TILE_SIZE = 100; //base tile size
+        var EMPTRY_TILE = {
+            name: "empty",
+            img: "empty",
+            size: TILE_SIZE,
+            gridX: -1,
+            gridY: -1
+        };
+        var tiles = []; //All tiles still in the game
+        var currentTile;
+        var tileMaker;
+        var grid = []; //Stores the game grid
+        var canvas;
+        var ctx;
+
+
+
+        /* The game object.
+         * Used to store and call functions that run the game.
+         */
+        var game = {
+            play: function () {
+                setUpGrid(5, 3);
+                setUpCanvas();
+                reDraw();
+                populateTiles(5);
+            }
+
+        }
+
+        // function to constroct the generic tile object
+        function makeTiles() {
+            var tileCounter = 0;
+            return function (url, tileSize) {
+                tileCounter++;
+                return {
+                    name: "crcss" + tileCounter,
+                    img: url,
+                    size: tileSize,
+                    gridX: -1,
+                    gridY: -1
+                };
+            }
+        }
+
+        //Simplistic funtion to populate the tiles array with tile objects
+        function populateTiles(deckSize) {
+            tileMaker = makeTiles();
+            for (var i = 0; i < deckSize; i++) {
+                tiles.push(tileMaker("tile" + (i + 1) + ".png", TILE_SIZE));
+            }
+        }
+
+        // Displays the next tile to the player
+        function getNextTile() {
+            if (tiles.length == 0) {
+                alert("No more tiles\nI'll add 5 more just for you!");
+                populateTiles(5); // Re-sets the deck.
+            }
+            currentTile = tiles.shift();
+            document.getElementById("newTile").src = currentTile.img;
+        }
+
+        // Populate the grid with empty tile objects 
+        function setUpGrid(gridWidth, gridHeight) {
+            for (var i = 0; i < gridHeight; i++) {
+                var gridRow = [];
+                for (var j = 0; j < gridWidth; j++) {
+                    gridRow.push({
+                        name: "empty",
+                        img: "bk2.jpg",
+                        size: TILE_SIZE,
+                        gridX: j,
+                        gridY: i
+                    });
+                }
+                grid.push(gridRow);
+            }
+        }
+
+        function setUpCanvas() {
+            canvas = document.getElementById('myCanvas');
+            ctx = canvas.getContext('2d');
+            var oldPos;
+            
+            canvas.addEventListener('mousemove', function (evt) { 
+                var mouse = getMousePos(canvas, evt);
+                var gridPos = getGridPos(mouse.x, mouse.y);
+                if(!oldPos) oldPos = {x: gridPos.x, y: gridPos.y};
+                if(oldPos == gridPos) {
+                    
+                }else{
+                    ctx.strokeStyle = "black";
+                    ctx.strokeRect(oldPos.x*TILE_SIZE, oldPos.y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    console.log(JSON.stringify(oldPos));
+                    oldPos = gridPos;
+                }
+                ctx.strokeStyle = "yellow";
+                ctx.strokeRect(gridPos.x*TILE_SIZE, gridPos.y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }, false);
+            canvas.addEventListener('click', function (evt) {
+                var mouse = getMousePos(canvas, evt);
+                var gridPos = getGridPos(mouse.x, mouse.y);
+                placeTile(gridPos.x, gridPos.y);
+            }, false);
+        }
+
+        function placeTile(x, y) {
+            if (currentTile) {
+                if (isGridSpaceEmpty(x, y)) {
+                    currentTile.gridX = x;
+                    currentTile.gridY = y;
+                    console.log(grid);
+                    
+                    grid[y][x] = currentTile;
+                    reDraw();
+                    
+                    getNextTile();
+                }else{
+                    alert("You cannot place a tile over an other tile!");
+                }
+            } else {
+                getNextTile();
+            }
+        }
+
+        function isGridSpaceEmpty(x, y) {
+            if(grid[y][x].name == "empty") {
+                return true;
+            }else{
+                return false;
+            }
+        }
+        
+        function reDraw() {
+            for (var i = 0; i < grid.length; i++) {
+                for (var j = 0; j < grid[i].length; j++) {
+
+                    var imageObj = new Image();
+                    imageObj.src = grid[i][j].img;
+                    ctx.drawImage(imageObj, j * grid[i][j].size, i * grid[i][j].size, grid[i][j].size, grid[i][j].size);
+                    ctx.strokeStyle = "black";
+                    ctx.strokeRect(j * grid[i][j].size, i * grid[i][j].size, grid[i][j].size, grid[i][j].size);
+                }
+            }
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function getGridPos(mx, my) {
+            var gridX = Math.floor(mx / TILE_SIZE);
+            var gridY = Math.floor(my / TILE_SIZE);
+            return {
+                x: gridX,
+                y: gridY
+            };
+
+        }
+    </script>
+</body>
+
+</html>

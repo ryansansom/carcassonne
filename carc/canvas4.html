@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 20px;
+            padding: 0px;
+            background-color: gray
+        }
+        
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body onload="draw(100)">
+<!--    <button onclick="draw()">Generate board</button><br>-->
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <div id="demo"></div>
+    <script>
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        var mousePos = {x: 0, y: 0};
+        var tileSize;
+        var bkColour = "rgb(176, 142, 58)";
+
+        canvas.addEventListener('mousemove', function (evt) {
+            mousePos = getMousePos(canvas, evt);
+            document.getElementById("demo").innerHTML = "the x: " +
+                mousePos.x + " and the y: " + mousePos.y;
+            
+            mouseOver(mousePos.x, mousePos.y, ctx);
+        }, false);
+        
+        canvas.addEventListener('click', function (evt) {
+            placeTile();
+            
+        }, false);
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        function draw(size) {
+            tileSize = size;
+            drawGrid(5, 5, tileSize, ctx);
+        }
+
+        function drawGrid(w, h, tileSize, ctx) {
+            for (var i = 0; i < h; i++) {
+                for (var j = 0; j < w; j++) {
+                    ctx.fillStyle = bkColour;
+                    ctx.fillRect(tileSize*j, tileSize*i, tileSize, tileSize);
+                    ctx.strokeRect(tileSize*j, tileSize*i, tileSize, tileSize);
+                }
+            }
+        }
+        //TODO rever other tiles to normal BK
+        var oldTile;
+        function mouseOver(x, y, ctx) { //x:445, y:445
+            var tilePos = getTilePos(x, y, tileSize);
+            var x = tilePos.row*tileSize;
+            var y = tilePos.col*tileSize;
+            if(!oldTile) oldTile = {row: tilePos.row, col: tilePos.col};
+            console.log(JSON.stringify(oldTile));
+            //return to background colour when mouse is over an other tile
+            if(oldTile == tilePos) {
+                console.log(JSON.stringify(oldTile));
+            }else{
+                ctx.fillStyle = bkColour;
+                ctx.fillRect(oldTile.row*tileSize, oldTile.col*tileSize, tileSize, tileSize);
+                ctx.strokeRect(oldTile.row*tileSize, oldTile.col*tileSize, tileSize, tileSize);
+                oldTile = tilePos;
+            }
+            ctx.fillStyle = "rgba(0,200, 0, 0.4)";
+            ctx.fillRect(x, y, tileSize, tileSize);
+            ctx.strokeRect(x, y, tileSize, tileSize); //re-draw the tile border
+        }
+        
+        function getTilePos(x, y, tileSize) {
+            var tileR = Math.floor(x/tileSize);  
+            var tileC = Math.floor(y/tileSize); 
+            return {row: tileR, col: tileC};
+            
+        }
+        
+        function placeTile() {
+            var tilePos = getTilePos(mousePos.x, mousePos.y, tileSize);
+            var imageObj = new Image();
+            imageObj.src = 'http://russcon.org/RussCon/carcassonne/city4.png';
+            ctx.drawImage("http://russcon.org/RussCon/carcassonne/city4.png", tilePos.x*tileSize, tilePos.y*tileSize, 
+                                  tileSize, tileSize);
+            
+        }
+    </script>
+</body>
+
+</html>
