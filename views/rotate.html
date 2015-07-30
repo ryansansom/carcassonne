@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='/stylesheets/style.css' rel='stylesheet'>
+        <script class="jscr" src="/javascripts/functions.js"></script>
+        <style>
+            body {
+                background-color: #d0e4fe;
+                margin: 20px;
+            }
+            table, tr, td {
+            
+                padding: 5px;
+                margin:0px;
+                border-collapse: collapse;
+                box-sizing: border-box;
+            }
+            table {
+                margin: 10px; 
+                padding: 10px;
+                border: 2px solid black;
+            }
+            tr {
+                margin: 2px;
+            }
+            td {
+                padding:0px;
+                margin:0px;
+                width:100px;
+                height:100px;
+                border: 1px solid gray;
+                <!--background-image: url("http://placekitten.com/110/100/");-->
+            }
+            td:hover {
+                padding: 0px;
+                width:100px;
+                height:100px;
+                box-sizing: border-box;
+                background-color: #eeeeee;
+            }
+            
+            a:visited {
+                color: green;
+            }
+            img {
+                width:99px;
+                height:99px;
+                display: block;
+            }
+            
+            
+        </style>
+    </head>
+    <body>
+        <button id="get-tile" onClick=generateTile()>Get a tile</button>
+        <button id="left-button" onClick=rotateLeft()>Left</button>
+        <img id="current-tile2" src="http://placekitten.com/110/100/" alt="Road Corner Tile">
+        <button id="right-button" onClick=rotateRight()>Right</button>
+        <button disabled id="place-button" onClick=placeTile()>Place tile</button>
+        <table>
+            <tr>
+                <td class="tile001001" onclick="selectCell(this)"></td>
+                <td class="tile001002" onclick="selectCell(this)"></td>
+                <td class="tile001003" onclick="selectCell(this)"></td>
+                <td class="tile001004" onclick="selectCell(this)"></td>
+                <td class="tile001005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile002001" onclick="selectCell(this)"></td>
+                <td class="tile002002" onclick="selectCell(this)"></td>
+                <td class="tile002003" onclick="selectCell(this)"></td>
+                <td class="tile002004" onclick="selectCell(this)"></td>
+                <td class="tile002005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile003001" onclick="selectCell(this)"></td>
+                <td class="tile003002" onclick="selectCell(this)"></td>
+                <td class="tile003003" onclick="selectCell(this)"></td>
+                <td class="tile003004" onclick="selectCell(this)"></td>
+                <td class="tile003005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile004001" onclick="selectCell(this)"></td>
+                <td class="tile004002" onclick="selectCell(this)"></td>
+                <td class="tile004003" onclick="selectCell(this)"></td>
+                <td class="tile004004" onclick="selectCell(this)"></td>
+                <td class="tile004005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile005001" onclick="selectCell(this)"></td>
+                <td class="tile005002" onclick="selectCell(this)"></td>
+                <td class="tile005003" onclick="selectCell(this)"></td>
+                <td class="tile005004" onclick="selectCell(this)"></td>
+                <td class="tile005005" onclick="selectCell(this)"></td>
+            </tr>
+            
+        </table>
+    <br>
+    <br>
+    <br>
+    <button id="reset-button" onClick=resetTiles()>Reset Deck</button>
+    </body>
+</html>

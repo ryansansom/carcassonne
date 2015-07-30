@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='/stylesheets/style.css' rel='stylesheet'>
+        <script class="jscr" src="/javascripts/functions.js"></script>
+        <script>
+        function selectCell(td) {
+            var temp = td.className;
+            var row= Number(temp.substring(4,7));
+            var column= Number(temp.substring(7,10));
+            console.log("Row: " + row + ", Column: " + column);
+            var x = document.getElementsByTagName("td");
+            for (var i=0;i<x.length;i++) {
+                x[i].style.backgroundColor = "";
+            }
+            var y = document.getElementsByClassName(temp);
+            y[0].style.backgroundColor = "#efefef";
+            //document.getElementsByClassName(temp).style.backgroundColor = "#ffffff";
+            //var css = "td:hover {padding: 4px; width:100px;height:100px;box-sizing: border-box;background-color: #ffffff;}";
+            //style = document.createElement("style");
+            //if (style.styleSheet) {
+            //    style.styleSheet.cssText = css;
+            //} else {
+            //    style.appendChild(document.createTextNode(css));
+            //    document.getElementsByTagName("head")[0].appendChild(style);
+            //}
+        }
+        
+        </script>
+        <style>
+            body {
+                background-color: #d0e4fe;
+                margin: 20px;
+            }
+            table, tr, td {
+            
+                padding: 5px;
+                margin:0px;
+                border-collapse: collapse;
+                box-sizing: border-box;
+            }
+            table {
+                margin: 10px; 
+                padding: 10px;
+                border: 2px solid black;
+            }
+            tr {
+                margin: 2px;
+            }
+            td {
+                margin:0px;
+                width:102px;
+                height:102px;
+                border: 1px solid gray;
+                <!--background-image: url("http://placekitten.com/110/100/");-->
+            }
+            td:hover {
+                padding: 4px;
+                width:100px;
+                height:100px;
+                box-sizing: border-box;
+                background-color: #eeeeee;
+            }
+            
+            a:visited {
+                color: green;
+            }
+            
+            
+        </style>
+    </head>
+    <body>
+        <button id="left-button" onClick=left()>Left</button>
+        <img id="current-tile" src="/images/tile1.jpg" alt="Road Corner Tile">
+        <button id="right-button" onClick=right()>Right</button>
+        <table>
+            <tr>
+                <td class="tile001001" onclick="selectCell(this)"></td>
+                <td class="tile001002" onclick="selectCell(this)"></td>
+                <td class="tile001003" onclick="selectCell(this)"></td>
+                <td class="tile001004" onclick="selectCell(this)"></td>
+                <td class="tile001005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile002001" onclick="selectCell(this)"></td>
+                <td class="tile002002" onclick="selectCell(this)"></td>
+                <td class="tile002003" onclick="selectCell(this)"></td>
+                <td class="tile002004" onclick="selectCell(this)"></td>
+                <td class="tile002005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile003001" onclick="selectCell(this)"></td>
+                <td class="tile003002" onclick="selectCell(this)"></td>
+                <td class="tile003003" onclick="selectCell(this)"></td>
+                <td class="tile003004" onclick="selectCell(this)"></td>
+                <td class="tile003005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile004001" onclick="selectCell(this)"></td>
+                <td class="tile004002" onclick="selectCell(this)"></td>
+                <td class="tile004003" onclick="selectCell(this)"></td>
+                <td class="tile004004" onclick="selectCell(this)"></td>
+                <td class="tile004005" onclick="selectCell(this)"></td>
+            </tr>
+            <tr>
+                <td class="tile005001" onclick="selectCell(this)"></td>
+                <td class="tile005002" onclick="selectCell(this)"></td>
+                <td class="tile005003" onclick="selectCell(this)"></td>
+                <td class="tile005004" onclick="selectCell(this)"></td>
+                <td class="tile005005" onclick="selectCell(this)"></td>
+            </tr>
+            
+        </table>
+    
+    </body>
+</html>
