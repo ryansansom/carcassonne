@@ -407,12 +407,14 @@ router.post('/placetile', function(req, res, next) {
   rotateTile(req.body.rotation);
   if (!game_array[deckSize-1][deckSize-1]) {
     game_array[deckSize-1][deckSize-1] = current_tile;
-  } else {
+    res.json(current_tile);
+  } else if (checkAdjPresent(req.body.row-1,req.body.column-1)&&checkAbove(req.body.row-1,req.body.column-1)&&checkBelow(req.body.row-1,req.body.column-1)&&checkLeft(req.body.row-1,req.body.column-1)&&checkRight(req.body.row-1,req.body.column-1)) {
     game_array[req.body.row-1][req.body.column-1] = current_tile;
-    console.log(checkAdjPresent(req.body.row-1,req.body.column-1));
+    res.json(current_tile);
+  } else {
+    res.status(400).send("Invalid tile placement")
   }
   console.log(game_array);
-  res.json(current_tile).end();
 });
 
 function checkAdjPresent(row,col) {
@@ -443,6 +445,74 @@ function checkAdjPresent(row,col) {
         if (game_array[rowCheck][colCheck]) {
           return true;
         }
+      }
+      return false;
+}
+
+function checkAbove(row,col) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p24.type===current_tile.tile_split.p02.type&&game_array[rowCheck][colCheck].tile_split.p25.type===current_tile.tile_split.p03.type&&game_array[rowCheck][colCheck].tile_split.p26.type===current_tile.tile_split.p04.type&&game_array[rowCheck][colCheck].tile_split.p27.type===current_tile.tile_split.p05.type&&game_array[rowCheck][colCheck].tile_split.p28.type===current_tile.tile_split.p06.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+      return false;
+}
+
+function checkBelow(row,col) {
+      var rowCheck = row + 1;
+      var colCheck = col;
+      if (rowCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (current_tile.tile_split.p24.type===game_array[rowCheck][colCheck].tile_split.p02.type&&current_tile.tile_split.p25.type===game_array[rowCheck][colCheck].tile_split.p03.type&&current_tile.tile_split.p26.type===game_array[rowCheck][colCheck].tile_split.p04.type&&current_tile.tile_split.p27.type===game_array[rowCheck][colCheck].tile_split.p05.type&&current_tile.tile_split.p28.type===game_array[rowCheck][colCheck].tile_split.p06.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+      return false;
+}
+
+function checkLeft(row,col) {
+      var rowCheck = row;
+      var colCheck = col-1;
+      if (colCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p07.type===current_tile.tile_split.p01.type&&game_array[rowCheck][colCheck].tile_split.p12.type===current_tile.tile_split.p08.type&&game_array[rowCheck][colCheck].tile_split.p17.type===current_tile.tile_split.p13.type&&game_array[rowCheck][colCheck].tile_split.p22.type===current_tile.tile_split.p18.type&&game_array[rowCheck][colCheck].tile_split.p29.type===current_tile.tile_split.p23.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+      return false;
+}
+
+function checkRight(row,col) {
+      var rowCheck = row;
+      var colCheck = col+1;
+      if (colCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p01.type===current_tile.tile_split.p07.type&&game_array[rowCheck][colCheck].tile_split.p08.type===current_tile.tile_split.p12.type&&game_array[rowCheck][colCheck].tile_split.p13.type===current_tile.tile_split.p17.type&&game_array[rowCheck][colCheck].tile_split.p18.type===current_tile.tile_split.p22.type&&game_array[rowCheck][colCheck].tile_split.p23.type===current_tile.tile_split.p29.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return true;
       }
       return false;
 }
