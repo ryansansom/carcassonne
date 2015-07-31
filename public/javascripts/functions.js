@@ -73,6 +73,10 @@ function generateTile() {
                   alert("Please select a tile first");
             } else {
                   if (document.getElementsByClassName("tile003003")[0].innerHTML === "" && tile_selected !== "tile003003") {
+                              var xmlHttp = new XMLHttpRequest();
+                              xmlHttp.open( "POST", '/placetile', false );
+                              xmlHttp.setRequestHeader("Content-Type", "application/json");
+                              xmlHttp.send(JSON.stringify({"row": 3, "column": 3, "rotation": temp3}));
                         document.getElementsByClassName("tile003003")[0].innerHTML = "<img id=\"tile003003\" src=\""+document.getElementById("current-tile2").src+"\">";
                         document.getElementById("tile003003").style.WebkitTransform = temp1;
                         document.getElementById("tile003003").style.msTransform = temp2;
@@ -86,6 +90,10 @@ function generateTile() {
                         alert("First tile, placed in centre");
                   } else {
                         if (tile_selected === "tile003003" || checkAdjacent()) {
+                              var xmlHttp = new XMLHttpRequest();
+                              xmlHttp.open( "POST", '/placetile', false );
+                              xmlHttp.setRequestHeader("Content-Type", "application/json");
+                              xmlHttp.send(JSON.stringify({"row": row, "column": column, "rotation": temp3}));
                               document.getElementsByClassName(tile_selected)[0].innerHTML = "<img id=\""+tile_selected+"\" src=\""+document.getElementById("current-tile2").src+"\">";
                               document.getElementById(tile_selected).style.WebkitTransform = temp1;
                               document.getElementById(tile_selected).style.msTransform = temp2;

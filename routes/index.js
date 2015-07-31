@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var calendar = require('./calendar');
 var request = require('supertest');
 
 var tiles = {
@@ -81,11 +80,13 @@ var tiles = {
   }
 };
 var tile_deck = ["tile1","tile2","tile3"];
-
+var game_array;
 var current_tile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  createArray(5,5);
+  console.log(game_array);
   res.render('rotate', { title: 'Carcassonne' });
 });
 
@@ -140,6 +141,19 @@ router.get('/right', function(req, res, next) {
 	console.log(current_tile);
 });
 
-router.get('/calget/:store/:products', calendar.load);
+router.post('/placetile', function(req, res, next) {
+  //if tile sent back is same as current tile...
+  console.log(req.body);
+  game_array[req.body.row-1][req.body.column-1] = [current_tile, req.body.rotation];
+  console.log(game_array);
+  res.end();
+});
+
+function createArray(x,y) {
+  game_array = new Array(x);
+  for (var i = 0; i < x; i++) {
+    game_array[i] = new Array(y);
+  }
+}
 
 module.exports = router;
