@@ -6,6 +6,7 @@ var tile_master = {
   "tile1": {
     "name": "tile1",
     "url": "/images/tile1.jpg",
+    "placedMan": -1,
     "tile_split": {
       "p01": {
         "type": "G",
@@ -128,6 +129,7 @@ var tile_master = {
   "tile2": {
     "name": "tile2",
     "url": "/images/tile2.jpg",
+    "placedMan": -1,
     "tile_split": {
       "p01": {
         "type": "G",
@@ -250,6 +252,7 @@ var tile_master = {
   "tile3": {
     "name": "tile3",
     "url": "/images/tile3.jpg",
+    "placedMan": -1,
     "tile_split": {
       "p01": {
         "type": "G",
@@ -371,14 +374,15 @@ var tile_master = {
   }
 }
 
-var new_tiles = tile_master
+var new_tiles = JSON.parse(JSON.stringify(tile_master));
 var tile_deck = ["tile1","tile2","tile3"];
+var deckSize = tile_deck.length;
 var game_array;
 var current_tile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  createArray(5,5);
+  createArray(2*tile_deck.length-1,2*tile_deck.length-1); //needs to be created differently
   console.log(game_array);
   res.render('rotate', { title: 'Carcassonne' });
 });
@@ -397,11 +401,51 @@ router.get('/generate', function(req, res, next) {
 });
 
 router.post('/placetile', function(req, res, next) {
-  //send this function a json body in form of {"row": 1, "column": 1, "rotation": 4}, set content type header to application/json.
+  //send this function a json body in form of {"row": 1, "column": 1, "rotation": 4, "placedMan": 26}, set content type header to application/json.
   console.log(current_tile);
+  current_tile.placedMan = req.body.placedMan; //could need to be moved after rotate depending on how placement is handled client side
   rotateTile(req.body.rotation);
+  if (!game_array[deckSize-1][deckSize-1]) {
+    game_array[deckSize-1][deckSize-1] = current_tile;
+  } else {
+    game_array[req.body.row-1][req.body.column-1] = current_tile;
+    console.log(checkAdjPresent(req.body.row-1,req.body.column-1));
+  }
+  console.log(game_array);
   res.json(current_tile).end();
 });
+
+function checkAdjPresent(row,col) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          return true;
+        }
+      }
+      rowCheck = row;
+      colCheck = col-1;
+      if (colCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          return true;
+        }
+      }
+      rowCheck = row;
+      colCheck = col+1;
+      if (colCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          return true;
+        }
+      }
+      rowCheck = row + 1;
+      colCheck = col;
+      if (rowCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          return true;
+        }
+      }
+      return false;
+}
 
 function rotateTile(rotation) {
   if (rotation == 1) {
