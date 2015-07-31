@@ -387,10 +387,12 @@ router.get('/generate', function(req, res, next) {
   var rand = Math.floor((Math.random()*tile_deck.length)+1)-1;
   current_tile = new_tiles[tile_deck[rand]];
   console.log(current_tile);
-  current_tile.rotation = 1;
+  var tileToClient = JSON.parse(JSON.stringify(current_tile));
+  delete tileToClient.tile_split;
+  tileToClient.rotation = 1;
   tile_deck.splice(rand,1);
   console.log(tile_deck);
-  res.json(current_tile).end();
+  res.json(tileToClient).end();
   console.log(current_tile);
 });
 
