@@ -72,7 +72,12 @@
         var scale = 1.0;
         var scaleMultiplier = 0.9;
 
-
+        var mouseDown = false;
+        var startDragOffset = {};
+        var translatePos = {
+            x: 0,
+            y: 0
+        }
 
 
         /* The game object.
@@ -141,11 +146,20 @@
         function setUpCanvas() {
             canvas = document.getElementById('myCanvas');
             ctx = canvas.getContext('2d');
+
+            translatePos.x = canvas.width / 2;
+            translatePos.y = canvas.height / 2;
+
             var oldPos;
 
             canvas.addEventListener('mousemove', function (evt) {
                 var mouse = getMousePos(canvas, evt);
-                var gridPos = getGridPos(mouse.x, mouse.y);
+                var translateGridPos = {
+                    x: translatePos.x%TILE_SIZE,
+                    y: translatePos.y%TILE_SIZE
+                }
+                var gridPos = getGridPos(mouse.x+translateGridPos.x, mouse.y+translateGridPos.y);
+
                 if (!oldPos) oldPos = {
                     x: gridPos.x,
                     y: gridPos.y
@@ -154,34 +168,69 @@
 
                 } else {
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect(oldPos.x * TILE_SIZE*scale, oldPos.y * TILE_SIZE*scale, TILE_SIZE*scale, TILE_SIZE*scale);
+                    ctx.strokeRect((oldPos.x * TILE_SIZE * scale)-translateGridPos.x,
+                                   (oldPos.y * TILE_SIZE * scale)-translateGridPos.y,
+                                   TILE_SIZE * scale, TILE_SIZE * scale);
+//                    console.log("translete.x: "+translateGridPos.x+" pos.x: "+oldPos.x+"draw from: "+((oldPos.x * TILE_SIZE * scale)-translateGridPos.x));
+//                    console.log("translete.y: "+translateGridPos.y+" pos.y: "+oldPos.y);
+//                    console.log(mouse.x, mouse.y);
                     console.log(JSON.stringify(oldPos));
                     oldPos = gridPos;
                 }
                 ctx.strokeStyle = "yellow";
-                ctx.strokeRect(gridPos.x * TILE_SIZE*scale, gridPos.y * TILE_SIZE*scale, TILE_SIZE*scale, TILE_SIZE*scale);
+                ctx.strokeRect((gridPos.x * TILE_SIZE * scale)-translateGridPos.x,
+                               (gridPos.y * TILE_SIZE * scale)-translateGridPos.y,
+                               TILE_SIZE * scale, TILE_SIZE * scale);
+//                console.log("translete.x: "+translateGridPos.x+" pos.x: "+gridPos.x);
+//                console.log("translete.y: "+translateGridPos.y+" pos.y: "+gridPos.y);
             }, false);
 
+            //adding click listener for placing tiles
             canvas.addEventListener('click', function (evt) {
                 var mouse = getMousePos(canvas, evt);
                 var gridPos = getGridPos(mouse.x, mouse.y);
                 placeTile(gridPos.x, gridPos.y);
             }, false);
 
-            // add button event listeners
+            // add button event listeners for zoom
             document.getElementById("plus").addEventListener("click", function () {
                 scale /= scaleMultiplier;
-//                TILE_SIZE *= scale;
                 reDraw(scale);
                 console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
             }, false);
 
             document.getElementById("minus").addEventListener("click", function () {
                 scale *= scaleMultiplier;
-//                TILE_SIZE *= scale;
                 reDraw(scale);
                 console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
             }, false);
+
+            // add event listeners to handle screen drag for panning around
+            canvas.addEventListener("mousedown", function (evt) {
+                mouseDown = true;
+                startDragOffset.x = evt.clientX - translatePos.x;
+                startDragOffset.y = evt.clientY - translatePos.y;
+            });
+
+            canvas.addEventListener("mouseup", function (evt) {
+                mouseDown = false;
+            });
+
+            canvas.addEventListener("mouseover", function (evt) {
+                mouseDown = false;
+            });
+
+            canvas.addEventListener("mouseout", function (evt) {
+                mouseDown = false;
+            });
+
+            canvas.addEventListener("mousemove", function (evt) {
+                if (mouseDown) {
+                    translatePos.x = evt.clientX - startDragOffset.x;
+                    translatePos.y = evt.clientY - startDragOffset.y;
+                    reDraw(scale, translatePos);
+                }
+            });
         }
 
         function placeTile(x, y) {
@@ -211,10 +260,11 @@
             }
         }
 
-        function reDraw(scale) {
+        function reDraw(scale, translate) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
+            ctx.translate(translatePos.x, translatePos.y);
             ctx.scale(scale, scale);
 
             for (var i = 0; i < grid.length; i++) {
