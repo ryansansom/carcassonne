@@ -12,16 +12,46 @@
         canvas {
             border: 1px solid black;
         }
+        
+        #wrapper {
+            display: inline;
+            position: relative;
+        }
+        
+        #buttonWrapper {
+            position: absolute;
+            width: 30px;
+            top: 50px;
+            right: 10px;
+        }
+        
+        #plus,
+        #minus {
+            padding: 5px;
+            width: 30px;
+            margin: 0px 0px 2px 0px;
+        }
+        
+        #plus:hover,
+        #minus:hover {
+            color: red;
+        }
     </style>
 </head>
 
 <body onload="game.play()">
-    <button onclick="getNextTile()">New Tile</button>
-    <br>
-    <img id="newTile" src="">
-    <br>
-    <canvas id="myCanvas" width="500" height="300"></canvas>
-    <div id="demo"></div>
+    <div id="wrapper">
+        <button onclick="getNextTile()">New Tile</button>
+        <br>
+        <img id="newTile" src="">
+        <br>
+        <canvas id="myCanvas" width="500" height="300"></canvas>
+        <div id="buttonWrapper">
+            <input type="button" id="plus" value="+">
+            <input type="button" id="minus" value="-">
+        </div>
+        <div id="demo"></div>
+    </div>
 
     <script>
         var TILE_SIZE = 100; //base tile size
@@ -38,6 +68,10 @@
         var grid = []; //Stores the game grid
         var canvas;
         var ctx;
+
+        var scale = 1.0;
+        var scaleMultiplier = 0.9;
+
 
 
 
@@ -108,26 +142,45 @@
             canvas = document.getElementById('myCanvas');
             ctx = canvas.getContext('2d');
             var oldPos;
-            
-            canvas.addEventListener('mousemove', function (evt) { 
+
+            canvas.addEventListener('mousemove', function (evt) {
                 var mouse = getMousePos(canvas, evt);
                 var gridPos = getGridPos(mouse.x, mouse.y);
-                if(!oldPos) oldPos = {x: gridPos.x, y: gridPos.y};
-                if(oldPos == gridPos) {
-                    
-                }else{
+                if (!oldPos) oldPos = {
+                    x: gridPos.x,
+                    y: gridPos.y
+                };
+                if (oldPos == gridPos) {
+
+                } else {
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect(oldPos.x*TILE_SIZE, oldPos.y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.strokeRect(oldPos.x * TILE_SIZE*scale, oldPos.y * TILE_SIZE*scale, TILE_SIZE*scale, TILE_SIZE*scale);
                     console.log(JSON.stringify(oldPos));
                     oldPos = gridPos;
                 }
                 ctx.strokeStyle = "yellow";
-                ctx.strokeRect(gridPos.x*TILE_SIZE, gridPos.y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                ctx.strokeRect(gridPos.x * TILE_SIZE*scale, gridPos.y * TILE_SIZE*scale, TILE_SIZE*scale, TILE_SIZE*scale);
             }, false);
+
             canvas.addEventListener('click', function (evt) {
                 var mouse = getMousePos(canvas, evt);
                 var gridPos = getGridPos(mouse.x, mouse.y);
                 placeTile(gridPos.x, gridPos.y);
+            }, false);
+
+            // add button event listeners
+            document.getElementById("plus").addEventListener("click", function () {
+                scale /= scaleMultiplier;
+//                TILE_SIZE *= scale;
+                reDraw(scale);
+                console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
+            }, false);
+
+            document.getElementById("minus").addEventListener("click", function () {
+                scale *= scaleMultiplier;
+//                TILE_SIZE *= scale;
+                reDraw(scale);
+                console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
             }, false);
         }
 
@@ -137,12 +190,12 @@
                     currentTile.gridX = x;
                     currentTile.gridY = y;
                     console.log(grid);
-                    
+
                     grid[y][x] = currentTile;
                     reDraw();
-                    
+
                     getNextTile();
-                }else{
+                } else {
                     alert("You cannot place a tile over an other tile!");
                 }
             } else {
@@ -151,14 +204,19 @@
         }
 
         function isGridSpaceEmpty(x, y) {
-            if(grid[y][x].name == "empty") {
+            if (grid[y][x].name == "empty") {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
-        
-        function reDraw() {
+
+        function reDraw(scale) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            ctx.scale(scale, scale);
+
             for (var i = 0; i < grid.length; i++) {
                 for (var j = 0; j < grid[i].length; j++) {
 
@@ -169,6 +227,7 @@
                     ctx.strokeRect(j * grid[i][j].size, i * grid[i][j].size, grid[i][j].size, grid[i][j].size);
                 }
             }
+            ctx.restore();
         }
 
         function getMousePos(canvas, evt) {
@@ -180,8 +239,8 @@
         }
 
         function getGridPos(mx, my) {
-            var gridX = Math.floor(mx / TILE_SIZE);
-            var gridY = Math.floor(my / TILE_SIZE);
+            var gridX = Math.floor(mx / (TILE_SIZE * scale));
+            var gridY = Math.floor(my / (TILE_SIZE * scale));
             return {
                 x: gridX,
                 y: gridY

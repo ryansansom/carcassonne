@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <style>
+        #myCanvas {
+            border: 1px solid black;
+            margin: 5px;
+        }
+        
+        #btn-wrapper {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+        }
+        
+        button {
+            display: block;
+            width: 30px;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            canvasSize();
+            window.addEventListener('resize', canvasSize);
+
+            var cnv = document.getElementById("myCanvas");
+            
+            var translatePos = {
+                x: cnv.width / 2,
+                y: cnv.height / 2
+            };
+            
+            var scale = 1.0;
+            var scaleMultiplier = 0.9;
+
+
+
+            // add button event listeners
+            document.getElementById("plus").addEventListener("click", function () {
+                scale /= scaleMultiplier;
+                draw(scale, translatePos);
+                console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
+            }, false);
+
+            document.getElementById("minus").addEventListener("click", function () {
+                scale *= scaleMultiplier;
+                draw(scale, translatePos);
+                console.log("sacle: " + scale + " multiplyer: " + scaleMultiplier);
+            }, false);
+
+            draw(scale, translatePos);
+
+        }
+
+
+        function canvasSize() {
+            document.getElementById("myCanvas").width = window.innerWidth - 25;
+            document.getElementById("myCanvas").height = window.innerHeight - 25;
+        }
+
+        function draw(scale, translate) {
+            var cnv = document.getElementById("myCanvas");
+            var ctx = cnv.getContext("2d");
+
+            ctx.clearRect(0, 0, cnv.width, cnv.height);
+//            ctx.translate(translate.x, translate.y);
+            ctx.scale(scale, scale);
+
+            ctx.fillRect(0, 0, 100, 100);
+
+
+        }
+    </script>
+</head>
+
+<body>
+
+    <canvas id="myCanvas"></canvas>
+    <div id="btn-wrapper">
+        <button id="plus">+</button>
+        <button id="minus">-</button>
+    </div>
+
+
+</body>
+
+</html>
