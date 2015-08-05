@@ -382,7 +382,7 @@ var current_tile;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  createArray(2*tile_deck.length-1,2*tile_deck.length-1); //needs to be created differently
+  game_array = createArray(2*tile_deck.length-1,2*tile_deck.length-1); //needs to be created differently
   console.log(game_array);
   res.render('rotate', { title: 'Carcassonne' });
 });
@@ -607,10 +607,11 @@ function rotateTile(rotation) {
 }
 
 function createArray(x,y) {
-  game_array = new Array(x);
+  var array = new Array(x);
   for (var i = 0; i < x; i++) {
-    game_array[i] = new Array(y);
+    array[i] = new Array(y);
   }
+  return array;
 }
 
 module.exports = router;
