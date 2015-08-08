@@ -227,11 +227,22 @@ router.post('/placetile', function(req, res, next) {
 
 router.get('/test', function(req,res) {
   //initial
-  array = [["Z","G","G","R","G","G","Z"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["R","R","R","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  tile1 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","R","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  tile2 = [["Z","G","G","R","G","G","Z"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  tile3 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  tile4 = [["Z","C","C","C","C","C","Z"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["Z","C","C","C","C","C","Z"]];
+  tile5 = [["Z","C","C","C","C","C","Z"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","R","C","C","C"],["C","C","G","R","G","C","C"],["Z","G","G","R","G","G","Z"]];
+  tile6 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  tile7 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["Z","G","G","G","G","G","Z"]];
+  tile8 = [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  array = tile2;
   checkedArr =[["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"]];
   var Rcnt = 1;
   var Gcnt = 1;
   var Zcnt = 1;
+  var Scnt = 1;
+  var Mcnt = 1;
+  var Ccnt = 1;
   //main code
 while (checkedAll()) {
   console.log(checkedAll());
@@ -270,11 +281,30 @@ while (checkedAll()) {
     obj[array[x][y]]["R"+Rcnt] = tempArr;
     Rcnt++;
     console.log(obj);
+  } else if (array[x][y] == "S") {
+    if (!obj[array[x][y]]) {
+      obj[array[x][y]] = {};
+    }
+    obj[array[x][y]]["S"+Scnt] = tempArr;
+    Scnt++;
+    console.log(obj);
+  } else if (array[x][y] == "M") {
+    if (!obj[array[x][y]]) {
+      obj[array[x][y]] = {};
+    }
+    obj[array[x][y]]["M"+Mcnt] = tempArr;
+    Mcnt++;
+    console.log(obj);
+  } else if (array[x][y] == "C") {
+    if (!obj[array[x][y]]) {
+      obj[array[x][y]] = {};
+    }
+    obj[array[x][y]]["C"+Ccnt] = tempArr;
+    Ccnt++;
+    console.log(obj);
   }
 }
-console.log(obj);
-console.log(obj.R.R1);
-res.send("Done");
+res.send(obj);
 });
 
 //  /test functions
