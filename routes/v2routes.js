@@ -379,6 +379,7 @@ var tile_deck = ["tile1","tile2","tile3"];
 var deckSize = tile_deck.length;
 var game_array;
 var current_tile;
+var scorer = {};
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -406,9 +407,13 @@ router.post('/placetile', function(req, res, next) {
   current_tile.placedMan = req.body.placedMan; //could need to be moved after rotate depending on how placement is handled client side
   rotateTile(req.body.rotation);
   if (!game_array[deckSize-1][deckSize-1]) {
+    //add a check for valid player placement
+    scoreTracker(req.body.placedMan);
     game_array[deckSize-1][deckSize-1] = current_tile;
     res.json(current_tile);
   } else if (checkAdjPresent(req.body.row-1,req.body.column-1)&&checkAbove(req.body.row-1,req.body.column-1)&&checkBelow(req.body.row-1,req.body.column-1)&&checkLeft(req.body.row-1,req.body.column-1)&&checkRight(req.body.row-1,req.body.column-1)) {
+    //add a check for valid player placement
+    scoreTracker(req.body.placedMan);
     game_array[req.body.row-1][req.body.column-1] = current_tile;
     res.json(current_tile);
   } else {
@@ -416,6 +421,21 @@ router.post('/placetile', function(req, res, next) {
   }
   console.log(game_array);
 });
+
+function mapTile(row,col,placedMan) {
+  if (checkAboveTile(row,col)) {
+    
+  }
+
+}
+
+function scoreTracker(placedMan) {
+  if (placedMan == -1) {
+    //add the tile to current
+  } else {
+
+  }
+}
 
 function checkAdjPresent(row,col) {
       var rowCheck = row - 1;
@@ -513,6 +533,74 @@ function checkRight(row,col) {
         }
       } else {
         return true;
+      }
+      return false;
+}
+//next 4 functions check if a tile is present
+function checkAboveTile(row,col) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p24.type===current_tile.tile_split.p02.type&&game_array[rowCheck][colCheck].tile_split.p25.type===current_tile.tile_split.p03.type&&game_array[rowCheck][colCheck].tile_split.p26.type===current_tile.tile_split.p04.type&&game_array[rowCheck][colCheck].tile_split.p27.type===current_tile.tile_split.p05.type&&game_array[rowCheck][colCheck].tile_split.p28.type===current_tile.tile_split.p06.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+      return false;
+}
+
+function checkBelowTile(row,col) {
+      var rowCheck = row + 1;
+      var colCheck = col;
+      if (rowCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (current_tile.tile_split.p24.type===game_array[rowCheck][colCheck].tile_split.p02.type&&current_tile.tile_split.p25.type===game_array[rowCheck][colCheck].tile_split.p03.type&&current_tile.tile_split.p26.type===game_array[rowCheck][colCheck].tile_split.p04.type&&current_tile.tile_split.p27.type===game_array[rowCheck][colCheck].tile_split.p05.type&&current_tile.tile_split.p28.type===game_array[rowCheck][colCheck].tile_split.p06.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+      return false;
+}
+
+function checkLeftTile(row,col) {
+      var rowCheck = row;
+      var colCheck = col-1;
+      if (colCheck!==-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p07.type===current_tile.tile_split.p01.type&&game_array[rowCheck][colCheck].tile_split.p12.type===current_tile.tile_split.p08.type&&game_array[rowCheck][colCheck].tile_split.p17.type===current_tile.tile_split.p13.type&&game_array[rowCheck][colCheck].tile_split.p22.type===current_tile.tile_split.p18.type&&game_array[rowCheck][colCheck].tile_split.p29.type===current_tile.tile_split.p23.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+      return false;
+}
+
+function checkRightTile(row,col) {
+      var rowCheck = row;
+      var colCheck = col+1;
+      if (colCheck<2*deckSize-1) {
+        if (game_array[rowCheck][colCheck]) {
+          if (game_array[rowCheck][colCheck].tile_split.p01.type===current_tile.tile_split.p07.type&&game_array[rowCheck][colCheck].tile_split.p08.type===current_tile.tile_split.p12.type&&game_array[rowCheck][colCheck].tile_split.p13.type===current_tile.tile_split.p17.type&&game_array[rowCheck][colCheck].tile_split.p18.type===current_tile.tile_split.p22.type&&game_array[rowCheck][colCheck].tile_split.p23.type===current_tile.tile_split.p29.type) {
+            return true;
+          }
+        } else {
+          return true;
+        }
+      } else {
+        return false;
       }
       return false;
 }
