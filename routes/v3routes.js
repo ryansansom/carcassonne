@@ -235,7 +235,7 @@ router.get('/test', function(req,res) {
   tile6 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   tile7 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["Z","G","G","G","G","G","Z"]];
   tile8 = [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
-  array = tile2;
+  array = tile1;
   checkedArr =[["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"]];
   var Rcnt = 1;
   var Gcnt = 1;
@@ -264,6 +264,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["Z"+Zcnt] = tempArr;
     Zcnt++;
     console.log(obj);
@@ -271,6 +272,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["G"+Gcnt] = tempArr;
     Gcnt++;
     console.log(obj);
@@ -278,6 +280,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["R"+Rcnt] = tempArr;
     Rcnt++;
     console.log(obj);
@@ -285,6 +288,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["S"+Scnt] = tempArr;
     Scnt++;
     console.log(obj);
@@ -292,6 +296,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["M"+Mcnt] = tempArr;
     Mcnt++;
     console.log(obj);
@@ -299,6 +304,7 @@ while (checkedAll()) {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
     }
+    tempArr.sort();
     obj[array[x][y]]["C"+Ccnt] = tempArr;
     Ccnt++;
     console.log(obj);
