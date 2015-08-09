@@ -44,7 +44,7 @@ var tile_master = {
     "tile_split": [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]]
   }
 }
-
+  //following for /maptile
   var obj = {};
   var checkedArr;
   var array;
@@ -55,16 +55,13 @@ var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"
 var deckSize = tile_deck.length;
 var game_array;
 var current_tile;
-var grass;
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  game_array = createArray(2*tile_deck.length-1,2*tile_deck.length-1); //needs to be created differently
-  console.log(game_array);
-  res.render('rotate', { title: 'Carcassonne' });
-});
 
 router.get('/generate', function(req, res, next) {
+  if (!game_array) {
+    game_array = createArray(2*tile_deck.length-1,2*tile_deck.length-1); //needs to be created differently
+    console.log(game_array);
+    res.render('rotate', { title: 'Carcassonne' });
+  }
   var rand = Math.floor((Math.random()*tile_deck.length)+1)-1;
   current_tile = new_tiles[tile_deck[rand]];
   console.log(current_tile);
@@ -97,7 +94,7 @@ router.post('/placetile', function(req, res, next) {
   console.log(game_array);
 });
 
-router.get('/test', function(req,res) {
+router.get('/maptile', function(req,res) {
   //initial
   //tile1 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","R","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   //tile2 = [["Z","G","G","R","G","G","Z"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
@@ -375,7 +372,7 @@ function checkAbove(row,col) {
       var colCheck = col;
       if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.r7c1===current_tile.tile_split.r1c1&&game_array[rowCheck][colCheck].tile_split.r7c2===current_tile.tile_split.r1c2&&game_array[rowCheck][colCheck].tile_split.r7c3===current_tile.tile_split.r1c3&&game_array[rowCheck][colCheck].tile_split.r7c4===current_tile.tile_split.r1c4&&game_array[rowCheck][colCheck].tile_split.r7c5===current_tile.tile_split.r1c5&&game_array[rowCheck][colCheck].tile_split.r7c6===current_tile.tile_split.r1c6&&game_array[rowCheck][colCheck].tile_split.r7c7===current_tile.tile_split.r1c7) {
+          if (game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[6][1]===current_tile.tile_split[0][1]&&game_array[rowCheck][colCheck].tile_split[6][2]===current_tile.tile_split[0][2]&&game_array[rowCheck][colCheck].tile_split[6][3]===current_tile.tile_split[0][3]&&game_array[rowCheck][colCheck].tile_split[6][4]===current_tile.tile_split[0][4]&&game_array[rowCheck][colCheck].tile_split[6][5]===current_tile.tile_split[0][5]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[0][6]) {
             return true;
           }
         } else {
@@ -388,11 +385,11 @@ function checkAbove(row,col) {
 }
 
 function checkBelow(row,col) {
-      var rowCheck = row + 1;
+      var rowCheck = row - 1;
       var colCheck = col;
-      if (rowCheck<2*deckSize-1) {
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (current_tile.tile_split.r7c1===game_array[rowCheck][colCheck].tile_split.r1c1&&current_tile.tile_split.r7c2===game_array[rowCheck][colCheck].tile_split.r1c2&&current_tile.tile_split.r7c3===game_array[rowCheck][colCheck].tile_split.r1c3&&current_tile.tile_split.r7c4===game_array[rowCheck][colCheck].tile_split.r1c4&&current_tile.tile_split.r7c5===game_array[rowCheck][colCheck].tile_split.r1c5&&current_tile.tile_split.r7c6===game_array[rowCheck][colCheck].tile_split.r1c6&&current_tile.tile_split.r7c7===game_array[rowCheck][colCheck].tile_split.r1c7) {
+          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[6][0]&&game_array[rowCheck][colCheck].tile_split[0][1]===current_tile.tile_split[6][1]&&game_array[rowCheck][colCheck].tile_split[0][2]===current_tile.tile_split[6][2]&&game_array[rowCheck][colCheck].tile_split[0][3]===current_tile.tile_split[6][3]&&game_array[rowCheck][colCheck].tile_split[0][4]===current_tile.tile_split[6][4]&&game_array[rowCheck][colCheck].tile_split[0][5]===current_tile.tile_split[6][5]&&game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
@@ -405,11 +402,11 @@ function checkBelow(row,col) {
 }
 
 function checkLeft(row,col) {
-      var rowCheck = row;
-      var colCheck = col-1;
-      if (colCheck!==-1) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.r1c7===current_tile.tile_split.r1c1&&game_array[rowCheck][colCheck].tile_split.r2c7===current_tile.tile_split.r2c1&&game_array[rowCheck][colCheck].tile_split.r3c7===current_tile.tile_split.r3c1&&game_array[rowCheck][colCheck].tile_split.r4c7===current_tile.tile_split.r4c1&&game_array[rowCheck][colCheck].tile_split.r5c7===current_tile.tile_split.r5c1&&game_array[rowCheck][colCheck].tile_split.r6c7===current_tile.tile_split.r6c1&&game_array[rowCheck][colCheck].tile_split.r7c7===current_tile.tile_split.r7c1) {
+          if (game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[1][6]===current_tile.tile_split[1][0]&&game_array[rowCheck][colCheck].tile_split[2][6]===current_tile.tile_split[2][0]&&game_array[rowCheck][colCheck].tile_split[3][6]===current_tile.tile_split[3][0]&&game_array[rowCheck][colCheck].tile_split[4][6]===current_tile.tile_split[4][0]&&game_array[rowCheck][colCheck].tile_split[5][6]===current_tile.tile_split[5][0]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[6][0]) {
             return true;
           }
         } else {
@@ -422,11 +419,11 @@ function checkLeft(row,col) {
 }
 
 function checkRight(row,col) {
-      var rowCheck = row;
-      var colCheck = col+1;
-      if (colCheck<2*deckSize-1) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.p01.type===current_tile.tile_split.p07.type&&game_array[rowCheck][colCheck].tile_split.p08.type===current_tile.tile_split.p12.type&&game_array[rowCheck][colCheck].tile_split.p13.type===current_tile.tile_split.p17.type&&game_array[rowCheck][colCheck].tile_split.p18.type===current_tile.tile_split.p22.type&&game_array[rowCheck][colCheck].tile_split.p23.type===current_tile.tile_split.p29.type) {
+          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[0][6]&&game_array[rowCheck][colCheck].tile_split[1][0]===current_tile.tile_split[1][6]&&game_array[rowCheck][colCheck].tile_split[2][0]===current_tile.tile_split[2][6]&&game_array[rowCheck][colCheck].tile_split[3][0]===current_tile.tile_split[3][6]&&game_array[rowCheck][colCheck].tile_split[4][0]===current_tile.tile_split[4][6]&&game_array[rowCheck][colCheck].tile_split[5][0]===current_tile.tile_split[5][6]&&game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
@@ -437,13 +434,14 @@ function checkRight(row,col) {
       }
       return false;
 }
+
 //is there a tile here?
 function checkAboveTile(row,col) {
       var rowCheck = row - 1;
       var colCheck = col;
       if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.r7c1===current_tile.tile_split.r1c1&&game_array[rowCheck][colCheck].tile_split.r7c2===current_tile.tile_split.r1c2&&game_array[rowCheck][colCheck].tile_split.r7c3===current_tile.tile_split.r1c3&&game_array[rowCheck][colCheck].tile_split.r7c4===current_tile.tile_split.r1c4&&game_array[rowCheck][colCheck].tile_split.r7c5===current_tile.tile_split.r1c5&&game_array[rowCheck][colCheck].tile_split.r7c6===current_tile.tile_split.r1c6&&game_array[rowCheck][colCheck].tile_split.r7c7===current_tile.tile_split.r1c7) {
+          if (game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[6][1]===current_tile.tile_split[0][1]&&game_array[rowCheck][colCheck].tile_split[6][2]===current_tile.tile_split[0][2]&&game_array[rowCheck][colCheck].tile_split[6][3]===current_tile.tile_split[0][3]&&game_array[rowCheck][colCheck].tile_split[6][4]===current_tile.tile_split[0][4]&&game_array[rowCheck][colCheck].tile_split[6][5]===current_tile.tile_split[0][5]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[0][6]) {
             return true;
           }
         } else {
@@ -456,11 +454,11 @@ function checkAboveTile(row,col) {
 }
 
 function checkBelowTile(row,col) {
-      var rowCheck = row + 1;
+      var rowCheck = row - 1;
       var colCheck = col;
-      if (rowCheck<2*deckSize-1) {
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (current_tile.tile_split.r7c1===game_array[rowCheck][colCheck].tile_split.r1c1&&current_tile.tile_split.r7c2===game_array[rowCheck][colCheck].tile_split.r1c2&&current_tile.tile_split.r7c3===game_array[rowCheck][colCheck].tile_split.r1c3&&current_tile.tile_split.r7c4===game_array[rowCheck][colCheck].tile_split.r1c4&&current_tile.tile_split.r7c5===game_array[rowCheck][colCheck].tile_split.r1c5&&current_tile.tile_split.r7c6===game_array[rowCheck][colCheck].tile_split.r1c6&&current_tile.tile_split.r7c7===game_array[rowCheck][colCheck].tile_split.r1c7) {
+          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[6][0]&&game_array[rowCheck][colCheck].tile_split[0][1]===current_tile.tile_split[6][1]&&game_array[rowCheck][colCheck].tile_split[0][2]===current_tile.tile_split[6][2]&&game_array[rowCheck][colCheck].tile_split[0][3]===current_tile.tile_split[6][3]&&game_array[rowCheck][colCheck].tile_split[0][4]===current_tile.tile_split[6][4]&&game_array[rowCheck][colCheck].tile_split[0][5]===current_tile.tile_split[6][5]&&game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
@@ -473,11 +471,11 @@ function checkBelowTile(row,col) {
 }
 
 function checkLeftTile(row,col) {
-      var rowCheck = row;
-      var colCheck = col-1;
-      if (colCheck!==-1) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.r1c7===current_tile.tile_split.r1c1&&game_array[rowCheck][colCheck].tile_split.r2c7===current_tile.tile_split.r2c1&&game_array[rowCheck][colCheck].tile_split.r3c7===current_tile.tile_split.r3c1&&game_array[rowCheck][colCheck].tile_split.r4c7===current_tile.tile_split.r4c1&&game_array[rowCheck][colCheck].tile_split.r5c7===current_tile.tile_split.r5c1&&game_array[rowCheck][colCheck].tile_split.r6c7===current_tile.tile_split.r6c1&&game_array[rowCheck][colCheck].tile_split.r7c7===current_tile.tile_split.r7c1) {
+          if (game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[1][6]===current_tile.tile_split[1][0]&&game_array[rowCheck][colCheck].tile_split[2][6]===current_tile.tile_split[2][0]&&game_array[rowCheck][colCheck].tile_split[3][6]===current_tile.tile_split[3][0]&&game_array[rowCheck][colCheck].tile_split[4][6]===current_tile.tile_split[4][0]&&game_array[rowCheck][colCheck].tile_split[5][6]===current_tile.tile_split[5][0]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[6][0]) {
             return true;
           }
         } else {
@@ -490,11 +488,11 @@ function checkLeftTile(row,col) {
 }
 
 function checkRightTile(row,col) {
-      var rowCheck = row;
-      var colCheck = col+1;
-      if (colCheck<2*deckSize-1) {
+      var rowCheck = row - 1;
+      var colCheck = col;
+      if (rowCheck!==-1) {
         if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split.p01.type===current_tile.tile_split.p07.type&&game_array[rowCheck][colCheck].tile_split.p08.type===current_tile.tile_split.p12.type&&game_array[rowCheck][colCheck].tile_split.p13.type===current_tile.tile_split.p17.type&&game_array[rowCheck][colCheck].tile_split.p18.type===current_tile.tile_split.p22.type&&game_array[rowCheck][colCheck].tile_split.p23.type===current_tile.tile_split.p29.type) {
+          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[0][6]&&game_array[rowCheck][colCheck].tile_split[1][0]===current_tile.tile_split[1][6]&&game_array[rowCheck][colCheck].tile_split[2][0]===current_tile.tile_split[2][6]&&game_array[rowCheck][colCheck].tile_split[3][0]===current_tile.tile_split[3][6]&&game_array[rowCheck][colCheck].tile_split[4][0]===current_tile.tile_split[4][6]&&game_array[rowCheck][colCheck].tile_split[5][0]===current_tile.tile_split[5][6]&&game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
