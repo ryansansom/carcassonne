@@ -51,8 +51,9 @@ var tile_master = {
   var tempArr;
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
-var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
+var tile_deck = ["tile1","tile2"];
 var deckSize = tile_deck.length;
+//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
 var game_array;
 var detail_array;
 var checked_array;
@@ -64,7 +65,6 @@ router.get('/generate', function(req, res, next) {
     detail_array = createArray(7*(2*tile_deck.length-1),7*(2*tile_deck.length-1));
     checked_array = createArray(7*(2*tile_deck.length-1),7*(2*tile_deck.length-1));
     console.log(game_array);
-    res.render('rotate', { title: 'Carcassonne' });
   }
   var rand = Math.floor((Math.random()*tile_deck.length)+1)-1;
   current_tile = new_tiles[tile_deck[rand]];
@@ -76,6 +76,34 @@ router.get('/generate', function(req, res, next) {
   console.log(tile_deck);
   res.json(tileToClient).end();
   console.log(current_tile);
+});
+
+router.get('/test', function(req, res, next) {
+  var tile1 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","R","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  var tile2 = [["Z","G","G","R","G","G","Z"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  var tile3 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  var tile4 = [["Z","C","C","C","C","C","Z"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["Z","C","C","C","C","C","Z"]];
+  var tile5 = [["Z","C","C","C","C","C","Z"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","C","C","C","C"],["C","C","C","R","C","C","C"],["C","C","G","R","G","C","C"],["Z","G","G","R","G","G","Z"]];
+  var tile6 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  var tile7 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["Z","G","G","G","G","G","Z"]];
+  var tile8 = [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
+  for (var i=0;i<7;i++) {
+    for (var j=0;j<7;j++) {
+      detail_array[(0)*7+i][(0)*7+j] = tile3[i][j]; //change to above
+      checked_array[(0)*7+i][(0)*7+j] = "N";
+      detail_array[(1)*7+i][(0)*7+j] = tile2[i][j];;
+      checked_array[(1)*7+i][(0)*7+j] = "N";
+      detail_array[(1)*7+i][(1)*7+j] = tile2[i][j];
+      checked_array[(1)*7+i][(1)*7+j] = "N";
+      detail_array[(1)*7+i][(2)*7+j] = tile6[i][j];
+      checked_array[(1)*7+i][(2)*7+j] = "N";
+      detail_array[(0)*7+i][(2)*7+j] = tile7[i][j];
+      checked_array[(0)*7+i][(2)*7+j] = "N";
+    }
+  }
+  console.log(detail_array);
+  console.log(checked_array);
+  res.json("Done test");
 });
 
 router.post('/placetile', function(req, res, next) {
@@ -113,7 +141,7 @@ router.get('/maptile', function(req,res) {
   //tile6 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   //tile7 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["Z","G","G","G","G","G","Z"]];
   //tile8 = [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
-  array = new_tiles.tile5.tile_split;
+  array = detail_array;
   checkedArr =[["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"],["N","N","N","N","N","N","N"]];
   var Rcnt = 1;
   var Gcnt = 1;
@@ -133,7 +161,7 @@ while (checkedAll()) {
   var cnt = 0;
   while (tempArr[cnt]) {
     console.log("surround");
-    console.log(checkedArr);
+    console.log(checked_array);
     console.log(tempArr);
    surround(tempArr[cnt][0],tempArr[cnt][1]);
    cnt++;
@@ -193,9 +221,9 @@ res.send(obj);
 
 //  /test functions
 function checkedAll() {
-  for (var i=0;i<7*(2*tile_deck.length-1);i++) {
-    for (var j=0;j<7*(2*tile_deck.length-1);j++) {
-      if (checkedArr[i][j] == "N") {
+  for (var i=0;i<(7*(2*deckSize-1));i++) {
+    for (var j=0;j<(7*(2*deckSize-1));j++) {
+      if (checked_array[i][j] == "N") {
         return [i,j];
       }
     }
@@ -204,10 +232,11 @@ function checkedAll() {
 }
 
 function surround(i,j) {
-      var x2 = i + " is the num";
-      var y2 = j + " is the num";
-      var x3 = Number(x2.substr(0,1));
-      var y3 = Number(y2.substr(0,1));
+  console.log("checking coords "+i+","+j);
+      var x2 = "is the num " + i;
+      var y2 = "is the num " + j;
+      var x3 = Number(x2.substr(11,x2.length-11));
+      var y3 = Number(y2.substr(11,y2.length-11));
       var x = x3;
       var y = y3;
       console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
@@ -217,7 +246,6 @@ function surround(i,j) {
           tempArr.push([x,y-1]);
           checked_array[x][y-1] = "Y";
         } else {
-          y--;
           break;
         }
         y--;
@@ -231,7 +259,6 @@ function surround(i,j) {
           tempArr.push([x-1,y]);
           checked_array[x-1][y] = "Y";
         } else {
-          x--;
           break;
         }
         x--;
@@ -239,13 +266,12 @@ function surround(i,j) {
       x = x3;
       y = y3;
       console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
-      while (y<7*(2*tile_deck.length-1)) {
+      while (y<7*(2*deckSize-1)) {
         if (right(x,y)) {
           //do something
           tempArr.push([x,y+1]);
           checked_array[x][y+1] = "Y";
         } else {
-          y++;
           break;
         }
         y++;
@@ -253,13 +279,12 @@ function surround(i,j) {
       x = x3;
       y = y3;
       console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
-      while (x<7*(2*tile_deck.length-1)) {
+      while (x<7*(2*deckSize-1)) {
         if (down(x,y)) {
           //do something
           tempArr.push([x+1,y]);
           checked_array[x+1][y] = "Y";
         } else {
-          x++;
           break;
         }
         x++;
@@ -281,7 +306,7 @@ function up(i,j) {
 }
 
 function down(i,j) {
-  if (i===7*(2*tile_deck.length-1)) {
+  if (i===7*(2*deckSize-1)-1) {
     return false;
   } else if (!checked_array[i+1][j]) {
     return false;
@@ -309,15 +334,30 @@ function left(i,j) {
 }
 
 function right(i,j) {
-  if (j===7*(2*tile_deck.length-1)) {
+  if (j===7*(2*deckSize-1)-1) {
+    if (i===10&&j===0) {
+      console.log("ryan test - too far right");
+    }
     return false;
   } else if (!checked_array[i][j+1]) {
+    if (i===10&&j===0) {
+      console.log("ryan test - not there");
+    }
     return false;
   } else if (checked_array[i][j+1] == "Y") {
+    if (i===10&&j===0) {
+      console.log("ryan test - already checked");
+    }
     return false;
   } else if (array[i][j]===array[i][j+1]) {
+    if (i===10&&j===0) {
+      console.log("ryan test - true");
+    }
     return true;
   } else {
+    if (i===10&&j===0) {
+      console.log("ryan test - different reason");
+    }
     return false;
   }
 }
