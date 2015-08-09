@@ -95,7 +95,6 @@ router.post('/placetile', function(req, res, next) {
 });
 
 router.get('/maptile', function(req,res) {
-  //initial
   //tile1 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["R","R","R","R","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   //tile2 = [["Z","G","G","R","G","G","Z"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["R","R","R","S","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   //tile3 = [["Z","G","G","G","G","G","Z"],["G","G","G","G","G","G","G"],["G","G","G","G","G","G","G"],["G","G","G","M","G","G","G"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
