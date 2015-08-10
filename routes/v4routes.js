@@ -52,8 +52,8 @@ var tile_master = {
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 //var tile_deck = ["tile1","tile2"];
-var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
-//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
+//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
+var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
 var deckSize = tile_deck.length;
 
 var game_array;
@@ -103,8 +103,6 @@ router.get('/test', function(req, res, next) {
       checked_array[(0)*7+i][(2)*7+j] = "N";
     }
   }
-  console.log(detail_array);
-  console.log(checked_array);
   res.json("Done test");
 });
 
@@ -152,9 +150,8 @@ router.get('/maptile', function(req,res) {
   var Mcnt = 1;
   var Ccnt = 1;
   //main code
-while (checkedAll()) {
-  console.log(checkedAll());
-  var temp = checkedAll();
+  var temp = checkedAll();  
+while (temp) {
   var x = temp[0];
   var y = temp[1];
   tempArr = [];
@@ -162,9 +159,6 @@ while (checkedAll()) {
   checked_array[x][y] = "Y";
   var cnt = 0;
   while (tempArr[cnt]) {
-    console.log("surround");
-    console.log(checked_array);
-    console.log(tempArr);
    surround(tempArr[cnt][0],tempArr[cnt][1]);
    cnt++;
   }
@@ -175,7 +169,6 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["Z"+Zcnt] = tempArr;
     Zcnt++;
-    console.log(obj);
   } else if (array[x][y] == "G") {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
@@ -183,7 +176,6 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["G"+Gcnt] = tempArr;
     Gcnt++;
-    console.log(obj);
   } else if (array[x][y] == "R") {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
@@ -191,7 +183,6 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["R"+Rcnt] = tempArr;
     Rcnt++;
-    console.log(obj);
   } else if (array[x][y] == "S") {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
@@ -199,7 +190,6 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["S"+Scnt] = tempArr;
     Scnt++;
-    console.log(obj);
   } else if (array[x][y] == "M") {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
@@ -207,7 +197,6 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["M"+Mcnt] = tempArr;
     Mcnt++;
-    console.log(obj);
   } else if (array[x][y] == "C") {
     if (!obj[array[x][y]]) {
       obj[array[x][y]] = {};
@@ -215,8 +204,8 @@ while (checkedAll()) {
     tempArr.sort();
     obj[array[x][y]]["C"+Ccnt] = tempArr;
     Ccnt++;
-    console.log(obj);
   }
+  temp = checkedAll();
 }
 res.send(obj);
 });
@@ -240,14 +229,12 @@ function checkedAll() {
 }
 
 function surround(i,j) {
-  console.log("checking coords "+i+","+j);
       var x2 = "is the num " + i;
       var y2 = "is the num " + j;
       var x3 = Number(x2.substr(11,x2.length-11));
       var y3 = Number(y2.substr(11,y2.length-11));
       var x = x3;
       var y = y3;
-      console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
       while (y>-1) {
         if (left(x,y)) {
           //do something
@@ -260,7 +247,6 @@ function surround(i,j) {
       }
       x = x3;
       y = y3;
-      console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
       while (x>-1) {
         if (up(x,y)) {
           //do something
@@ -273,7 +259,6 @@ function surround(i,j) {
       }
       x = x3;
       y = y3;
-      console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
       while (y<7*(2*deckSize-1)) {
         if (right(x,y)) {
           //do something
@@ -286,7 +271,6 @@ function surround(i,j) {
       }
       x = x3;
       y = y3;
-      console.log("x is: " + x + ", y is: " + y + ", i is: " + x3 + ", j is: " + y3);
       while (x<7*(2*deckSize-1)) {
         if (down(x,y)) {
           //do something
