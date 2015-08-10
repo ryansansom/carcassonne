@@ -51,9 +51,11 @@ var tile_master = {
   var tempArr;
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
-var tile_deck = ["tile1","tile2"];
+//var tile_deck = ["tile1","tile2"];
+var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
+//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8","tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
 var deckSize = tile_deck.length;
-//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
+
 var game_array;
 var detail_array;
 var checked_array;
@@ -221,10 +223,16 @@ res.send(obj);
 
 //  /test functions
 function checkedAll() {
-  for (var i=0;i<(7*(2*deckSize-1));i++) {
-    for (var j=0;j<(7*(2*deckSize-1));j++) {
-      if (checked_array[i][j] == "N") {
-        return [i,j];
+  for (var i=0;i<(2*deckSize-1);i++) {
+    for (var j=0;j<(2*deckSize-1);j++) {
+      if (checked_array[7*i][7*j]) {
+        for (var k=0;k<7;k++) {
+          for (var l=0;l<7;l++) {
+            if (checked_array[7*i+k][7*j+l] == "N") {
+              return [7*i+k,7*j+l];
+            }
+          }
+        }
       }
     }
   }
@@ -335,29 +343,14 @@ function left(i,j) {
 
 function right(i,j) {
   if (j===7*(2*deckSize-1)-1) {
-    if (i===10&&j===0) {
-      console.log("ryan test - too far right");
-    }
     return false;
   } else if (!checked_array[i][j+1]) {
-    if (i===10&&j===0) {
-      console.log("ryan test - not there");
-    }
     return false;
   } else if (checked_array[i][j+1] == "Y") {
-    if (i===10&&j===0) {
-      console.log("ryan test - already checked");
-    }
     return false;
   } else if (array[i][j]===array[i][j+1]) {
-    if (i===10&&j===0) {
-      console.log("ryan test - true");
-    }
     return true;
   } else {
-    if (i===10&&j===0) {
-      console.log("ryan test - different reason");
-    }
     return false;
   }
 }
