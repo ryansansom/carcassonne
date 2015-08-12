@@ -134,7 +134,7 @@ router.get('/generate', function(req, res, next) {
         checked_array = createArray(7 * (2 * tile_deck.length - 1), 7 * (2 * tile_deck.length - 1));
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
-    current_tile = new_tiles[tile_deck[rand]];
+    current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
     var tileToClient = JSON.parse(JSON.stringify(current_tile));
     delete tileToClient.tile_split;
     tileToClient.rotation = 1;
@@ -243,7 +243,6 @@ router.get('/getboard', function(req, res, next) {
 
 router.post('/placetile', function(req, res, next) {
     //send this function a json body in form of {"row": 0, "column": 0, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
-    current_tile.placedMan = req.body.placedMan; //could need to be moved after rotate depending on how placement is handled client side
     rotateTile(req.body.rotation);
     if (!game_array[deckSize - 1][deckSize - 1]) {
         //add a check for valid player placement (ie not on river, settlement or corner)
@@ -424,18 +423,21 @@ function mapTile(row, column, placedMan) {
     if (placedMan != -1) {
         var ind = false;
         var checkPlace = [7*row+placedMan[0],7*column+placedMan[1]];
+        console.log(checkPlace);
         var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
         for (x in obj[typeCheck]) {
             for (y in obj[typeCheck][x]) {
-                if (y == checkPlace) {
+                console.log(obj[typeCheck][x][y]);
+                if (obj[typeCheck][x][y][0] === checkPlace[0] && obj[typeCheck][x][y][1] === checkPlace[1]) {
                     var checkOthers = obj[typeCheck][x];
+                    console.log(checkOthers);
                     break;
                 }
             }
         }
         for (z1 in checkOthers) {
             for (z2 in player_placement[0]) {
-                if (checkOthers[z1] == player_placement[z2]) {
+                if (checkOthers[z1][0] == player_placement[0][z2][0] && checkOthers[z1][1] == player_placement[0][z2][1]) {
                     ind = true
                     //delete the tile entry from game_array etc...
                     game_array[row][column] = undefined;
