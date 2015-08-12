@@ -113,6 +113,7 @@ var obj = {};
 var checkedArr;
 var array;
 var tempArr;
+var current_player = 1;
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 //var tile_deck = ["tile1","tile2"];
@@ -124,24 +125,21 @@ var game_array;
 var detail_array;
 var checked_array;
 var current_tile;
+var player_placement = [[],[]];
 
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
         game_array = createArray(2 * tile_deck.length - 1, 2 * tile_deck.length - 1); //needs to be created differently
         detail_array = createArray(7 * (2 * tile_deck.length - 1), 7 * (2 * tile_deck.length - 1));
         checked_array = createArray(7 * (2 * tile_deck.length - 1), 7 * (2 * tile_deck.length - 1));
-        console.log(game_array);
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
     current_tile = new_tiles[tile_deck[rand]];
-    console.log(current_tile);
     var tileToClient = JSON.parse(JSON.stringify(current_tile));
     delete tileToClient.tile_split;
     tileToClient.rotation = 1;
     tile_deck.splice(rand, 1);
-    console.log(tile_deck);
     res.json(tileToClient).end();
-    console.log(current_tile);
 });
 
 router.get('/test', function(req, res, next) {
@@ -245,7 +243,6 @@ router.get('/getboard', function(req, res, next) {
 
 router.post('/placetile', function(req, res, next) {
     //send this function a json body in form of {"row": 0, "column": 0, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
-    console.log(current_tile);
     current_tile.placedMan = req.body.placedMan; //could need to be moved after rotate depending on how placement is handled client side
     rotateTile(req.body.rotation);
     if (!game_array[deckSize - 1][deckSize - 1]) {
@@ -258,7 +255,14 @@ router.post('/placetile', function(req, res, next) {
                 checked_array[(deckSize - 1) * 7 + i][(deckSize - 1) * 7 + j] = "N";
             }
         }
+        if (req.body.placedMan != -1) {
+            var temp1 = req.body.placedMan;
+            player_placement[0].push([7*req.body.row+temp1[0],7*req.body.column+temp1[1]]);
+            player_placement[1].push("player"+current_player);
+        }
+        console.log(player_placement);
         res.json(current_tile);
+        nextPlayer();
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
         game_array[req.body.row][req.body.column] = current_tile;
@@ -268,12 +272,18 @@ router.post('/placetile', function(req, res, next) {
                 checked_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = "N";
             }
         }
-
-        res.json(current_tile);
+        resetChecked();
+        mapTile(req.body.row,req.body.column,req.body.placedMan);
+        if (game_array[req.body.row][req.body.column] == undefined) {
+            res.status(400).send("Invalid player piece placement");
+        } else {
+            res.json(current_tile);
+            console.log(player_placement);
+            nextPlayer();
+        }
     } else {
-        res.status(400).send("Invalid tile placement")
+        res.status(400).send("Invalid tile placement");
     }
-    console.log(game_array);
 });
 
 router.get('/maptile', function(req, res) {
@@ -346,7 +356,6 @@ router.get('/maptile', function(req, res) {
 });
 
 function mapTile(row, column, placedMan) {
-    array = detail_array;
     var Rcnt = 1;
     var Gcnt = 1;
     var Zcnt = 1;
@@ -410,6 +419,39 @@ function mapTile(row, column, placedMan) {
             Ccnt++;
         }
         temp = checkedAll();
+    }
+
+    if (placedMan != -1) {
+        var ind = false;
+        var checkPlace = [7*row+placedMan[0],7*column+placedMan[1]];
+        var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
+        for (x in obj[typeCheck]) {
+            for (y in obj[typeCheck][x]) {
+                if (y == checkPlace) {
+                    var checkOthers = obj[typeCheck][x];
+                    break;
+                }
+            }
+        }
+        for (z1 in checkOthers) {
+            for (z2 in player_placement[0]) {
+                if (checkOthers[z1] == player_placement[z2]) {
+                    ind = true
+                    //delete the tile entry from game_array etc...
+                    game_array[row][column] = undefined;
+                    for (var i = 0; i < 7; i++) {
+                        for (var j = 0; j < 7; j++) {
+                            detail_array[(row) * 7 + i][(column) * 7 + j] = undefined;
+                            checked_array[(row) * 7 + i][(column) * 7 + j] = undefined;
+                        }
+                    }
+                }
+            }
+        }
+        if (!ind) {
+            player_placement[0].push([checkPlace[0],checkPlace[1]]);
+            player_placement[1].push("player"+current_player);
+        }
     }
 }
 
@@ -493,7 +535,7 @@ function up(i, j) {
         return false;
     } else if (checked_array[i - 1][j] == "Y") {
         return false;
-    } else if (array[i][j] === array[i - 1][j]) {
+    } else if (detail_array[i][j] === detail_array[i - 1][j]) {
         return true;
     } else {
         return false;
@@ -507,7 +549,7 @@ function down(i, j) {
         return false;
     } else if (checked_array[i + 1][j] == "Y") {
         return false;
-    } else if (array[i][j] === array[i + 1][j]) {
+    } else if (detail_array[i][j] === detail_array[i + 1][j]) {
         return true;
     } else {
         return false;
@@ -521,7 +563,7 @@ function left(i, j) {
         return false;
     } else if (checked_array[i][j - 1] == "Y") {
         return false;
-    } else if (array[i][j] === array[i][j - 1]) {
+    } else if (detail_array[i][j] === detail_array[i][j - 1]) {
         return true;
     } else {
         return false;
@@ -535,7 +577,7 @@ function right(i, j) {
         return false;
     } else if (checked_array[i][j + 1] == "Y") {
         return false;
-    } else if (array[i][j] === array[i][j + 1]) {
+    } else if (detail_array[i][j] === detail_array[i][j + 1]) {
         return true;
     } else {
         return false;
@@ -580,6 +622,8 @@ function checkAdjPresent(row, col) {
 function checkAbove(row, col) {
     if (row !== 0) {
         if (game_array[row - 1][col]) {
+            console.log(game_array[row - 1][col].tile_split);
+            console.log(current_tile.tile_split);
             if (game_array[row - 1][col].tile_split[6][0] === current_tile.tile_split[0][0] && game_array[row - 1][col].tile_split[6][1] === current_tile.tile_split[0][1] && game_array[row - 1][col].tile_split[6][2] === current_tile.tile_split[0][2] && game_array[row - 1][col].tile_split[6][3] === current_tile.tile_split[0][3] && game_array[row - 1][col].tile_split[6][4] === current_tile.tile_split[0][4] && game_array[row - 1][col].tile_split[6][5] === current_tile.tile_split[0][5] && game_array[row - 1][col].tile_split[6][6] === current_tile.tile_split[0][6]) {
                 return true;
             }
@@ -596,6 +640,8 @@ function checkAbove(row, col) {
 function checkBelow(row, col) {
     if (row + 1 < 2 * deckSize - 1) {
         if (game_array[row + 1][col]) {
+            console.log(game_array[row + 1][col].tile_split);
+            console.log(current_tile.tile_split);
             if (game_array[row + 1][col].tile_split[0][0] === current_tile.tile_split[6][0] && game_array[row + 1][col].tile_split[0][1] === current_tile.tile_split[6][1] && game_array[row + 1][col].tile_split[0][2] === current_tile.tile_split[6][2] && game_array[row + 1][col].tile_split[0][3] === current_tile.tile_split[6][3] && game_array[row + 1][col].tile_split[0][4] === current_tile.tile_split[6][4] && game_array[row + 1][col].tile_split[0][5] === current_tile.tile_split[6][5] && game_array[row + 1][col].tile_split[0][6] === current_tile.tile_split[6][6]) {
                 return true;
             }
@@ -612,6 +658,8 @@ function checkBelow(row, col) {
 function checkLeft(row, col) {
     if (col !== 0) {
         if (game_array[row][col - 1]) {
+            console.log(game_array[row][col - 1].tile_split);
+            console.log(current_tile.tile_split);
             if (game_array[row][col - 1].tile_split[0][6] === current_tile.tile_split[0][0] && game_array[row][col - 1].tile_split[1][6] === current_tile.tile_split[1][0] && game_array[row][col - 1].tile_split[2][6] === current_tile.tile_split[2][0] && game_array[row][col - 1].tile_split[3][6] === current_tile.tile_split[3][0] && game_array[row][col - 1].tile_split[4][6] === current_tile.tile_split[4][0] && game_array[row][col - 1].tile_split[5][6] === current_tile.tile_split[5][0] && game_array[row][col - 1].tile_split[6][6] === current_tile.tile_split[6][0]) {
                 return true;
             }
@@ -628,6 +676,8 @@ function checkLeft(row, col) {
 function checkRight(row, col) {
     if (col < 2 * deckSize - 1) {
         if (game_array[row][col + 1]) {
+            console.log(game_array[row][col + 1].tile_split);
+            console.log(current_tile.tile_split);
             if (game_array[row][col + 1].tile_split[0][0] === current_tile.tile_split[0][6] && game_array[row][col + 1].tile_split[1][0] === current_tile.tile_split[1][6] && game_array[row][col + 1].tile_split[2][0] === current_tile.tile_split[2][6] && game_array[row][col + 1].tile_split[3][0] === current_tile.tile_split[3][6] && game_array[row][col + 1].tile_split[4][0] === current_tile.tile_split[4][6] && game_array[row][col + 1].tile_split[5][0] === current_tile.tile_split[5][6] && game_array[row][col + 1].tile_split[6][0] === current_tile.tile_split[6][6]) {
                 return true;
             }
@@ -745,6 +795,28 @@ function rotateTile(rotation) {
         current_tile.tile_split = newArr;
     } else {
         console.log("Invalid rotation - no change made");
+    }
+}
+
+function resetChecked() {
+    for (var i=0;i<2*deckSize-1;i++) {
+        for (var j=0;j<2*deckSize-1;j++) {
+            if (game_array[i][j]) {
+                for (var x=0;x<7;x++) {
+                    for (var y=0;y<7;y++) {
+                        checked_array[(7*i)+x][(7*j)+y] = "N";
+                    }
+                }
+            }
+        }
+    }
+}
+
+function nextPlayer() {
+    if (current_player === 5) {
+        current_player = 1;
+    } else {
+        current_player++;
     }
 }
 
