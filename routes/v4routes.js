@@ -125,6 +125,12 @@ router.post('/placetile', function(req, res, next) {
   } else if (checkAdjPresent(req.body.row-1,req.body.column-1)&&checkAbove(req.body.row-1,req.body.column-1)&&checkBelow(req.body.row-1,req.body.column-1)&&checkLeft(req.body.row-1,req.body.column-1)&&checkRight(req.body.row-1,req.body.column-1)) {
     //add a check for valid player placement
     game_array[req.body.row-1][req.body.column-1] = current_tile;
+    for (var i=0;i<7;i++) {
+      for (var j=0;j<7;j++) {
+        detail_array[(req.body.row-1)*7+i][(req.body.column-1)*7+j] = current_tile.tile_split[i][j];
+        checked_array[(req.body.row-1)*7+i][(req.body.column-1)*7+j] = "N";
+      }
+    }
     res.json(current_tile);
   } else {
     res.status(400).send("Invalid tile placement")
@@ -369,43 +375,36 @@ function scoreTracker(placedMan) {
 }
 
 function checkAdjPresent(row,col) {
-      var rowCheck = row - 1;
-      var colCheck = col;
-      if (rowCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
+      if (row!==0) {
+        if (game_array[row-1][col]) {
           return true;
         }
       }
-      rowCheck = row;
-      colCheck = col-1;
-      if (colCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
+      if (col!==0) {
+        if (game_array[row][col-1]) {
           return true;
         }
       }
-      rowCheck = row;
-      colCheck = col+1;
-      if (colCheck<2*deckSize-1) {
-        if (game_array[rowCheck][colCheck]) {
+      if (col+1<2*deckSize-1) {
+        if (game_array[row][col+1]) {
           return true;
         }
       }
       rowCheck = row + 1;
       colCheck = col;
-      if (rowCheck<2*deckSize-1) {
-        if (game_array[rowCheck][colCheck]) {
+      if (row+1<2*deckSize-1) {
+        if (game_array[row+1][col]) {
           return true;
         }
       }
+      console.log("checkAdjPresent false");
       return false;
 }
 //can tile validly be placed here?
 function checkAbove(row,col) {
-      var rowCheck = row - 1;
-      var colCheck = col;
-      if (rowCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[6][1]===current_tile.tile_split[0][1]&&game_array[rowCheck][colCheck].tile_split[6][2]===current_tile.tile_split[0][2]&&game_array[rowCheck][colCheck].tile_split[6][3]===current_tile.tile_split[0][3]&&game_array[rowCheck][colCheck].tile_split[6][4]===current_tile.tile_split[0][4]&&game_array[rowCheck][colCheck].tile_split[6][5]===current_tile.tile_split[0][5]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[0][6]) {
+      if (row!==0) {
+        if (game_array[row-1][col]) {
+          if (game_array[row-1][col].tile_split[6][0]===current_tile.tile_split[0][0]&&game_array[row-1][col].tile_split[6][1]===current_tile.tile_split[0][1]&&game_array[row-1][col].tile_split[6][2]===current_tile.tile_split[0][2]&&game_array[row-1][col].tile_split[6][3]===current_tile.tile_split[0][3]&&game_array[row-1][col].tile_split[6][4]===current_tile.tile_split[0][4]&&game_array[row-1][col].tile_split[6][5]===current_tile.tile_split[0][5]&&game_array[row-1][col].tile_split[6][6]===current_tile.tile_split[0][6]) {
             return true;
           }
         } else {
@@ -414,15 +413,14 @@ function checkAbove(row,col) {
       } else {
         return true;
       }
+      console.log("checkAbove false");
       return false;
 }
 
 function checkBelow(row,col) {
-      var rowCheck = row - 1;
-      var colCheck = col;
-      if (rowCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[6][0]&&game_array[rowCheck][colCheck].tile_split[0][1]===current_tile.tile_split[6][1]&&game_array[rowCheck][colCheck].tile_split[0][2]===current_tile.tile_split[6][2]&&game_array[rowCheck][colCheck].tile_split[0][3]===current_tile.tile_split[6][3]&&game_array[rowCheck][colCheck].tile_split[0][4]===current_tile.tile_split[6][4]&&game_array[rowCheck][colCheck].tile_split[0][5]===current_tile.tile_split[6][5]&&game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[6][6]) {
+      if (row+1<2*deckSize-1) {
+        if (game_array[row+1][col]) {
+          if (game_array[row+1][col].tile_split[0][0]===current_tile.tile_split[6][0]&&game_array[row+1][col].tile_split[0][1]===current_tile.tile_split[6][1]&&game_array[row+1][col].tile_split[0][2]===current_tile.tile_split[6][2]&&game_array[row+1][col].tile_split[0][3]===current_tile.tile_split[6][3]&&game_array[row+1][col].tile_split[0][4]===current_tile.tile_split[6][4]&&game_array[row+1][col].tile_split[0][5]===current_tile.tile_split[6][5]&&game_array[row+1][col].tile_split[0][6]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
@@ -431,15 +429,14 @@ function checkBelow(row,col) {
       } else {
         return true;
       }
+      console.log("checkBelow false");
       return false;
 }
 
 function checkLeft(row,col) {
-      var rowCheck = row - 1;
-      var colCheck = col;
-      if (rowCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split[0][6]===current_tile.tile_split[0][0]&&game_array[rowCheck][colCheck].tile_split[1][6]===current_tile.tile_split[1][0]&&game_array[rowCheck][colCheck].tile_split[2][6]===current_tile.tile_split[2][0]&&game_array[rowCheck][colCheck].tile_split[3][6]===current_tile.tile_split[3][0]&&game_array[rowCheck][colCheck].tile_split[4][6]===current_tile.tile_split[4][0]&&game_array[rowCheck][colCheck].tile_split[5][6]===current_tile.tile_split[5][0]&&game_array[rowCheck][colCheck].tile_split[6][6]===current_tile.tile_split[6][0]) {
+      if (col!==0) {
+        if (game_array[row][col-1]) {
+          if (game_array[row][col-1].tile_split[0][6]===current_tile.tile_split[0][0]&&game_array[row][col-1].tile_split[1][6]===current_tile.tile_split[1][0]&&game_array[row][col-1].tile_split[2][6]===current_tile.tile_split[2][0]&&game_array[row][col-1].tile_split[3][6]===current_tile.tile_split[3][0]&&game_array[row][col-1].tile_split[4][6]===current_tile.tile_split[4][0]&&game_array[row][col-1].tile_split[5][6]===current_tile.tile_split[5][0]&&game_array[row][col-1].tile_split[6][6]===current_tile.tile_split[6][0]) {
             return true;
           }
         } else {
@@ -448,15 +445,14 @@ function checkLeft(row,col) {
       } else {
         return true;
       }
+      console.log("checkLeft false");
       return false;
 }
 
 function checkRight(row,col) {
-      var rowCheck = row - 1;
-      var colCheck = col;
-      if (rowCheck!==-1) {
-        if (game_array[rowCheck][colCheck]) {
-          if (game_array[rowCheck][colCheck].tile_split[0][0]===current_tile.tile_split[0][6]&&game_array[rowCheck][colCheck].tile_split[1][0]===current_tile.tile_split[1][6]&&game_array[rowCheck][colCheck].tile_split[2][0]===current_tile.tile_split[2][6]&&game_array[rowCheck][colCheck].tile_split[3][0]===current_tile.tile_split[3][6]&&game_array[rowCheck][colCheck].tile_split[4][0]===current_tile.tile_split[4][6]&&game_array[rowCheck][colCheck].tile_split[5][0]===current_tile.tile_split[5][6]&&game_array[rowCheck][colCheck].tile_split[6][0]===current_tile.tile_split[6][6]) {
+      if (col<2*deckSize-1) {
+        if (game_array[row][col+1]) {
+          if (game_array[row][col+1].tile_split[0][0]===current_tile.tile_split[0][6]&&game_array[row][col+1].tile_split[1][0]===current_tile.tile_split[1][6]&&game_array[row][col+1].tile_split[2][0]===current_tile.tile_split[2][6]&&game_array[row][col+1].tile_split[3][0]===current_tile.tile_split[3][6]&&game_array[row][col+1].tile_split[4][0]===current_tile.tile_split[4][6]&&game_array[row][col+1].tile_split[5][0]===current_tile.tile_split[5][6]&&game_array[row][col+1].tile_split[6][0]===current_tile.tile_split[6][6]) {
             return true;
           }
         } else {
@@ -465,6 +461,7 @@ function checkRight(row,col) {
       } else {
         return true;
       }
+      console.log("checkRight false");
       return false;
 }
 
@@ -547,23 +544,23 @@ function rotateTile(rotation) {
         newArr[j][(6-i)] = current_tile.tile_split[i][j];
       }
     }
+    current_tile.tile_split = newArr;
   } else if (rotation == 3) {
     for (var i=0;i<7;i++) {
       for (var j=0;j<7;j++) {
         newArr[(6-i)][(6-j)] = current_tile.tile_split[i][j];
       }
     }
+    current_tile.tile_split = newArr;
   } else if (rotation == 4) {
     for (var i=0;i<7;i++) {
       for (var j=0;j<7;j++) {
         newArr[6-j][i] = current_tile.tile_split[i][j];
       }
     }
+    current_tile.tile_split = newArr;
   } else {
     console.log("Invalid rotation - no change made");
-  }
-  if (newArr != [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]) {
-    current_tile.tile_split = newArr;
   }
 }
 
