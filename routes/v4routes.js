@@ -91,14 +91,19 @@ router.get('/test', function(req, res, next) {
   var tile8 = [["Z","C","C","C","C","C","Z"],["G","G","C","C","C","G","G"],["G","G","G","G","G","G","G"],["G","G","G","R","R","R","R"],["G","G","G","R","G","G","G"],["G","G","G","R","G","G","G"],["Z","G","G","R","G","G","Z"]];
   for (var i=0;i<7;i++) {
     for (var j=0;j<7;j++) {
+      game_array[0][0] = new_tiles["tile3"];
       detail_array[(0)*7+i][(0)*7+j] = tile3[i][j]; //change to above
       checked_array[(0)*7+i][(0)*7+j] = "N";
+      game_array[1][0] = new_tiles["tile2"];
       detail_array[(1)*7+i][(0)*7+j] = tile2[i][j];;
       checked_array[(1)*7+i][(0)*7+j] = "N";
+      game_array[1][1] = new_tiles["tile2"];
       detail_array[(1)*7+i][(1)*7+j] = tile2[i][j];
       checked_array[(1)*7+i][(1)*7+j] = "N";
+      game_array[1][2] = new_tiles["tile6"];
       detail_array[(1)*7+i][(2)*7+j] = tile6[i][j];
       checked_array[(1)*7+i][(2)*7+j] = "N";
+      game_array[0][2] = new_tiles["tile7"];
       detail_array[(0)*7+i][(2)*7+j] = tile7[i][j];
       checked_array[(0)*7+i][(2)*7+j] = "N";
     }
