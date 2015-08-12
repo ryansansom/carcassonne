@@ -70,7 +70,7 @@
         var ctx;
 
         var scale = 1.0;
-        var scaleMultiplier = 0.9;
+        var scaleMultiplier = 0.5;
 
         var mouseDown = false;
         var startDragOffset = {};
@@ -158,7 +158,8 @@
                     x: translatePos.x%TILE_SIZE,
                     y: translatePos.y%TILE_SIZE
                 }
-                var gridPos = getGridPos(mouse.x+translateGridPos.x, mouse.y+translateGridPos.y);
+                var gridPos = getGridPos(mouse.x-translateGridPos.x, mouse.y-translateGridPos.y);
+//                console.log(JSON.stringify(gridPos));
 
                 if (!oldPos) oldPos = {
                     x: gridPos.x,
@@ -168,21 +169,16 @@
 
                 } else {
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect((oldPos.x * TILE_SIZE * scale)-translateGridPos.x,
-                                   (oldPos.y * TILE_SIZE * scale)-translateGridPos.y,
+                    ctx.strokeRect(oldPos.x * TILE_SIZE * scale+translateGridPos.x,
+                                   oldPos.y * TILE_SIZE * scale+translateGridPos.y,
                                    TILE_SIZE * scale, TILE_SIZE * scale);
-//                    console.log("translete.x: "+translateGridPos.x+" pos.x: "+oldPos.x+"draw from: "+((oldPos.x * TILE_SIZE * scale)-translateGridPos.x));
-//                    console.log("translete.y: "+translateGridPos.y+" pos.y: "+oldPos.y);
-//                    console.log(mouse.x, mouse.y);
                     console.log(JSON.stringify(oldPos));
                     oldPos = gridPos;
                 }
                 ctx.strokeStyle = "yellow";
-                ctx.strokeRect((gridPos.x * TILE_SIZE * scale)-translateGridPos.x,
-                               (gridPos.y * TILE_SIZE * scale)-translateGridPos.y,
+                ctx.strokeRect(gridPos.x * TILE_SIZE * scale + translateGridPos.x,
+                               gridPos.y * TILE_SIZE * scale + translateGridPos.y,
                                TILE_SIZE * scale, TILE_SIZE * scale);
-//                console.log("translete.x: "+translateGridPos.x+" pos.x: "+gridPos.x);
-//                console.log("translete.y: "+translateGridPos.y+" pos.y: "+gridPos.y);
             }, false);
 
             //adding click listener for placing tiles
