@@ -106,6 +106,10 @@ router.get('/test', function(req, res, next) {
   res.json("Done test");
 });
 
+router.get('/getboard', function(req, res, next) {
+  res.json(game_array);
+});
+
 router.post('/placetile', function(req, res, next) {
   //send this function a json body in form of {"row": 1, "column": 1, "rotation": 4, "placedMan": 26}, set content type header to application/json.
   console.log(current_tile);
