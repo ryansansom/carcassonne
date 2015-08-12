@@ -116,7 +116,7 @@ router.get('/getboard', function(req, res, next) {
 });
 
 router.post('/placetile', function(req, res, next) {
-  //send this function a json body in form of {"row": 1, "column": 1, "rotation": 4, "placedMan": 26}, set content type header to application/json.
+  //send this function a json body in form of {"row": 0, "column": 0, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
   console.log(current_tile);
   current_tile.placedMan = req.body.placedMan; //could need to be moved after rotate depending on how placement is handled client side
   rotateTile(req.body.rotation);
@@ -131,13 +131,13 @@ router.post('/placetile', function(req, res, next) {
       }
     }
     res.json(current_tile);
-  } else if (checkAdjPresent(req.body.row-1,req.body.column-1)&&checkAbove(req.body.row-1,req.body.column-1)&&checkBelow(req.body.row-1,req.body.column-1)&&checkLeft(req.body.row-1,req.body.column-1)&&checkRight(req.body.row-1,req.body.column-1)) {
+  } else if (checkAdjPresent(req.body.row,req.body.column)&&checkAbove(req.body.row,req.body.column)&&checkBelow(req.body.row,req.body.column)&&checkLeft(req.body.row,req.body.column)&&checkRight(req.body.row,req.body.column)) {
     //add a check for valid player placement
-    game_array[req.body.row-1][req.body.column-1] = current_tile;
+    game_array[req.body.row][req.body.column] = current_tile;
     for (var i=0;i<7;i++) {
       for (var j=0;j<7;j++) {
-        detail_array[(req.body.row-1)*7+i][(req.body.column-1)*7+j] = current_tile.tile_split[i][j];
-        checked_array[(req.body.row-1)*7+i][(req.body.column-1)*7+j] = "N";
+        detail_array[(req.body.row)*7+i][(req.body.column)*7+j] = current_tile.tile_split[i][j];
+        checked_array[(req.body.row)*7+i][(req.body.column)*7+j] = "N";
       }
     }
     res.json(current_tile);
