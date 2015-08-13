@@ -114,6 +114,28 @@ var checkedArr;
 var array;
 var tempArr;
 var current_player = 1;
+var players = {
+                "player1": {
+                "name": "Ryan",
+                "Points": 0
+                },
+                "player2": {
+                "name": "Guillaume",
+                "Points": 0
+                },
+                "player3": {
+                "name": "Ruta",
+                "Points": 0
+                },
+                "player4": {
+                "name": "Mindy",
+                "Points": 0
+                },
+                "player5": {
+                "name": "Diana",
+                "Points": 0
+                }
+};
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 //var tile_deck = ["tile1","tile2"];
@@ -126,6 +148,10 @@ var detail_array;
 var checked_array;
 var current_tile;
 var player_placement = [[],[]];
+
+router.get('/initialise', function(req, res, next) {
+    res.json(2*deckSize-1).end();
+});
 
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
@@ -261,7 +287,7 @@ router.post('/placetile', function(req, res, next) {
         }
         console.log(player_placement);
         res.json(current_tile);
-        nextPlayer();
+        nextPlayer(5);
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
         game_array[req.body.row][req.body.column] = current_tile;
@@ -278,81 +304,88 @@ router.post('/placetile', function(req, res, next) {
         } else {
             res.json(current_tile);
             console.log(player_placement);
-            nextPlayer();
+            //checkScore();
+            nextPlayer(5);
         }
     } else {
         res.status(400).send("Invalid tile placement");
     }
 });
 
-router.get('/maptile', function(req, res) {
-    array = detail_array;
-    var Rcnt = 1;
-    var Gcnt = 1;
-    var Zcnt = 1;
-    var Scnt = 1;
-    var Mcnt = 1;
-    var Ccnt = 1;
-    //main code
-    var temp = checkedAll();
-    while (temp) {
-        var x = temp[0];
-        var y = temp[1];
-        tempArr = [];
-        tempArr.push([x, y]);
-        checked_array[x][y] = "Y";
-        var cnt = 0;
-        while (tempArr[cnt]) {
-            surround(tempArr[cnt][0], tempArr[cnt][1]);
-            cnt++;
+function checkScore() {
+    var scores = JSON.parse(JSON.stringify(player_placement));
+    for (var i = scores[0].length-1;i>=0;i--) {
+        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C" || detail_array[scores[0][i][0]][scores[0][i][1]] === "M") {
+            //check if road is closed
+            for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
+                for (y in obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x]) {
+                    if (obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][0] === scores[0][i][0] && obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][1] === scores[0][i][1]) {
+                        var temp = obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x];
+                        break;
+                    }
+                }
+            }
+            if (!openAround(temp)) {
+                //score for temp
+            }
+        } else {
+            //remove as already checked its not what we want
         }
-        if (array[x][y] == "Z") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["Z" + Zcnt] = tempArr;
-            Zcnt++;
-        } else if (array[x][y] == "G") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["G" + Gcnt] = tempArr;
-            Gcnt++;
-        } else if (array[x][y] == "R") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["R" + Rcnt] = tempArr;
-            Rcnt++;
-        } else if (array[x][y] == "S") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["S" + Scnt] = tempArr;
-            Scnt++;
-        } else if (array[x][y] == "M") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["M" + Mcnt] = tempArr;
-            Mcnt++;
-        } else if (array[x][y] == "C") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["C" + Ccnt] = tempArr;
-            Ccnt++;
-        }
-        temp = checkedAll();
     }
-    res.send(obj);
-});
+}
+
+function score(temp) {
+    for (var i=0;i<temp.length;i++) {
+        for (var j=0;j<player_placement[0].length;j++) {
+            if (temp[i][0] === player_placement[0][j][0] && temp[i][1] === player_placement[0][j][1]) {
+                //push player and splice
+                break;
+            }
+        }
+    }
+}
+
+function openAround(temp) {
+    var openCnt = 0;
+    for (x1 in temp) {
+    if (temp[x1][0]!=0) {
+        if (!detail_array[temp[x1][0]-1][temp[x1][1]]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][0]<2*deckSize-1) {
+        if (!detail_array[temp[x1][0]+1][temp[x1][1]]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][1]!=0) {
+        if (!detail_array[temp[x1][0]][temp[x1][1]-1]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][1]<2*deckSize-1) {
+        if (!detail_array[temp[x1][0]][temp[x1][1]+1]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+    }
+    if (openCnt>0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function mapTile(row, column, placedMan) {
     var Rcnt = 1;
@@ -588,14 +621,6 @@ function right(i, j) {
 
 //main functions
 
-function scoreTracker(placedMan) {
-    if (placedMan == -1) {
-        //add the tile to current
-    } else {
-
-    }
-}
-
 function checkAdjPresent(row, col) {
     if (row !== 0) {
         if (game_array[row - 1][col]) {
@@ -814,8 +839,8 @@ function resetChecked() {
     }
 }
 
-function nextPlayer() {
-    if (current_player === 5) {
+function nextPlayer(noPlayer) {
+    if (current_player === noPlayer+1) {
         current_player = 1;
     } else {
         current_player++;
