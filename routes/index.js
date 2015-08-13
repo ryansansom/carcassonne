@@ -304,7 +304,7 @@ router.post('/placetile', function(req, res, next) {
         } else {
             res.json(current_tile);
             console.log(player_placement);
-            //checkScore();
+            checkScore();
             nextPlayer(5);
         }
     } else {
@@ -313,10 +313,11 @@ router.post('/placetile', function(req, res, next) {
 });
 
 function checkScore() {
+    console.log("in checkScore");
     var scores = JSON.parse(JSON.stringify(player_placement));
     for (var i = scores[0].length-1;i>=0;i--) {
-        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C" || detail_array[scores[0][i][0]][scores[0][i][1]] === "M") {
-            //check if road is closed
+        console.log(detail_array[scores[0][i][0]][scores[0][i][1]]);
+        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C") {
             for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
                 for (y in obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x]) {
                     if (obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][0] === scores[0][i][0] && obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][1] === scores[0][i][1]) {
@@ -325,27 +326,41 @@ function checkScore() {
                     }
                 }
             }
+            console.log(temp);
             if (!openAround(temp)) {
-                //score for temp
+                score(temp,scores,detail_array[scores[0][i][0]][scores[0][i][1]]);
+            } else {
+                scores[0].splice(i,1);
+                scores[1].splice(i,1);
             }
         } else {
             //remove as already checked its not what we want
+            scores[0].splice(i,1);
+            scores[1].splice(i,1);
         }
     }
 }
 
-function score(temp) {
+function score(temp, scores, type) {
+    console.log("in score");
+    var points = [];
     for (var i=0;i<temp.length;i++) {
-        for (var j=0;j<player_placement[0].length;j++) {
-            if (temp[i][0] === player_placement[0][j][0] && temp[i][1] === player_placement[0][j][1]) {
-                //push player and splice
+        for (var j=0;j<scores[0].length;j++) {
+            if (temp[i][0] === scores[0][j][0] && temp[i][1] === scores[0][j][1]) {
+                //push player
+                points.push(scores[1][j]);
+                scores[0].splice(j,1);
+                scores[1].splice(j,1);
                 break;
             }
         }
     }
+    console.log(points);
+    //find the most common player/all players and give points to them whether it is road or city
 }
 
 function openAround(temp) {
+    console.log("in openAround");
     var openCnt = 0;
     for (x1 in temp) {
     if (temp[x1][0]!=0) {
@@ -356,7 +371,7 @@ function openAround(temp) {
         openCnt++;
     }
 
-    if (temp[x1][0]<2*deckSize-1) {
+    if (temp[x1][0]<7*(2*deckSize-1)) {
         if (!detail_array[temp[x1][0]+1][temp[x1][1]]) {
             openCnt++;
         }
@@ -372,7 +387,7 @@ function openAround(temp) {
         openCnt++;
     }
 
-    if (temp[x1][1]<2*deckSize-1) {
+    if (temp[x1][1]<7*(2*deckSize-1)) {
         if (!detail_array[temp[x1][0]][temp[x1][1]+1]) {
             openCnt++;
         }
@@ -388,6 +403,7 @@ function openAround(temp) {
 }
 
 function mapTile(row, column, placedMan) {
+    console.log("in mapTile");
     var Rcnt = 1;
     var Gcnt = 1;
     var Zcnt = 1;
