@@ -45,6 +45,7 @@ var tile_master = {
     "tile4": {
         "name": "tile4",
         "url": "/images/tile4.jpg",
+        "banner": true,
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
             ["C", "C", "C", "C", "C", "C", "C"],
@@ -153,6 +154,14 @@ router.get('/initialise', function(req, res, next) {
     res.json(2*deckSize-1).end();
 });
 
+router.get('/getscore', function(req, res, next) {
+    res.json(players).end();
+});
+
+router.get('/getplayerplacement', function(req, res, next) {
+    res.json(player_placement).end();
+});
+
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
         game_array = createArray(2 * tile_deck.length - 1, 2 * tile_deck.length - 1); //needs to be created differently
@@ -161,11 +170,7 @@ router.get('/generate', function(req, res, next) {
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
     current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
-    var tileToClient = JSON.parse(JSON.stringify(current_tile));
-    delete tileToClient.tile_split;
-    tileToClient.rotation = 1;
-    tile_deck.splice(rand, 1);
-    res.json(tileToClient).end();
+    res.json(current_tile).end();
 });
 
 router.get('/test', function(req, res, next) {
@@ -329,10 +334,14 @@ function checkScore() {
             console.log(temp);
             if (!openAround(temp)) {
                 score(temp,scores,detail_array[scores[0][i][0]][scores[0][i][1]]);
+                //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
             } else {
                 scores[0].splice(i,1);
                 scores[1].splice(i,1);
             }
+        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M") {
+            //Monastery scoring
+
         } else {
             //remove as already checked its not what we want
             scores[0].splice(i,1);
@@ -343,6 +352,7 @@ function checkScore() {
 
 function score(temp, scores, type) {
     console.log("in score");
+    console.log("type " + type);
     var points = [];
     for (var i=0;i<temp.length;i++) {
         for (var j=0;j<scores[0].length;j++) {
@@ -357,6 +367,69 @@ function score(temp, scores, type) {
     }
     console.log(points);
     //find the most common player/all players and give points to them whether it is road or city
+    var awardPointsTo = mode(points);
+    var countTiles = [];
+    console.log("forming countTiles");
+    for (var k=0;k<temp.length;k++) {
+        countTiles.push([Math.floor(temp[k][0]/7),Math.floor(temp[k][1]/7)]);
+    }
+    countTiles = remove_duplicates(countTiles);
+    console.log(countTiles);
+    if (type === "R") {
+        console.log("In score - road");
+        for (z in awardPointsTo) {
+            players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + countTiles.length;
+        }
+    } else if (type === "C") {
+        console.log("In score - city");
+        //check all tiles for banner, for each banner, add 2 points.
+        var bannerCnt = 0
+        for (x in countTiles) {
+            if (game_array[countTiles[x][0]][countTiles[x][1]].banner) {
+                bannerCnt++;
+            }
+        }
+        players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + 2*(countTiles.length+bannerCnt);
+    }
+}
+
+function remove_duplicates(arr) {
+    //works because a scoring during the game can never be with 1 tile
+    arr.sort();
+    var ans = [];
+    ans.push(arr[0]);
+    for (var i=1;i<arr.length;i++) {
+        if (!(arr[i-1][0] == arr[i][0] && arr[i-1][1] == arr[i][1])) {
+            ans.push(arr[i]);
+        }
+    }
+    return ans;
+}
+
+function mode(array) {
+    var ans = [];
+    array.sort();
+    var cnt = [0,0,0,0,0];
+    for (var i=0;i<array.length;i++) {
+        if (array[i] == "player1") {
+            cnt[0]++;
+        } else if (array[i] == "player2") {
+            cnt[1]++;
+        } else if (array[i] == "player3") {
+            cnt[2]++;
+        } else if (array[i] == "player4") {
+            cnt[3]++;
+        } else if (array[i] == "player5") {
+            cnt[4]++;
+        }
+    }
+    var maxnum = Math.max(cnt[0],cnt[1],cnt[2],cnt[3],cnt[4]);
+    for (var j=0;j<5;j++) {
+        if (cnt[j] == maxnum) {
+            ans.push("player"+(j+1));
+        }
+    }
+    return ans;
 }
 
 function openAround(temp) {
