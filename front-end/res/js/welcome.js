@@ -5,6 +5,9 @@ Adjust canvas to window size
 window.onload = function () {
     canvasSize();
     window.addEventListener('resize', canvasSize);
+    welcomeClick();
+    window.addEventListener('resize', welcomeClick);
+
     //adding click listener for placing tiles
     document.getElementById("my-canvas").addEventListener('click', startGame);
 }
@@ -16,12 +19,15 @@ document.onload = function () {
 function canvasSize() {
     document.getElementById("my-canvas").width = window.innerWidth;
     document.getElementById("my-canvas").height = window.innerHeight;
-    welcomeMessage("Welcome to Carcassonne", "Click anywhere to play...");
 }
 
 /*#####################################################
 Welcome Screen
 #####################################################*/
+
+function welcomeClick() {
+    welcomeMessage("Welcome to Carcassonne", "Click anywhere to play...");
+}
 
 function welcomeMessage(title, sub) {
     var ctx = document.getElementById('my-canvas').getContext('2d');
@@ -50,15 +56,18 @@ function welcomeMessage(title, sub) {
 
 function startGame() {
     document.getElementById("my-canvas").removeEventListener('click', startGame); //prevents the countdown to restart.
+    window.removeEventListener('resize', welcomeClick); //prevents the welcomes sceen from comming back once the game has started.
     countDown(3);
-    go();
 }
 
 function countDown(num) {
     if (num > 0) {
         welcomeMessage(num + "...", "");
-        setTimeout(function () {countDown(num-1)}, 1000);
+        setTimeout(function () {
+            countDown(num - 1)
+        }, 1000);
     } else {
         welcomeMessage("GO!", "");
+        go();
     }
 }
