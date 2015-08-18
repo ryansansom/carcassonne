@@ -45,15 +45,6 @@ function drawGrid() {
     var gridWidth = info.windW / info.tileSize;
     var gridHeight = info.windH / info.tileSize;
 
-//    for (var gridX = 0 ; gridX < gridWidth + 1; gridX++) {
-//        for (var gridY = 0; gridY < gridHeight + 1; gridY++) {
-//            c.save();
-//            c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
-//            c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
-//            c.restore();
-//
-//        }
-
         for (var gridX = ~(gridWidth / 2); gridX < gridWidth; gridX++) {
         for (var gridY = ~(gridHeight / 2); gridY < gridHeight; gridY++) {
             c.save();
