@@ -55,9 +55,15 @@ function welcomeMessage(title, sub) {
 }
 
 function startGame() {
-    document.getElementById("my-canvas").removeEventListener('click', startGame); //prevents the countdown to restart.
-    window.removeEventListener('resize', welcomeClick); //prevents the welcomes sceen from comming back once the game has started.
-    countDown(3);
+    //prevents the countdown to restart.
+    document.getElementById("my-canvas").removeEventListener('click', startGame);
+    //prevents the welcomes sceen from comming back once the game has started.
+    window.removeEventListener('resize', welcomeClick);
+
+    //commented out to speed up testing
+    //    countDown(3);
+    startGameApp();
+
 }
 
 function countDown(num) {
@@ -68,6 +74,6 @@ function countDown(num) {
         }, 1000);
     } else {
         welcomeMessage("GO!", "");
-        go();
+        startGameApp();
     }
 }
