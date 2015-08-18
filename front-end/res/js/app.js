@@ -25,6 +25,15 @@ function updateInfo() {
 }
 
 
+/*
+magic code that centers the grid!
+c.save();
+c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
+c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
+c.restore();
+*/
+
+
 // Tester function to draw a grid
 function drawGrid() {
     //draw the grid based on window size
@@ -32,9 +41,25 @@ function drawGrid() {
     c.clearRect(0, 0, info.windW, info.windH);
 
     c.strokeStyle = "black";
-    for (var gridX = 0; gridX < info.windW / info.tileSize + 1; gridX++) {
-        for (var gridY = 0; gridY < info.windH / info.tileSize + 1; gridY++) {
-            c.strokeRect((info.tileSize * gridX) + info.windW%info.tileSize, (info.tileSize * gridY) + info.windH%info.tileSize, info.tileSize, info.tileSize);
+
+    var gridWidth = info.windW / info.tileSize;
+    var gridHeight = info.windH / info.tileSize;
+
+//    for (var gridX = 0 ; gridX < gridWidth + 1; gridX++) {
+//        for (var gridY = 0; gridY < gridHeight + 1; gridY++) {
+//            c.save();
+//            c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
+//            c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
+//            c.restore();
+//
+//        }
+
+        for (var gridX = ~(gridWidth / 2); gridX < gridWidth; gridX++) {
+        for (var gridY = ~(gridHeight / 2); gridY < gridHeight; gridY++) {
+            c.save();
+            c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
+            c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
+            c.restore();
 
         }
     }
