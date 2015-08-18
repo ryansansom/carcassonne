@@ -16,6 +16,10 @@ function startGameApp() {
     //Draw a tile in the centre of the screen
     drawCentre();
     window.addEventListener('resize', drawCentre);
+
+    console.log(getBoard());
+    console.log(getNextTile());
+    console.log(placeTile());
 }
 
 // Update the game info object with the window height and width.
@@ -45,7 +49,7 @@ function drawGrid() {
     var gridWidth = info.windW / info.tileSize;
     var gridHeight = info.windH / info.tileSize;
 
-        for (var gridX = ~(gridWidth / 2); gridX < gridWidth; gridX++) {
+    for (var gridX = ~(gridWidth / 2); gridX < gridWidth; gridX++) {
         for (var gridY = ~(gridHeight / 2); gridY < gridHeight; gridY++) {
             c.save();
             c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
@@ -67,4 +71,28 @@ function drawCentre() {
     var tileHeightCen = info.tileSize / 2;
     c.strokeStyle = "red";
     c.strokeRect(horCen - tileWidthCen, verCen - tileHeightCen, info.tileSize, info.tileSize);
+}
+
+function getBoard() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", "http://localhost:3000/getboard", false);
+    xhr.send();
+
+    return JSON.parse(xhr.responseText);
+}
+
+function getNextTile() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", "http://localhost:3000/generate", false);
+    xhr.send();
+
+    return JSON.parse(xhr.responseText);
+}
+
+function placeTile(tile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", "http://localhost:3000/placetile", false);
+    xhr.send(tile);
+
+    return JSON.parse(xhr.responseText);
 }
