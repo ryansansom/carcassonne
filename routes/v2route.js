@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var request = require('supertest');
 
-var info = require('./info');
-
 var tile_master = {
     "road2sw": {
         "name": "road2sw",
@@ -385,23 +383,23 @@ router.post('/creategame', function(req, res, next) {
         }
     }
     if (limit !== 0) {
-        var obj = {};
-        var checkedArr;
-        var array;
-        var tempArr;
-        var current_player = 1;
-        var new_tiles = JSON.parse(JSON.stringify(tile_master));
-        var tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
-        var deckSize = tile_deck.length;
-        var game_array;
-        var detail_array;
-        var checked_array;
-        var current_tile;
-        var player_placement = [
+        obj = {};
+        checkedArr;
+        array;
+        tempArr;
+        current_player = 1;
+        new_tiles = JSON.parse(JSON.stringify(tile_master));
+        tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
+        deckSize = tile_deck.length;
+        game_array;
+        detail_array;
+        checked_array;
+        current_tile;
+        player_placement = [
             [],
             []
         ];
-        var players = {};
+        players = new Object;
 
         for (var i = 0; i < limit; i++) {
             players["player" + (i + 1)] = {
@@ -419,9 +417,9 @@ router.post('/creategame', function(req, res, next) {
 });
 
 //------------info gathering----------------
-router.get('/getplayers', info.players);
-router.get('/getplayerplacement', info.placedMen);
-router.get('/getboard', info.board);
+router.get('/getplayers', function (req,res) {res.json(players).end()});
+router.get('/getplayerplacement', function (req,res) {res.json(player_placement).end()});
+router.get('/getboard', function (req,res) {res.json(game_array).end()});
 //------------------------------------------
 
 router.get('/generate', function(req, res, next) {
@@ -1165,7 +1163,7 @@ function detail2game(x, y) {
 
 function isArrayEqual(array1,array2) {
     if (array1.length = array2.length) {
-        for (var i=0;i<array1.length) {
+        for (var i=0;i<array1.length;i++) {
             if (array1[i] !== array2[i]) {
                 return false;
             }
