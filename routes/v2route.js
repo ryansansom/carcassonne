@@ -3,8 +3,8 @@ var router = express.Router();
 var request = require('supertest');
 
 var tile_master = {
-    "tile1": {
-        "name": "tile1",
+    "road2sw": {
+        "name": "road2sw",
         "url": "/images/tile1.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -16,8 +16,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile2": {
-        "name": "tile2",
+    "road4": {
+        "name": "road4",
         "url": "/images/tile2.jpg",
         "tile_split": [
             ["Z", "G", "G", "R", "G", "G", "Z"],
@@ -29,8 +29,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile3": {
-        "name": "tile3",
+    "mon-r": {
+        "name": "mon-r",
         "url": "/images/tile3.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -42,8 +42,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile4": {
-        "name": "tile4",
+    "city4": {
+        "name": "city4",
         "url": "/images/tile4.jpg",
         "banner": true,
         "tile_split": [
@@ -56,9 +56,10 @@ var tile_master = {
             ["Z", "C", "C", "C", "C", "C", "Z"]
         ]
     },
-    "tile5": {
-        "name": "tile5",
+    "city3sr": {
+        "name": "city3sr",
         "url": "/images/tile5.jpg",
+        "banner": true,
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
             ["C", "C", "C", "C", "C", "C", "C"],
@@ -69,8 +70,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile6": {
-        "name": "tile6",
+    "road3": {
+        "name": "road3",
         "url": "/images/tile6.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -82,8 +83,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile7": {
-        "name": "tile7",
+    "mon": {
+        "name": "mon",
         "url": "/images/tile7.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -95,8 +96,8 @@ var tile_master = {
             ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile8": {
-        "name": "tile8",
+    "city1rse": {
+        "name": "city1rse",
         "url": "/images/tile8.jpg",
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
@@ -108,62 +109,22 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile9": {
-        "name": "tile9",
+    "city3": {
+        "name": "city3",
         "url": "/images/tile9.jpg",
-        "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["R", "R", "R", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
-        ]
-    },
-    "tile10": {
-        "name": "tile10",
-        "url": "/images/tile10.jpg",
-        "tile_split": [
-            ["Z", "G", "G", "R", "G", "G", "Z"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["R", "R", "R", "S", "R", "R", "R"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
-        ]
-    },
-    "tile11": {
-        "name": "tile11",
-        "url": "/images/tile11.jpg",
-        "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "M", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
-        ]
-    },
-    "tile12": {
-        "name": "tile12",
-        "url": "/images/tile12.jpg",
-        "banner": true,
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
             ["C", "C", "C", "C", "C", "C", "C"],
             ["C", "C", "C", "C", "C", "C", "C"],
             ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["Z", "C", "C", "C", "C", "C", "Z"]
+            ["C", "C", "C", "G", "C", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile13": {
-        "name": "tile13",
-        "url": "/images/tile13.jpg",
+    "city3r": {
+        "name": "city3r",
+        "url": "/images/tile10.jpg",
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
             ["C", "C", "C", "C", "C", "C", "C"],
@@ -174,145 +135,188 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile14": {
-        "name": "tile14",
-        "url": "/images/tile14.jpg",
+    "city3s": {
+        "name": "city3s",
+        "url": "/images/tile11.jpg",
+        "banner": true,
         "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["R", "R", "R", "S", "R", "R", "R"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
-        ]
-    },
-    "tile15": {
-        "name": "tile15",
-        "url": "/images/tile15.jpg",
-        "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "M", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "G", "C", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
             ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile16": {
-        "name": "tile16",
-        "url": "/images/tile16.jpg",
+    "city2nw": {
+        "name": "city2nw",
+        "url": "/images/tile12.jpg",
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
-            ["G", "G", "C", "C", "C", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "R", "R", "R", "R"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
+            ["C", "C", "C", "C", "C", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "city2nws": {
+        "name": "city2nws",
+        "url": "/images/tile13.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "city2nwr": {
+        "name": "city2nwr",
+        "url": "/images/tile14.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "R", "R", "R", "R"],
+            ["C", "C", "G", "R", "G", "G", "G"],
+            ["C", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile17": {
-        "name": "tile17",
-        "url": "/images/tile17.jpg",
+    "city2nwsr": {
+        "name": "city2nwsr",
+        "url": "/images/tile15.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "G", "G"],
+            ["C", "C", "G", "G", "G", "G", "G"],
+            ["C", "C", "G", "R", "R", "R", "R"],
+            ["C", "C", "G", "R", "G", "G", "G"],
+            ["C", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "city2we": {
+        "name": "city2we",
+        "url": "/images/tile16.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["R", "R", "R", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile18": {
-        "name": "tile18",
+    "city2wes": {
+        "name": "city2we",
+        "url": "/images/tile16.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "city11ne": {
+        "name": "city11ne",
         "url": "/images/tile18.jpg",
         "tile_split": [
-            ["Z", "G", "G", "R", "G", "G", "Z"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["R", "R", "R", "S", "R", "R", "R"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "Z", "C"],
+            ["G", "G", "G", "G", "G", "C", "C"],
+            ["G", "G", "G", "M", "G", "C", "C"],
+            ["G", "G", "G", "R", "G", "C", "C"],
+            ["G", "G", "G", "R", "G", "G", "C"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile19": {
+    "city11we": {
         "name": "tile19",
         "url": "/images/tile19.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "M", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["G", "G", "G", "R", "G", "G", "G"],
-            ["Z", "G", "G", "R", "G", "G", "Z"]
+            ["C", "G", "G", "G", "G", "G", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["C", "C", "G", "G", "G", "C", "C"],
+            ["C", "G", "G", "G", "G", "G", "C"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile20": {
-        "name": "tile20",
+    "city1": {
+        "name": "city1",
         "url": "/images/tile20.jpg",
-        "banner": true,
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["Z", "C", "C", "C", "C", "C", "Z"]
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile21": {
-        "name": "tile21",
+    "city1rsw": {
+        "name": "city1rsw",
         "url": "/images/tile21.jpg",
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "C", "C", "C", "C"],
-            ["C", "C", "C", "R", "C", "C", "C"],
-            ["C", "C", "G", "R", "G", "C", "C"],
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "tile22": {
-        "name": "tile6",
+    "city1rswe": {
+        "name": "city1rswe",
         "url": "/images/tile6.jpg",
         "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
-            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
             ["G", "G", "G", "G", "G", "G", "G"],
             ["R", "R", "R", "S", "R", "R", "R"],
             ["G", "G", "G", "R", "G", "G", "G"],
             ["G", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
+
     },
-    "tile23": {
-        "name": "tile7",
+    "city1rwe": {
+        "name": "city1rwe",
         "url": "/images/tile7.jpg",
         "tile_split": [
-            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
             ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "M", "G", "G", "G"],
+            ["R", "R", "R", "R", "R", "R", "R"],
             ["G", "G", "G", "G", "G", "G", "G"],
             ["G", "G", "G", "G", "G", "G", "G"],
             ["Z", "G", "G", "G", "G", "G", "Z"]
         ]
     },
-    "tile24": {
-        "name": "tile24",
+    "road2ns": {
+        "name": "road2ns",
         "url": "/images/tile24.jpg",
         "tile_split": [
-            ["Z", "C", "C", "C", "C", "C", "Z"],
-            ["G", "G", "C", "C", "C", "G", "G"],
-            ["G", "G", "G", "G", "G", "G", "G"],
-            ["G", "G", "G", "R", "R", "R", "R"],
+            ["Z", "G", "G", "R", "G", "G", "Z"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
             ["G", "G", "G", "R", "G", "G", "G"],
             ["G", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
@@ -380,6 +384,7 @@ router.get('/generate', function(req, res, next) {
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
     current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
+    current_tile.rotation = 1;
     res.json(current_tile).end();
 });
 
