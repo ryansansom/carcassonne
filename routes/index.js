@@ -45,6 +45,7 @@ var tile_master = {
     "tile4": {
         "name": "tile4",
         "url": "/images/tile4.jpg",
+        "banner": true,
         "tile_split": [
             ["Z", "C", "C", "C", "C", "C", "Z"],
             ["C", "C", "C", "C", "C", "C", "C"],
@@ -106,6 +107,216 @@ var tile_master = {
             ["G", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
+    },
+    "tile9": {
+        "name": "tile9",
+        "url": "/images/tile9.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile10": {
+        "name": "tile10",
+        "url": "/images/tile10.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "R", "G", "G", "Z"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile11": {
+        "name": "tile11",
+        "url": "/images/tile11.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile12": {
+        "name": "tile12",
+        "url": "/images/tile12.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["Z", "C", "C", "C", "C", "C", "Z"]
+        ]
+    },
+    "tile13": {
+        "name": "tile13",
+        "url": "/images/tile13.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "R", "C", "C", "C"],
+            ["C", "C", "G", "R", "G", "C", "C"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile14": {
+        "name": "tile14",
+        "url": "/images/tile14.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile15": {
+        "name": "tile15",
+        "url": "/images/tile15.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "tile16": {
+        "name": "tile16",
+        "url": "/images/tile16.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "R", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile17": {
+        "name": "tile17",
+        "url": "/images/tile17.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile18": {
+        "name": "tile18",
+        "url": "/images/tile18.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "R", "G", "G", "Z"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile19": {
+        "name": "tile19",
+        "url": "/images/tile19.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile20": {
+        "name": "tile20",
+        "url": "/images/tile20.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["Z", "C", "C", "C", "C", "C", "Z"]
+        ]
+    },
+    "tile21": {
+        "name": "tile21",
+        "url": "/images/tile21.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "R", "C", "C", "C"],
+            ["C", "C", "G", "R", "G", "C", "C"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile22": {
+        "name": "tile6",
+        "url": "/images/tile6.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile23": {
+        "name": "tile7",
+        "url": "/images/tile7.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "tile24": {
+        "name": "tile24",
+        "url": "/images/tile24.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "R", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
     }
 }
 //following for /maptile
@@ -114,6 +325,28 @@ var checkedArr;
 var array;
 var tempArr;
 var current_player = 1;
+var players = {
+                "player1": {
+                "name": "Ryan",
+                "Points": 0
+                },
+                "player2": {
+                "name": "Guillaume",
+                "Points": 0
+                },
+                "player3": {
+                "name": "Ruta",
+                "Points": 0
+                },
+                "player4": {
+                "name": "Mindy",
+                "Points": 0
+                },
+                "player5": {
+                "name": "Diana",
+                "Points": 0
+                }
+};
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 //var tile_deck = ["tile1","tile2"];
@@ -127,6 +360,18 @@ var checked_array;
 var current_tile;
 var player_placement = [[],[]];
 
+router.get('/initialise', function(req, res, next) {
+    res.json(2*deckSize-1).end();
+});
+
+router.get('/getscore', function(req, res, next) {
+    res.json(players).end();
+});
+
+router.get('/getplayerplacement', function(req, res, next) {
+    res.json(player_placement).end();
+});
+
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
         game_array = createArray(2 * tile_deck.length - 1, 2 * tile_deck.length - 1); //needs to be created differently
@@ -135,11 +380,7 @@ router.get('/generate', function(req, res, next) {
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
     current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
-    var tileToClient = JSON.parse(JSON.stringify(current_tile));
-    delete tileToClient.tile_split;
-    tileToClient.rotation = 1;
-    tile_deck.splice(rand, 1);
-    res.json(tileToClient).end();
+    res.json(current_tile).end();
 });
 
 router.get('/test', function(req, res, next) {
@@ -261,7 +502,7 @@ router.post('/placetile', function(req, res, next) {
         }
         console.log(player_placement);
         res.json(current_tile);
-        nextPlayer();
+        nextPlayer(5);
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
         game_array[req.body.row][req.body.column] = current_tile;
@@ -278,83 +519,210 @@ router.post('/placetile', function(req, res, next) {
         } else {
             res.json(current_tile);
             console.log(player_placement);
-            nextPlayer();
+            checkScore();
+            nextPlayer(5);
         }
     } else {
         res.status(400).send("Invalid tile placement");
     }
 });
 
-router.get('/maptile', function(req, res) {
-    array = detail_array;
-    var Rcnt = 1;
-    var Gcnt = 1;
-    var Zcnt = 1;
-    var Scnt = 1;
-    var Mcnt = 1;
-    var Ccnt = 1;
-    //main code
-    var temp = checkedAll();
-    while (temp) {
-        var x = temp[0];
-        var y = temp[1];
-        tempArr = [];
-        tempArr.push([x, y]);
-        checked_array[x][y] = "Y";
-        var cnt = 0;
-        while (tempArr[cnt]) {
-            surround(tempArr[cnt][0], tempArr[cnt][1]);
-            cnt++;
+function checkScore() {
+    console.log("in checkScore");
+    var scores = JSON.parse(JSON.stringify(player_placement));
+    for (var i = scores[0].length-1;i>=0;i--) {
+        console.log(detail_array[scores[0][i][0]][scores[0][i][1]]);
+        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C") {
+            for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
+                for (y in obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x]) {
+                    if (obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][0] === scores[0][i][0] && obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][1] === scores[0][i][1]) {
+                        var temp = obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x];
+                        break;
+                    }
+                }
+            }
+            console.log(temp);
+            if (!openAround(temp)) {
+                score(temp,scores,detail_array[scores[0][i][0]][scores[0][i][1]]);
+                //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
+                player_placement[0].splice(i,1);
+                player_placement[1].splice(i,1);
+            } else {
+                scores[0].splice(i,1);
+                scores[1].splice(i,1);
+            }
+        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i][0],scores[0][i][1]) === 9) {
+            //Monastery scoring
+
+            player_placement[0].splice(i,1);
+            player_placement[1].splice(i,1);
+        } else {
+            //remove as already checked its not what we want
+            scores[0].splice(i,1);
+            scores[1].splice(i,1);
         }
-        if (array[x][y] == "Z") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["Z" + Zcnt] = tempArr;
-            Zcnt++;
-        } else if (array[x][y] == "G") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["G" + Gcnt] = tempArr;
-            Gcnt++;
-        } else if (array[x][y] == "R") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["R" + Rcnt] = tempArr;
-            Rcnt++;
-        } else if (array[x][y] == "S") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["S" + Scnt] = tempArr;
-            Scnt++;
-        } else if (array[x][y] == "M") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["M" + Mcnt] = tempArr;
-            Mcnt++;
-        } else if (array[x][y] == "C") {
-            if (!obj[array[x][y]]) {
-                obj[array[x][y]] = {};
-            }
-            tempArr.sort();
-            obj[array[x][y]]["C" + Ccnt] = tempArr;
-            Ccnt++;
-        }
-        temp = checkedAll();
     }
-    res.send(obj);
-});
+}
+
+function monasteryScoring(x,y) {
+    var count = 1;
+    var i = Math.floor(x/7);
+    var j = Math.floor(y/7);
+    if (game_array[i-1][j-1]) {
+        count++;
+    }
+    if (game_array[i-1][j]) {
+        count++;
+    }
+    if (game_array[i-1][j+1]) {
+        count++;
+    }
+    if (game_array[i][j-1]) {
+        count++;
+    }
+    if (game_array[i][j+1]) {
+        count++;
+    }
+    if (game_array[i+1][j-1]) {
+        count++;
+    }
+    if (game_array[i+1][j]) {
+        count++;
+    }
+    if (game_array[i+1][j+1]) {
+        count++;
+    }
+    return count;
+}
+
+function score(temp, scores, type) {
+    console.log("in score");
+    console.log("type " + type);
+    var points = [];
+    for (var i=0;i<temp.length;i++) {
+        for (var j=0;j<scores[0].length;j++) {
+            if (temp[i][0] === scores[0][j][0] && temp[i][1] === scores[0][j][1]) {
+                //push player
+                points.push(scores[1][j]);
+                scores[0].splice(j,1);
+                scores[1].splice(j,1);
+
+                break;
+            }
+        }
+    }
+    console.log(points);
+    //find the most common player/all players and give points to them whether it is road or city
+    var awardPointsTo = mode(points);
+    var countTiles = [];
+    console.log("forming countTiles");
+    for (var k=0;k<temp.length;k++) {
+        countTiles.push([Math.floor(temp[k][0]/7),Math.floor(temp[k][1]/7)]);
+    }
+    countTiles = remove_duplicates(countTiles);
+    console.log(countTiles);
+    if (type === "R") {
+        console.log("In score - road");
+        for (z in awardPointsTo) {
+            players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + countTiles.length;
+        }
+    } else if (type === "C") {
+        console.log("In score - city");
+        //check all tiles for banner, for each banner, add 2 points.
+        var bannerCnt = 0
+        for (x in countTiles) {
+            if (game_array[countTiles[x][0]][countTiles[x][1]].banner) {
+                bannerCnt++;
+            }
+        }
+        players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + 2*(countTiles.length+bannerCnt);
+    }
+}
+
+function remove_duplicates(arr) {
+    //works because a scoring during the game can never be with 1 tile
+    arr.sort();
+    var ans = [];
+    ans.push(arr[0]);
+    for (var i=1;i<arr.length;i++) {
+        if (!(arr[i-1][0] == arr[i][0] && arr[i-1][1] == arr[i][1])) {
+            ans.push(arr[i]);
+        }
+    }
+    return ans;
+}
+
+function mode(array) {
+    var ans = [];
+    array.sort();
+    var cnt = [0,0,0,0,0];
+    for (var i=0;i<array.length;i++) {
+        if (array[i] == "player1") {
+            cnt[0]++;
+        } else if (array[i] == "player2") {
+            cnt[1]++;
+        } else if (array[i] == "player3") {
+            cnt[2]++;
+        } else if (array[i] == "player4") {
+            cnt[3]++;
+        } else if (array[i] == "player5") {
+            cnt[4]++;
+        }
+    }
+    var maxnum = Math.max(cnt[0],cnt[1],cnt[2],cnt[3],cnt[4]);
+    for (var j=0;j<5;j++) {
+        if (cnt[j] == maxnum) {
+            ans.push("player"+(j+1));
+        }
+    }
+    return ans;
+}
+
+function openAround(temp) {
+    console.log("in openAround");
+    var openCnt = 0;
+    for (x1 in temp) {
+    if (temp[x1][0]!=0) {
+        if (!detail_array[temp[x1][0]-1][temp[x1][1]]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][0]<7*(2*deckSize-1)) {
+        if (!detail_array[temp[x1][0]+1][temp[x1][1]]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][1]!=0) {
+        if (!detail_array[temp[x1][0]][temp[x1][1]-1]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+
+    if (temp[x1][1]<7*(2*deckSize-1)) {
+        if (!detail_array[temp[x1][0]][temp[x1][1]+1]) {
+            openCnt++;
+        }
+    } else {
+        openCnt++;
+    }
+    }
+    if (openCnt>0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function mapTile(row, column, placedMan) {
+    console.log("in mapTile");
     var Rcnt = 1;
     var Gcnt = 1;
     var Zcnt = 1;
@@ -588,14 +956,6 @@ function right(i, j) {
 
 //main functions
 
-function scoreTracker(placedMan) {
-    if (placedMan == -1) {
-        //add the tile to current
-    } else {
-
-    }
-}
-
 function checkAdjPresent(row, col) {
     if (row !== 0) {
         if (game_array[row - 1][col]) {
@@ -814,8 +1174,8 @@ function resetChecked() {
     }
 }
 
-function nextPlayer() {
-    if (current_player === 5) {
+function nextPlayer(noPlayer) {
+    if (current_player === noPlayer+1) {
         current_player = 1;
     } else {
         current_player++;
