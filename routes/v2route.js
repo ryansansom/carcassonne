@@ -395,10 +395,7 @@ router.post('/creategame', function(req, res, next) {
         detail_array;
         checked_array;
         current_tile;
-        player_placement = [
-            [],
-            []
-        ];
+        player_placement = [[],[]];
         players = new Object;
 
         for (var i = 0; i < limit; i++) {
@@ -420,14 +417,25 @@ router.post('/creategame', function(req, res, next) {
 router.get('/getplayers', function (req,res) {res.json(players).end()});
 router.get('/getplayerplacement', function (req,res) {res.json(player_placement).end()});
 router.get('/getboard', function (req,res) {res.json(game_array).end()});
+router.get('/getdeck', function (req,res) {res.json(tile_deck).end()});
 //------------------------------------------
 
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
         res.status(400).send("Please use /creategame first")
+    } else if (!game_array[deckSize-1][deckSize-1]) {
+        for (var i=0;i<tile_deck.length;i++) {
+            if (tile_deck[i] == "city1rwe") {
+                tile_deck.splice(i,1);
+                current_tile = noLink(new_tiles["city1rwe"]);
+                current_tile.rotation = 1;
+                res.json(current_tile).end();
+                break;
+            }
+        }
     } else {
         var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
-        current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
+        current_tile = noLink(new_tiles[tile_deck[rand]]);
         current_tile.rotation = 1;
         res.json(current_tile).end();
     }
