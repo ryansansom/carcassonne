@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Web Carcassonne</title>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="keywords" content="carcassonne, game" />
+    <meta name="description" content="An web implementaiton of the classic board game 'Carcassonne'." />
+    <meta name="author" content="Guillaume & Ryan" />
+    <meta name="copyright" content="Guillaume & Ryan &copy;" />
+
+    <!--    <link rel="stylesheet" href="css/styles.css">-->
+    <!--    <script src="js/scripts.js"></script>-->
+</head>
+
+<body>
+    <h1>Web Carcassonne: Game Set Up!</h1>
+
+    <div id="numberOfPlayers">
+        <h3>Number of Players</h3>
+        <div id="playersWrapper">
+            <div id="playerButtons">
+                <button name="player2" onclick="clicked();">2</button>
+                <button name="player3" onclick="clicked();">3</button>
+                <button name="player4" onclick="clicked();">4</button>
+                <button name="player5" onclick="clicked();">5</button>
+            </div>
+            <div id="nameInputWrapper">
+                <input name="player2">
+                <input name="player3">
+                <input name="player4">
+                <input name="player5">
+            </div>
+        </div>
+    </div>
+    <button name="backBtn" onclick="window.location.href='index.html'">Back</button>
+    <button name="startGame" onclick="window.location.href='carcassonneGame.html'">Start Game</button>
+</body>
+
+</html>
