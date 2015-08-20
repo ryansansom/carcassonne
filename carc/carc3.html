@@ -4,7 +4,7 @@
 <head>
     <style>
         body {
-            margin: 20px;
+            margin: 10px;
             padding: 0px;
             background-color: gray
         }
@@ -18,11 +18,17 @@
             position: relative;
         }
         
+        #new-tile-wrapper {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+        }
+
         #buttonWrapper {
             position: absolute;
             width: 30px;
-            top: 50px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
         }
         
         #plus,
@@ -40,11 +46,12 @@
 </head>
 
 <body onload="game.play()">
-    <div id="wrapper">
-        <button onclick="getNextTile()">New Tile</button>
-        <br>
-        <img id="newTile" src="">
-        <br>
+    <div id="wrappers">
+        <div id="new-tile-wrapper">
+            <button onclick="getNextTile()">New Tile</button>
+            <br>
+            <img id="newTile" src="">
+        </div>
         <canvas id="myCanvas" width="500" height="300"></canvas>
         <div id="buttonWrapper">
             <input type="button" id="plus" value="+">
@@ -54,7 +61,29 @@
     </div>
 
     <script>
+        /*#####################################################
+                Adjust canvas to window size
+                #####################################################*/
+
+        window.onload = function () {
+            canvasSize();
+            window.addEventListener('resize', canvasSize);
+
+        }
+
+        function canvasSize() {
+            document.getElementById("myCanvas").width = window.innerWidth - 25;
+            document.getElementById("myCanvas").height = window.innerHeight - 25;
+        }
+
+        /*#####################################################
+        draw grid based on canvas size
+        #####################################################*/
+
         var TILE_SIZE = 100; //base tile size
+
+
+
         var EMPTRY_TILE = {
             name: "empty",
             img: "empty",
@@ -155,11 +184,11 @@
             canvas.addEventListener('mousemove', function (evt) {
                 var mouse = getMousePos(canvas, evt);
                 var translateGridPos = {
-                    x: translatePos.x%TILE_SIZE,
-                    y: translatePos.y%TILE_SIZE
+                    x: translatePos.x % TILE_SIZE,
+                    y: translatePos.y % TILE_SIZE
                 }
-                var gridPos = getGridPos(mouse.x-translateGridPos.x, mouse.y-translateGridPos.y);
-//                console.log(JSON.stringify(gridPos));
+                var gridPos = getGridPos(mouse.x - translateGridPos.x, mouse.y - translateGridPos.y);
+                //                console.log(JSON.stringify(gridPos));
 
                 if (!oldPos) oldPos = {
                     x: gridPos.x,
@@ -169,16 +198,16 @@
 
                 } else {
                     ctx.strokeStyle = "black";
-                    ctx.strokeRect(oldPos.x * TILE_SIZE * scale+translateGridPos.x,
-                                   oldPos.y * TILE_SIZE * scale+translateGridPos.y,
-                                   TILE_SIZE * scale, TILE_SIZE * scale);
+                    ctx.strokeRect(oldPos.x * TILE_SIZE * scale + translateGridPos.x,
+                        oldPos.y * TILE_SIZE * scale + translateGridPos.y,
+                        TILE_SIZE * scale, TILE_SIZE * scale);
                     console.log(JSON.stringify(oldPos));
                     oldPos = gridPos;
                 }
                 ctx.strokeStyle = "yellow";
                 ctx.strokeRect(gridPos.x * TILE_SIZE * scale + translateGridPos.x,
-                               gridPos.y * TILE_SIZE * scale + translateGridPos.y,
-                               TILE_SIZE * scale, TILE_SIZE * scale);
+                    gridPos.y * TILE_SIZE * scale + translateGridPos.y,
+                    TILE_SIZE * scale, TILE_SIZE * scale);
             }, false);
 
             //adding click listener for placing tiles
