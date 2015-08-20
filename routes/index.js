@@ -107,6 +107,216 @@ var tile_master = {
             ["G", "G", "G", "R", "G", "G", "G"],
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
+    },
+    "tile9": {
+        "name": "tile9",
+        "url": "/images/tile9.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile10": {
+        "name": "tile10",
+        "url": "/images/tile10.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "R", "G", "G", "Z"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile11": {
+        "name": "tile11",
+        "url": "/images/tile11.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile12": {
+        "name": "tile12",
+        "url": "/images/tile12.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["Z", "C", "C", "C", "C", "C", "Z"]
+        ]
+    },
+    "tile13": {
+        "name": "tile13",
+        "url": "/images/tile13.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "R", "C", "C", "C"],
+            ["C", "C", "G", "R", "G", "C", "C"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile14": {
+        "name": "tile14",
+        "url": "/images/tile14.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile15": {
+        "name": "tile15",
+        "url": "/images/tile15.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "tile16": {
+        "name": "tile16",
+        "url": "/images/tile16.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "R", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile17": {
+        "name": "tile17",
+        "url": "/images/tile17.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile18": {
+        "name": "tile18",
+        "url": "/images/tile18.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "R", "G", "G", "Z"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile19": {
+        "name": "tile19",
+        "url": "/images/tile19.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile20": {
+        "name": "tile20",
+        "url": "/images/tile20.jpg",
+        "banner": true,
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["Z", "C", "C", "C", "C", "C", "Z"]
+        ]
+    },
+    "tile21": {
+        "name": "tile21",
+        "url": "/images/tile21.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "C", "C", "C", "C"],
+            ["C", "C", "C", "R", "C", "C", "C"],
+            ["C", "C", "G", "R", "G", "C", "C"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile22": {
+        "name": "tile6",
+        "url": "/images/tile6.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["R", "R", "R", "S", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
+    },
+    "tile23": {
+        "name": "tile7",
+        "url": "/images/tile7.jpg",
+        "tile_split": [
+            ["Z", "G", "G", "G", "G", "G", "Z"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "M", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["Z", "G", "G", "G", "G", "G", "Z"]
+        ]
+    },
+    "tile24": {
+        "name": "tile24",
+        "url": "/images/tile24.jpg",
+        "tile_split": [
+            ["Z", "C", "C", "C", "C", "C", "Z"],
+            ["G", "G", "C", "C", "C", "G", "G"],
+            ["G", "G", "G", "G", "G", "G", "G"],
+            ["G", "G", "G", "R", "R", "R", "R"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["G", "G", "G", "R", "G", "G", "G"],
+            ["Z", "G", "G", "R", "G", "G", "Z"]
+        ]
     }
 }
 //following for /maptile
@@ -335,19 +545,54 @@ function checkScore() {
             if (!openAround(temp)) {
                 score(temp,scores,detail_array[scores[0][i][0]][scores[0][i][1]]);
                 //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
+                player_placement[0].splice(i,1);
+                player_placement[1].splice(i,1);
             } else {
                 scores[0].splice(i,1);
                 scores[1].splice(i,1);
             }
-        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M") {
+        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i][0],scores[0][i][1]) === 9) {
             //Monastery scoring
 
+            player_placement[0].splice(i,1);
+            player_placement[1].splice(i,1);
         } else {
             //remove as already checked its not what we want
             scores[0].splice(i,1);
             scores[1].splice(i,1);
         }
     }
+}
+
+function monasteryScoring(x,y) {
+    var count = 1;
+    var i = Math.floor(x/7);
+    var j = Math.floor(y/7);
+    if (game_array[i-1][j-1]) {
+        count++;
+    }
+    if (game_array[i-1][j]) {
+        count++;
+    }
+    if (game_array[i-1][j+1]) {
+        count++;
+    }
+    if (game_array[i][j-1]) {
+        count++;
+    }
+    if (game_array[i][j+1]) {
+        count++;
+    }
+    if (game_array[i+1][j-1]) {
+        count++;
+    }
+    if (game_array[i+1][j]) {
+        count++;
+    }
+    if (game_array[i+1][j+1]) {
+        count++;
+    }
+    return count;
 }
 
 function score(temp, scores, type) {
@@ -361,6 +606,7 @@ function score(temp, scores, type) {
                 points.push(scores[1][j]);
                 scores[0].splice(j,1);
                 scores[1].splice(j,1);
+
                 break;
             }
         }
