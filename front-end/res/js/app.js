@@ -17,9 +17,9 @@ function startGameApp() {
     drawCentre();
     window.addEventListener('resize', drawCentre);
 
-    console.log(getBoard());
+//    console.log(getBoard());
     console.log(getNextTile());
-    console.log(placeTile());
+//    console.log(placeTile());
 }
 
 // Update the game info object with the window height and width.
