@@ -61,7 +61,7 @@ function startGame() {
     window.removeEventListener('resize', welcomeClick);
 
     //commented out to speed up testing
-    //    countDown(3);
+//        countDown(3);
     startGameApp();
 
 }
