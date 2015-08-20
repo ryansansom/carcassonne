@@ -463,7 +463,7 @@ router.post('/placetile', function(req, res, next) {
         }
         console.log(player_placement);
         res.json(current_tile);
-        nextPlayer(5);
+        nextPlayer(Object.keys(players).length);
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
         game_array[req.body.row][req.body.column] = current_tile;
@@ -481,7 +481,7 @@ router.post('/placetile', function(req, res, next) {
             res.json(current_tile);
             console.log(player_placement);
             checkScore();
-            nextPlayer(5);
+            nextPlayer(Object.keys(players).length);
         }
     } else {
         res.status(400).send("Invalid tile placement");
