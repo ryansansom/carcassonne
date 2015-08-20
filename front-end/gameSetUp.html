@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Web Carcassonne</title>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="keywords" content="carcassonne, game" />
+    <meta name="description" content="An web implementaiton of the classic board game 'Carcassonne'." />
+    <meta name="author" content="Guillaume & Ryan" />
+    <meta name="copyright" content="Guillaume & Ryan &copy;" />
+
+    <link rel="stylesheet" type="text/css" href="res/css/reset-mayerweb.css">
+    <link rel="stylesheet" href="res/css/gameSetUp.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="res/js/gameSetUp.js"></script>
+</head>
+
+<body>
+    <h1>Web Carcassonne: Game Set Up!</h1>
+
+    <div id="numberOfPlayers">
+        <h3>Number of Players</h3>
+        <div id="playersWrapper">
+            <div id="playerButtons">
+                <button name="player2" value="2" class="btn-round inactive">2</button>
+                <button name="player3" value="3" class="btn-round inactive">3</button>
+                <button name="player4" value="4" class="btn-round inactive">4</button>
+                <button name="player5" value="5" class="btn-round inactive">5</button>
+            </div>
+            <div id="nameInputWrapper">
+                <input name="player2" placeholder="Player 2 Name">
+                <input name="player3" placeholder="Player 3 Name">
+                <input name="player4" placeholder="Player 4 Name">
+                <input name="player5" placeholder="Player 5 Name">
+            </div>
+        </div>
+    </div>
+    <button name="backBtn" onclick="window.location.href='index.html'">Back</button>
+    <button name="startGame" onclick="window.location.href='carcassonneGame.html'">Start Game</button>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Web Carcassonne</title>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="keywords" content="carcassonne, game" />
+    <meta name="description" content="An web implementaiton of the classic board game 'Carcassonne'." />
+    <meta name="author" content="Guillaume & Ryan" />
+    <meta name="copyright" content="Guillaume & Ryan &copy;" />
+
+    <link rel="stylesheet" type="text/css" href="res/css/reset-mayerweb.css">
+    <link rel="stylesheet" type="text/css" href="res/css/carcassonneGame.css">
+
+    <script src="res/js/welcome.js"></script>
+    <script src="res/js/app.js"></script>
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <canvas id="game-board"></canvas>
+        <div id="playerName">
+            <h1>Player Name's Turn</h1>
+        </div>
+        <div id="new-tile-wrapper">
+            <button id="rotate-left">left</button>
+            <img id="new-tile" src="res/pics/tiles/original-game/city1.png">
+            <button id="rotate-right">right</button>
+        </div>
+        <div id="zoom-btn-wrapper">
+            <button id="plus">+</button>
+            <button id="minus">-</button>
+            <button id="recentre">o</button>
+        </div>
+        <button id="confirm">NEXT</button>
+    </div>
+
+</body>
+
+</html>

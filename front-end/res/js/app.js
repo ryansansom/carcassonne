@@ -3,7 +3,7 @@ info.tileSize = 100;
 
 function startGameApp() {
     //Add canvas and context to the game information object
-    info.canvas = document.getElementById('my-canvas');
+    info.canvas = document.getElementById('game-board');
     info.ctx = info.canvas.getContext('2d');
     /*Initialise the width and height of the canvas based on window size and add a window resize listent to update it. */
     updateInfo();
@@ -24,8 +24,8 @@ function startGameApp() {
 
 // Update the game info object with the window height and width.
 function updateInfo() {
-    info.windW = document.getElementById("my-canvas").width;
-    info.windH = document.getElementById("my-canvas").height;
+    info.windW = document.getElementById("game-board").width;
+    info.windH = document.getElementById("game-board").height;
 }
 
 
