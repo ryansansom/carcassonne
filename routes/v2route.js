@@ -29,8 +29,8 @@ var tile_master = {
             ["Z", "G", "G", "R", "G", "G", "Z"]
         ]
     },
-    "mon-r": {
-        "name": "mon-r",
+    "monr": {
+        "name": "monr",
         "url": "/images/tile3.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -355,7 +355,8 @@ var players = {
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 //var tile_deck = ["tile1","tile2"];
 //var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
-var tile_deck = ["tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8"];
+//var tile_deck = ["tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8"];
+var tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
 var deckSize = tile_deck.length;
 
 var game_array;
@@ -488,7 +489,7 @@ router.get('/getboard', function(req, res, next) {
 });
 
 router.post('/placetile', function(req, res, next) {
-    //send this function a json body in form of {"row": 0, "column": 0, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
+    //send this function a json body in form of {"row": 71, "column": 71, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
     rotateTile(req.body.rotation);
     if (!game_array[deckSize - 1][deckSize - 1]) {
         //add a check for valid player placement (ie not on river, settlement or corner)
@@ -1146,6 +1147,7 @@ function rotateTile(rotation) {
             }
         }
         current_tile.tile_split = newArr;
+        current_tile.rotation = 2;
     } else if (rotation == 3) {
         for (var i = 0; i < 7; i++) {
             for (var j = 0; j < 7; j++) {
@@ -1153,6 +1155,7 @@ function rotateTile(rotation) {
             }
         }
         current_tile.tile_split = newArr;
+        current_tile.rotation = 3;
     } else if (rotation == 4) {
         for (var i = 0; i < 7; i++) {
             for (var j = 0; j < 7; j++) {
@@ -1160,6 +1163,7 @@ function rotateTile(rotation) {
             }
         }
         current_tile.tile_split = newArr;
+        current_tile.rotation = 4;
     } else {
         console.log("Invalid rotation - no change made");
     }
