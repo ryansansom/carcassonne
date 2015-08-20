@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var request = require('supertest');
 
+var info = require('./info');
+
 var tile_master = {
     "road2sw": {
         "name": "road2sw",
@@ -330,32 +332,29 @@ var array;
 var tempArr;
 var current_player = 1;
 var players = {
-                "player1": {
-                "name": "Ryan",
-                "Points": 0
-                },
-                "player2": {
-                "name": "Guillaume",
-                "Points": 0
-                },
-                "player3": {
-                "name": "Ruta",
-                "Points": 0
-                },
-                "player4": {
-                "name": "Mindy",
-                "Points": 0
-                },
-                "player5": {
-                "name": "Diana",
-                "Points": 0
-                }
+    "player1": {
+        "name": "Ryan",
+        "points": 0
+    },
+    "player2": {
+        "name": "Guillaume",
+        "points": 0
+    },
+    "player3": {
+        "name": "Ruta",
+        "points": 0
+    },
+    "player4": {
+        "name": "Mindy",
+        "points": 0
+    },
+    "player5": {
+        "name": "Diana",
+        "points": 0
+    }
 };
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
-//var tile_deck = ["tile1","tile2"];
-//var tile_deck = ["tile1","tile2","tile3","tile4","tile5","tile6","tile7","tile8"];
-//var tile_deck = ["tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8", "tile1", "tile2", "tile3", "tile4", "tile5", "tile6", "tile7", "tile8"];
 var tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
 var deckSize = tile_deck.length;
 
@@ -363,130 +362,80 @@ var game_array;
 var detail_array;
 var checked_array;
 var current_tile;
-var player_placement = [[],[]];
+var player_placement = [
+    [],
+    []
+];
 
-router.get('/initialise', function(req, res, next) {
-    res.json(2*deckSize-1).end();
+router.get('/test', function(req, res, next) {
+    if (Object.keys(req.query).length !== 0) {
+        res.json(req.query).end();
+    } else {
+        res.json("nothing to report").end();
+    }
 });
 
-router.get('/getscore', function(req, res, next) {
-    res.json(players).end();
+router.post('/creategame', function(req, res, next) {
+    var limit = 0;
+    if (req.body.players) {
+        if (req.body.players.length > 5) {
+            limit = 5;
+        } else {
+            limit = req.body.players.length
+        }
+    }
+    if (limit !== 0) {
+        var obj = {};
+        var checkedArr;
+        var array;
+        var tempArr;
+        var current_player = 1;
+        var new_tiles = JSON.parse(JSON.stringify(tile_master));
+        var tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
+        var deckSize = tile_deck.length;
+        var game_array;
+        var detail_array;
+        var checked_array;
+        var current_tile;
+        var player_placement = [
+            [],
+            []
+        ];
+        var players = {};
+
+        for (var i = 0; i < limit; i++) {
+            players["player" + (i + 1)] = {
+                "name": req.body.players[i],
+                "points": 0,
+                "pieces": 7
+            };
+        }
+
+        game_array = createArray(2 * tile_deck.length - 1); //needs to be created differently
+        detail_array = createArray(7 * (2 * tile_deck.length - 1));
+        checked_array = createArray(7 * (2 * tile_deck.length - 1));
+    }
+    res.json(2 * deckSize - 1).end();
 });
 
-router.get('/getplayerplacement', function(req, res, next) {
-    res.json(player_placement).end();
-});
+//------------info gathering----------------
+router.get('/getplayers', info.players);
+router.get('/getplayerplacement', info.placedMen);
+router.get('/getboard', info.board);
+//------------------------------------------
 
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
-        game_array = createArray(2 * tile_deck.length - 1, 2 * tile_deck.length - 1); //needs to be created differently
-        detail_array = createArray(7 * (2 * tile_deck.length - 1), 7 * (2 * tile_deck.length - 1));
-        checked_array = createArray(7 * (2 * tile_deck.length - 1), 7 * (2 * tile_deck.length - 1));
+        res.status(400).send("Please use /creategame first")
+    } else {
+        var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
+        current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
+        current_tile.rotation = 1;
+        res.json(current_tile).end();
     }
-    var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
-    current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
-    current_tile.rotation = 1;
-    res.json(current_tile).end();
 });
 
-router.get('/test', function(req, res, next) {
-    var tile1 = [
-        ["Z", "G", "G", "G", "G", "G", "Z"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["R", "R", "R", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    var tile2 = [
-        ["Z", "G", "G", "R", "G", "G", "Z"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["R", "R", "R", "S", "R", "R", "R"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    var tile3 = [
-        ["Z", "G", "G", "G", "G", "G", "Z"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "M", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    var tile4 = [
-        ["Z", "C", "C", "C", "C", "C", "Z"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["Z", "C", "C", "C", "C", "C", "Z"]
-    ];
-    var tile5 = [
-        ["Z", "C", "C", "C", "C", "C", "Z"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "C", "C", "C", "C"],
-        ["C", "C", "C", "R", "C", "C", "C"],
-        ["C", "C", "G", "R", "G", "C", "C"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    var tile6 = [
-        ["Z", "G", "G", "G", "G", "G", "Z"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["R", "R", "R", "S", "R", "R", "R"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    var tile7 = [
-        ["Z", "G", "G", "G", "G", "G", "Z"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "M", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["Z", "G", "G", "G", "G", "G", "Z"]
-    ];
-    var tile8 = [
-        ["Z", "C", "C", "C", "C", "C", "Z"],
-        ["G", "G", "C", "C", "C", "G", "G"],
-        ["G", "G", "G", "G", "G", "G", "G"],
-        ["G", "G", "G", "R", "R", "R", "R"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["G", "G", "G", "R", "G", "G", "G"],
-        ["Z", "G", "G", "R", "G", "G", "Z"]
-    ];
-    for (var i = 0; i < 7; i++) {
-        for (var j = 0; j < 7; j++) {
-            game_array[0][0] = new_tiles["tile3"];
-            detail_array[(0) * 7 + i][(0) * 7 + j] = tile3[i][j]; //change to above
-            checked_array[(0) * 7 + i][(0) * 7 + j] = "N";
-            game_array[1][0] = new_tiles["tile2"];
-            detail_array[(1) * 7 + i][(0) * 7 + j] = tile2[i][j];
-            checked_array[(1) * 7 + i][(0) * 7 + j] = "N";
-            game_array[1][1] = new_tiles["tile2"];
-            detail_array[(1) * 7 + i][(1) * 7 + j] = tile2[i][j];
-            checked_array[(1) * 7 + i][(1) * 7 + j] = "N";
-            game_array[1][2] = new_tiles["tile6"];
-            detail_array[(1) * 7 + i][(2) * 7 + j] = tile6[i][j];
-            checked_array[(1) * 7 + i][(2) * 7 + j] = "N";
-            game_array[0][2] = new_tiles["tile7"];
-            detail_array[(0) * 7 + i][(2) * 7 + j] = tile7[i][j];
-            checked_array[(0) * 7 + i][(2) * 7 + j] = "N";
-        }
-    }
-    res.json("Done test");
-});
 
-router.get('/getboard', function(req, res, next) {
-    res.json(game_array);
-});
 
 router.post('/placetile', function(req, res, next) {
     //send this function a json body in form of {"row": 71, "column": 71, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
@@ -503,8 +452,8 @@ router.post('/placetile', function(req, res, next) {
         }
         if (req.body.placedMan != -1) {
             var temp1 = req.body.placedMan;
-            player_placement[0].push([7*req.body.row+temp1[0],7*req.body.column+temp1[1]]);
-            player_placement[1].push("player"+current_player);
+            player_placement[0].push([7 * req.body.row + temp1[0], 7 * req.body.column + temp1[1]]);
+            player_placement[1].push("player" + current_player);
         }
         console.log(player_placement);
         res.json(current_tile);
@@ -519,7 +468,7 @@ router.post('/placetile', function(req, res, next) {
             }
         }
         resetChecked();
-        mapTile(req.body.row,req.body.column,req.body.placedMan);
+        mapTile(req.body.row, req.body.column, req.body.placedMan);
         if (game_array[req.body.row][req.body.column] == undefined) {
             res.status(400).send("Invalid player piece placement");
         } else {
@@ -536,7 +485,7 @@ router.post('/placetile', function(req, res, next) {
 function checkScore() {
     console.log("in checkScore");
     var scores = JSON.parse(JSON.stringify(player_placement));
-    for (var i = scores[0].length-1;i>=0;i--) {
+    for (var i = scores[0].length - 1; i >= 0; i--) {
         console.log(detail_array[scores[0][i][0]][scores[0][i][1]]);
         if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C") {
             for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
@@ -549,53 +498,53 @@ function checkScore() {
             }
             console.log(temp);
             if (!openAround(temp)) {
-                score(temp,scores,detail_array[scores[0][i][0]][scores[0][i][1]]);
+                score(temp, scores, detail_array[scores[0][i][0]][scores[0][i][1]]);
                 //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
-                player_placement[0].splice(i,1);
-                player_placement[1].splice(i,1);
+                player_placement[0].splice(i, 1);
+                player_placement[1].splice(i, 1);
             } else {
-                scores[0].splice(i,1);
-                scores[1].splice(i,1);
+                scores[0].splice(i, 1);
+                scores[1].splice(i, 1);
             }
-        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i][0],scores[0][i][1]) === 9) {
+        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i][0], scores[0][i][1]) === 9) {
             //Monastery scoring
 
-            player_placement[0].splice(i,1);
-            player_placement[1].splice(i,1);
+            player_placement[0].splice(i, 1);
+            player_placement[1].splice(i, 1);
         } else {
             //remove as already checked its not what we want
-            scores[0].splice(i,1);
-            scores[1].splice(i,1);
+            scores[0].splice(i, 1);
+            scores[1].splice(i, 1);
         }
     }
 }
 
-function monasteryScoring(x,y) {
+function monasteryScoring(x, y) {
     var count = 1;
-    var i = Math.floor(x/7);
-    var j = Math.floor(y/7);
-    if (game_array[i-1][j-1]) {
+    var i = Math.floor(x / 7);
+    var j = Math.floor(y / 7);
+    if (game_array[i - 1][j - 1]) {
         count++;
     }
-    if (game_array[i-1][j]) {
+    if (game_array[i - 1][j]) {
         count++;
     }
-    if (game_array[i-1][j+1]) {
+    if (game_array[i - 1][j + 1]) {
         count++;
     }
-    if (game_array[i][j-1]) {
+    if (game_array[i][j - 1]) {
         count++;
     }
-    if (game_array[i][j+1]) {
+    if (game_array[i][j + 1]) {
         count++;
     }
-    if (game_array[i+1][j-1]) {
+    if (game_array[i + 1][j - 1]) {
         count++;
     }
-    if (game_array[i+1][j]) {
+    if (game_array[i + 1][j]) {
         count++;
     }
-    if (game_array[i+1][j+1]) {
+    if (game_array[i + 1][j + 1]) {
         count++;
     }
     return count;
@@ -605,13 +554,13 @@ function score(temp, scores, type) {
     console.log("in score");
     console.log("type " + type);
     var points = [];
-    for (var i=0;i<temp.length;i++) {
-        for (var j=0;j<scores[0].length;j++) {
+    for (var i = 0; i < temp.length; i++) {
+        for (var j = 0; j < scores[0].length; j++) {
             if (temp[i][0] === scores[0][j][0] && temp[i][1] === scores[0][j][1]) {
                 //push player
                 points.push(scores[1][j]);
-                scores[0].splice(j,1);
-                scores[1].splice(j,1);
+                scores[0].splice(j, 1);
+                scores[1].splice(j, 1);
 
                 break;
             }
@@ -622,15 +571,15 @@ function score(temp, scores, type) {
     var awardPointsTo = mode(points);
     var countTiles = [];
     console.log("forming countTiles");
-    for (var k=0;k<temp.length;k++) {
-        countTiles.push([Math.floor(temp[k][0]/7),Math.floor(temp[k][1]/7)]);
+    for (var k = 0; k < temp.length; k++) {
+        countTiles.push([Math.floor(temp[k][0] / 7), Math.floor(temp[k][1] / 7)]);
     }
     countTiles = remove_duplicates(countTiles);
     console.log(countTiles);
     if (type === "R") {
         console.log("In score - road");
         for (z in awardPointsTo) {
-            players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + countTiles.length;
+            players[awardPointsTo[z]].points = players[awardPointsTo[z]].points + countTiles.length;
         }
     } else if (type === "C") {
         console.log("In score - city");
@@ -641,7 +590,7 @@ function score(temp, scores, type) {
                 bannerCnt++;
             }
         }
-        players[awardPointsTo[z]].Points = players[awardPointsTo[z]].Points + 2*(countTiles.length+bannerCnt);
+        players[awardPointsTo[z]].points = players[awardPointsTo[z]].points + 2 * (countTiles.length + bannerCnt);
     }
 }
 
@@ -650,8 +599,8 @@ function remove_duplicates(arr) {
     arr.sort();
     var ans = [];
     ans.push(arr[0]);
-    for (var i=1;i<arr.length;i++) {
-        if (!(arr[i-1][0] == arr[i][0] && arr[i-1][1] == arr[i][1])) {
+    for (var i = 1; i < arr.length; i++) {
+        if (!(arr[i - 1][0] == arr[i][0] && arr[i - 1][1] == arr[i][1])) {
             ans.push(arr[i]);
         }
     }
@@ -661,8 +610,8 @@ function remove_duplicates(arr) {
 function mode(array) {
     var ans = [];
     array.sort();
-    var cnt = [0,0,0,0,0];
-    for (var i=0;i<array.length;i++) {
+    var cnt = [0, 0, 0, 0, 0];
+    for (var i = 0; i < array.length; i++) {
         if (array[i] == "player1") {
             cnt[0]++;
         } else if (array[i] == "player2") {
@@ -675,10 +624,10 @@ function mode(array) {
             cnt[4]++;
         }
     }
-    var maxnum = Math.max(cnt[0],cnt[1],cnt[2],cnt[3],cnt[4]);
-    for (var j=0;j<5;j++) {
+    var maxnum = Math.max(cnt[0], cnt[1], cnt[2], cnt[3], cnt[4]);
+    for (var j = 0; j < 5; j++) {
         if (cnt[j] == maxnum) {
-            ans.push("player"+(j+1));
+            ans.push("player" + (j + 1));
         }
     }
     return ans;
@@ -688,39 +637,39 @@ function openAround(temp) {
     console.log("in openAround");
     var openCnt = 0;
     for (x1 in temp) {
-    if (temp[x1][0]!=0) {
-        if (!detail_array[temp[x1][0]-1][temp[x1][1]]) {
+        if (temp[x1][0] != 0) {
+            if (!detail_array[temp[x1][0] - 1][temp[x1][1]]) {
+                openCnt++;
+            }
+        } else {
             openCnt++;
         }
-    } else {
-        openCnt++;
-    }
 
-    if (temp[x1][0]<7*(2*deckSize-1)) {
-        if (!detail_array[temp[x1][0]+1][temp[x1][1]]) {
+        if (temp[x1][0] < 7 * (2 * deckSize - 1)) {
+            if (!detail_array[temp[x1][0] + 1][temp[x1][1]]) {
+                openCnt++;
+            }
+        } else {
             openCnt++;
         }
-    } else {
-        openCnt++;
-    }
 
-    if (temp[x1][1]!=0) {
-        if (!detail_array[temp[x1][0]][temp[x1][1]-1]) {
+        if (temp[x1][1] != 0) {
+            if (!detail_array[temp[x1][0]][temp[x1][1] - 1]) {
+                openCnt++;
+            }
+        } else {
             openCnt++;
         }
-    } else {
-        openCnt++;
-    }
 
-    if (temp[x1][1]<7*(2*deckSize-1)) {
-        if (!detail_array[temp[x1][0]][temp[x1][1]+1]) {
+        if (temp[x1][1] < 7 * (2 * deckSize - 1)) {
+            if (!detail_array[temp[x1][0]][temp[x1][1] + 1]) {
+                openCnt++;
+            }
+        } else {
             openCnt++;
         }
-    } else {
-        openCnt++;
     }
-    }
-    if (openCnt>0) {
+    if (openCnt > 0) {
         return true;
     } else {
         return false;
@@ -796,7 +745,7 @@ function mapTile(row, column, placedMan) {
 
     if (placedMan != -1) {
         var ind = false;
-        var checkPlace = [7*row+placedMan[0],7*column+placedMan[1]];
+        var checkPlace = [7 * row + placedMan[0], 7 * column + placedMan[1]];
         console.log(checkPlace);
         var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
         for (x in obj[typeCheck]) {
@@ -825,8 +774,8 @@ function mapTile(row, column, placedMan) {
             }
         }
         if (!ind) {
-            player_placement[0].push([checkPlace[0],checkPlace[1]]);
-            player_placement[1].push("player"+current_player);
+            player_placement[0].push([checkPlace[0], checkPlace[1]]);
+            player_placement[1].push("player" + current_player);
         }
     }
 }
@@ -1170,12 +1119,12 @@ function rotateTile(rotation) {
 }
 
 function resetChecked() {
-    for (var i=0;i<2*deckSize-1;i++) {
-        for (var j=0;j<2*deckSize-1;j++) {
+    for (var i = 0; i < 2 * deckSize - 1; i++) {
+        for (var j = 0; j < 2 * deckSize - 1; j++) {
             if (game_array[i][j]) {
-                for (var x=0;x<7;x++) {
-                    for (var y=0;y<7;y++) {
-                        checked_array[(7*i)+x][(7*j)+y] = "N";
+                for (var x = 0; x < 7; x++) {
+                    for (var y = 0; y < 7; y++) {
+                        checked_array[(7 * i) + x][(7 * j) + y] = "N";
                     }
                 }
             }
@@ -1184,19 +1133,47 @@ function resetChecked() {
 }
 
 function nextPlayer(noPlayer) {
-    if (current_player === noPlayer+1) {
+    if (current_player === noPlayer + 1) {
         current_player = 1;
     } else {
         current_player++;
     }
 }
 
-function createArray(x, y) {
+function createArray(x) {
     var array = new Array(x);
     for (var i = 0; i < x; i++) {
-        array[i] = new Array(y);
+        array[i] = new Array(x);
     }
     return array;
+}
+
+function noLink(array) {
+    return JSON.parse(JSON.stringify(array));
+}
+
+function game2detail(x, y, arr) {
+    if (!arr) {
+        arr = [0, 0];
+    }
+    return [7 * x + arr[0], 7 * y + arr[1]];
+}
+
+function detail2game(x, y) {
+    return [Math.floor(x / 7), Math.floor(y / 7)];
+}
+
+function isArrayEqual(array1,array2) {
+    if (array1.length = array2.length) {
+        for (var i=0;i<array1.length) {
+            if (array1[i] !== array2[i]) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 module.exports = router;
