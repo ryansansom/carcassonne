@@ -9,7 +9,8 @@ window.onload = function () {
     window.addEventListener('resize', welcomeClick);
 
     //adding click listener for placing tiles
-    document.getElementById("my-canvas").addEventListener('click', startGame);
+    document.getElementById("game-board").addEventListener('click', startGame);
+    startGame();
 }
 
 document.onload = function () {
@@ -17,8 +18,8 @@ document.onload = function () {
 }
 
 function canvasSize() {
-    document.getElementById("my-canvas").width = window.innerWidth;
-    document.getElementById("my-canvas").height = window.innerHeight;
+    document.getElementById("game-board").width = window.innerWidth;
+    document.getElementById("game-board").height = window.innerHeight;
 }
 
 /*#####################################################
@@ -30,9 +31,9 @@ function welcomeClick() {
 }
 
 function welcomeMessage(title, sub) {
-    var ctx = document.getElementById('my-canvas').getContext('2d');
-    var w = document.getElementById("my-canvas").width;
-    var h = document.getElementById("my-canvas").height;
+    var ctx = document.getElementById('game-board').getContext('2d');
+    var w = document.getElementById("game-board").width;
+    var h = document.getElementById("game-board").height;
 
     var t1 = title;
     var t2 = sub;
@@ -56,7 +57,7 @@ function welcomeMessage(title, sub) {
 
 function startGame() {
     //prevents the countdown to restart.
-    document.getElementById("my-canvas").removeEventListener('click', startGame);
+    document.getElementById("game-board").removeEventListener('click', startGame);
     //prevents the welcomes sceen from comming back once the game has started.
     window.removeEventListener('resize', welcomeClick);
 

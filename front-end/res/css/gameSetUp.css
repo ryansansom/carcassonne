@@ -1,7 +1,17 @@
 .active {
-    color: green;
+    color: cyan;
 }
 
 .inactive {
-    color: red;
+    color: black;
+}
+
+
+.btn-round {
+    background: purple;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 0;
+    font-size: 30px;
 }
