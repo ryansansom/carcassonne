@@ -365,14 +365,6 @@ var player_placement = [
     []
 ];
 
-router.get('/test', function(req, res, next) {
-    if (Object.keys(req.query).length !== 0) {
-        res.json(req.query).end();
-    } else {
-        res.json("nothing to report").end();
-    }
-});
-
 router.post('/creategame', function(req, res, next) {
     var limit = 0;
     if (req.body.players && Array.isArray(req.body.players)) {
@@ -411,13 +403,13 @@ router.post('/creategame', function(req, res, next) {
         checked_array = createArray(7 * (2 * tile_deck.length - 1));
         res.send("game started").end();
     } else {
-        res.send("error in initialising, no game instance created").end();
+        res.status(400).send("error in initialising, no game instance created").end();
     }
-    
 });
 
 //------------info gathering----------------
 router.get('/getplayers', function (req,res) {res.json(players).end()});
+router.get('/getactiveplayer', function (req,res) {res.json(players["player"+current_player]).end()});
 router.get('/getplayerplacement', function (req,res) {res.json(player_placement).end()});
 router.get('/getboard', function (req,res) {res.json(game_array).end()});
 router.get('/getdeck', function (req,res) {res.json(tile_deck).end()});
@@ -1183,6 +1175,10 @@ function isArrayEqual(array1,array2) {
     } else {
         return false;
     }
+}
+
+function randNum(num) {
+    return Math.floor((Math.random() * num) + 1) - 1;
 }
 
 module.exports = router;
