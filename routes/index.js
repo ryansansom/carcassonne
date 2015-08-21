@@ -380,6 +380,7 @@ router.get('/generate', function(req, res, next) {
     }
     var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
     current_tile = JSON.parse(JSON.stringify(new_tiles[tile_deck[rand]]));
+    current_tile.rotation = 1;
     res.json(current_tile).end();
 });
 
