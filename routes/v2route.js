@@ -375,14 +375,14 @@ router.get('/test', function(req, res, next) {
 
 router.post('/creategame', function(req, res, next) {
     var limit = 0;
-    if (req.body.players) {
+    if (req.body.players && Array.isArray(req.body.players)) {
         if (req.body.players.length > 5) {
             limit = 5;
         } else {
             limit = req.body.players.length
         }
     }
-    if (limit !== 0) {
+    if (limit > 1) {
         obj = {};
         checkedArr;
         array;
@@ -409,8 +409,11 @@ router.post('/creategame', function(req, res, next) {
         game_array = createArray(2 * tile_deck.length - 1); //needs to be created differently
         detail_array = createArray(7 * (2 * tile_deck.length - 1));
         checked_array = createArray(7 * (2 * tile_deck.length - 1));
+        res.send("game started").end();
+    } else {
+        res.send("error in initialising, no game instance created").end();
     }
-    res.json(2 * deckSize - 1).end();
+    
 });
 
 //------------info gathering----------------
@@ -423,7 +426,7 @@ router.get('/getdeck', function (req,res) {res.json(tile_deck).end()});
 router.get('/generate', function(req, res, next) {
     if (!game_array) {
         res.status(400).send("Please use /creategame first")
-    } else if (!game_array[deckSize-1][deckSize-1]) {
+    } else if (!game_array[deckSize-1][deckSize-1] && tile_deck.length == deckSize) {
         for (var i=0;i<tile_deck.length;i++) {
             if (tile_deck[i] == "city1rwe") {
                 tile_deck.splice(i,1);
