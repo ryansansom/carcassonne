@@ -2,7 +2,7 @@
 Adjust canvas to window size
 #####################################################*/
 
-window.onload = function () {
+$(document).ready(function () {
     canvasSize();
     window.addEventListener('resize', canvasSize);
     welcomeClick();
@@ -11,7 +11,7 @@ window.onload = function () {
     //adding click listener for placing tiles
     document.getElementById("game-board").addEventListener('click', startGame);
     startGame();
-}
+});
 
 document.onload = function () {
 
@@ -62,7 +62,7 @@ function startGame() {
     window.removeEventListener('resize', welcomeClick);
 
     //commented out to speed up testing
-//        countDown(3);
+    //        countDown(3);
     startGameApp();
 
 }

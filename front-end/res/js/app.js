@@ -1,5 +1,7 @@
 var info = new Object();
 info.tileSize = 100;
+info.scale = 1;
+info.scaleMultiplyer = 0.8;
 
 function startGameApp() {
     //Add canvas and context to the game information object
@@ -13,12 +15,28 @@ function startGameApp() {
     drawGrid();
     window.addEventListener('resize', drawGrid);
 
-    //Draw a tile in the centre of the screen
-    drawCentre();
-    window.addEventListener('resize', drawCentre);
+    //Zooming listeners
+    $('#plus').click(function () {
+//        info.scale /= info.scaleMultiplyer;
+        info.tileSize /= info.scaleMultiplyer;
+        drawGrid();
+    });
+
+    $('#minus').click(function () {
+//        info.scale *= info.scaleMultiplyer;
+        info.tileSize *= info.scaleMultiplyer;
+        drawGrid();
+    });
+
+    $('#recentre').click(function () {
+//        info.scale = 1;
+        info.tileSize = 100;
+        drawGrid();
+    });
 
     //initial rotation of tile
     rotate('new-tile', 0);
+    //    drawBaord();
 
     //    console.log(getBoard());
     //    console.log(getNextTile());
@@ -60,13 +78,30 @@ c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.t
 c.restore();
 */
 
+// not quite woring yet.
+function drawBaord() {
+    var board = getBoard();
+    var boardSize = board.length;
+    var c = info.ctx;
+    c.clearRect(0, 0, info.windW, info.windH);
+    c.strokeStyle = "black";
+
+    for (var gridX = ~(boardSize / 2); gridX < boardSize; gridX++) {
+        for (var gridY = ~(boardSize / 2); gridY < boardSize; gridY++) {
+            c.save();
+            c.translate(boardSize / 2 - info.tileSize / 2, boardSize / 2 - info.tileSize / 2);
+            c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
+            c.restore();
+        }
+    }
+
+}
 
 // Tester function to draw a grid
 function drawGrid() {
     //draw the grid based on window size
     var c = info.ctx;
     c.clearRect(0, 0, info.windW, info.windH);
-
     c.strokeStyle = "black";
 
     var gridWidth = info.windW / info.tileSize;
@@ -76,18 +111,19 @@ function drawGrid() {
         for (var gridY = ~(gridHeight / 2); gridY < gridHeight; gridY++) {
             c.save();
             c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
+            c.scale(info.scale, info.scale);
             c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
             c.restore();
 
         }
     }
+    drawCentre();
 }
 
+//To Delete
 //tester function to draw a square in the middle of the screen
 function drawCentre() {
     var c = info.ctx;
-    //    c.clearRect(0, 0, info.windW, info.windH);
-
     var horCen = info.windW / 2;
     var verCen = info.windH / 2;
     var tileWidthCen = info.tileSize / 2;
@@ -102,6 +138,7 @@ function getBoard() {
     xhr.open("get", "http://localhost:3000/getboard", false);
     xhr.send();
 
+    //    console.log(xhr.responseText);
     return JSON.parse(xhr.responseText);
 }
 
