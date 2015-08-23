@@ -17,8 +17,11 @@ function startGameApp() {
     drawCentre();
     window.addEventListener('resize', drawCentre);
 
+    //initial rotation of tile
+    rotate('new-tile', 0);
+
 //    console.log(getBoard());
-    console.log(getNextTile());
+//    console.log(getNextTile());
 //    console.log(placeTile());
 }
 
@@ -27,7 +30,32 @@ function updateInfo() {
     info.windW = document.getElementById("game-board").width;
     info.windH = document.getElementById("game-board").height;
 }
+//
+//function rotate(angle) {
+////    document.getElementById('new-tile').style('translate: '+angle);
+//
+////    document.getElementById("new-tile").style.transform === "rotate(90deg)";
+////    rotate2('new-tile', 90);
+//}
 
+function getAngle(id) {
+    var cssElmt = document.getElementById(id).style.transform;
+    if(cssElmt === 360) cssElmt = 0;
+    var a = cssElmt.indexOf('(')+1;
+    var b = cssElmt.indexOf('d');
+    console.log(cssElmt.slice(a, b));
+    return parseInt(cssElmt.slice(a, b));
+}
+
+function rotate(id,deg) {
+    if(deg!=0){
+    var currentDeg = getAngle(id);
+    deg += currentDeg;
+    }
+      document.getElementById(id).style.WebkitTransform = "rotate("+deg+"deg)";
+      document.getElementById(id).style.msTransform = "rotate("+deg+"deg)";
+      document.getElementById(id).style.transform = "rotate("+deg+"deg)";
+}
 
 /*
 magic code that centers the grid!
