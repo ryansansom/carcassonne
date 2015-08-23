@@ -20,9 +20,9 @@ function startGameApp() {
     //initial rotation of tile
     rotate('new-tile', 0);
 
-//    console.log(getBoard());
-//    console.log(getNextTile());
-//    console.log(placeTile());
+    //    console.log(getBoard());
+    //    console.log(getNextTile());
+    //    console.log(placeTile());
 }
 
 // Update the game info object with the window height and width.
@@ -30,31 +30,26 @@ function updateInfo() {
     info.windW = document.getElementById("game-board").width;
     info.windH = document.getElementById("game-board").height;
 }
-//
-//function rotate(angle) {
-////    document.getElementById('new-tile').style('translate: '+angle);
-//
-////    document.getElementById("new-tile").style.transform === "rotate(90deg)";
-////    rotate2('new-tile', 90);
-//}
 
-function getAngle(id) {
-    var cssElmt = document.getElementById(id).style.transform;
-    if(cssElmt === 360) cssElmt = 0;
-    var a = cssElmt.indexOf('(')+1;
-    var b = cssElmt.indexOf('d');
-    console.log(cssElmt.slice(a, b));
-    return parseInt(cssElmt.slice(a, b));
+//rotates the element by 'id' by a give degree
+function rotate(id, deg) {
+    if (deg != 0) {
+        var currentDeg = getAngle(id);
+        deg += currentDeg;
+    }
+    document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
+    document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
+    document.getElementById(id).style.transform = "rotate(" + deg + "deg)";
 }
 
-function rotate(id,deg) {
-    if(deg!=0){
-    var currentDeg = getAngle(id);
-    deg += currentDeg;
-    }
-      document.getElementById(id).style.WebkitTransform = "rotate("+deg+"deg)";
-      document.getElementById(id).style.msTransform = "rotate("+deg+"deg)";
-      document.getElementById(id).style.transform = "rotate("+deg+"deg)";
+//Get the angle of rotation of the element 'id' transformation style.
+function getAngle(id) {
+    var cssElmt = document.getElementById(id).style.transform;
+    var a = cssElmt.indexOf('(') + 1;
+    var b = cssElmt.indexOf('d');
+    var angle = parseInt(cssElmt.slice(a, b));
+    if (angle === 360 || angle === -360) angle = 0;
+    return angle;
 }
 
 /*
@@ -101,6 +96,7 @@ function drawCentre() {
     c.strokeRect(horCen - tileWidthCen, verCen - tileHeightCen, info.tileSize, info.tileSize);
 }
 
+//gets the board from the server
 function getBoard() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/getboard", false);
@@ -109,6 +105,7 @@ function getBoard() {
     return JSON.parse(xhr.responseText);
 }
 
+//get the next tile from the server
 function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/generate", false);
@@ -117,6 +114,7 @@ function getNextTile() {
     return JSON.parse(xhr.responseText);
 }
 
+//sends the tile placement location to the server
 function placeTile(tile) {
     var xhr = new XMLHttpRequest();
     xhr.open("post", "http://localhost:3000/placetile", false);
