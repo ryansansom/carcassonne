@@ -17,26 +17,22 @@ function startGameApp() {
 
     //Zooming listeners
     $('#plus').click(function () {
-//        info.scale /= info.scaleMultiplyer;
         info.tileSize /= info.scaleMultiplyer;
         drawGrid();
     });
 
     $('#minus').click(function () {
-//        info.scale *= info.scaleMultiplyer;
         info.tileSize *= info.scaleMultiplyer;
         drawGrid();
     });
 
     $('#recentre').click(function () {
-//        info.scale = 1;
         info.tileSize = 100;
         drawGrid();
     });
 
     //initial rotation of tile
     rotate('new-tile', 0);
-    //    drawBaord();
 
     //    console.log(getBoard());
     //    console.log(getNextTile());
@@ -120,7 +116,6 @@ function drawGrid() {
     drawCentre();
 }
 
-//To Delete
 //tester function to draw a square in the middle of the screen
 function drawCentre() {
     var c = info.ctx;
