@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="res/css/reset-mayerweb.css">
     <link rel="stylesheet" type="text/css" href="res/css/carcassonneGame.css">
 
+    <script src="res/js/jQuery-min1.11.js"></script>
     <script src="res/js/welcome.js"></script>
     <script src="res/js/app.js"></script>
 </head>
@@ -28,9 +29,9 @@
             <h1>Player Name's Turn</h1>
         </div>
         <div id="new-tile-wrapper">
-            <button id="rotate-left">left</button>
+            <button id="rotate-left" onclick="rotate('new-tile', -90);">left</button>
             <img id="new-tile" src="res/pics/tiles/original-game/city1.png">
-            <button id="rotate-right">right</button>
+            <button id="rotate-right" onclick="rotate('new-tile', 90);">right</button>
         </div>
         <div id="zoom-btn-wrapper">
             <button id="plus">+</button>
