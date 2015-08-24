@@ -436,8 +436,6 @@ router.get('/generate', function(req, res, next) {
     }
 });
 
-
-
 router.post('/placetile', function(req, res, next) {
     //send this function a json body in form of {"row": 71, "column": 71, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
     rotateTile(req.body.rotation);
@@ -461,25 +459,37 @@ router.post('/placetile', function(req, res, next) {
         nextPlayer(Object.keys(players).length);
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
-        game_array[req.body.row][req.body.column] = current_tile;
-        for (var i = 0; i < 7; i++) {
-            for (var j = 0; j < 7; j++) {
-                detail_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = current_tile.tile_split[i][j];
-                checked_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = "N";
+        if (placedManValidator(req.body.placedMan)) {
+            if (players["player" + current_player].pieces > 0) {
+                game_array[req.body.row][req.body.column] = current_tile;
+                for (var i = 0; i < 7; i++) {
+                    for (var j = 0; j < 7; j++) {
+                        detail_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = current_tile.tile_split[i][j];
+                        checked_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = "N";
+                    }
+                }
+                resetChecked();
+                placedManValidity(req.body.row, req.body.column, req.body.placedMan); // update surround so that it is neater
+                if (game_array[req.body.row][req.body.column] == undefined) {
+                    res.status(400).send("Invalid player piece placement");
+                    resetRotation();
+                } else {
+                    res.json(current_tile);
+                    console.log(player_placement);
+                    checkScore(); //need a whole rework to scoring
+                    nextPlayer(Object.keys(players).length);
+                }
+            } else {
+                res.status(400).send("Not enough remaining pieces to do this");
+                resetRotation();
             }
-        }
-        resetChecked();
-        mapTile(req.body.row, req.body.column, req.body.placedMan);
-        if (game_array[req.body.row][req.body.column] == undefined) {
-            res.status(400).send("Invalid player piece placement");
         } else {
-            res.json(current_tile);
-            console.log(player_placement);
-            checkScore();
-            nextPlayer(Object.keys(players).length);
+            res.status(400).send("Invalid placedMan format - use -1 for no piece placement");
+            resetRotation();
         }
     } else {
         res.status(400).send("Invalid tile placement");
+        resetRotation();
     }
 });
 
@@ -677,8 +687,48 @@ function openAround(temp) {
     }
 }
 
-function mapTile(row, column, placedMan) {
-    console.log("in mapTile");
+function placedManValidity(row, column, placedMan) {
+    mapTiles(row, column);
+
+    if (placedMan != -1) {
+        var ind = false;
+        var checkPlace = [7 * row + placedMan[0], 7 * column + placedMan[1]];
+        console.log(checkPlace);
+        var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
+        for (x in obj[typeCheck]) {
+            for (y in obj[typeCheck][x]) {
+                console.log(obj[typeCheck][x][y]);
+                if (obj[typeCheck][x][y][0] === checkPlace[0] && obj[typeCheck][x][y][1] === checkPlace[1]) {
+                    var checkOthers = obj[typeCheck][x];
+                    console.log(checkOthers);
+                    break;
+                }
+            }
+        }
+        for (z1 in checkOthers) {
+            for (z2 in player_placement[0]) {
+                if (checkOthers[z1][0] == player_placement[0][z2][0] && checkOthers[z1][1] == player_placement[0][z2][1]) {
+                    ind = true
+                    //delete the tile entry from game_array etc...
+                    game_array[row][column] = undefined;
+                    for (var i = 0; i < 7; i++) {
+                        for (var j = 0; j < 7; j++) {
+                            detail_array[(row) * 7 + i][(column) * 7 + j] = undefined;
+                            checked_array[(row) * 7 + i][(column) * 7 + j] = undefined;
+                        }
+                    }
+                }
+            }
+        }
+        if (!ind) {
+            player_placement[0].push([checkPlace[0], checkPlace[1]]);
+            player_placement[1].push("player" + current_player);
+        }
+    }
+}
+
+function mapTiles(row, column) {
+    console.log("in mapTiles");
     var Rcnt = 1;
     var Gcnt = 1;
     var Zcnt = 1;
@@ -743,45 +793,9 @@ function mapTile(row, column, placedMan) {
         }
         temp = checkedAll();
     }
-
-    if (placedMan != -1) {
-        var ind = false;
-        var checkPlace = [7 * row + placedMan[0], 7 * column + placedMan[1]];
-        console.log(checkPlace);
-        var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
-        for (x in obj[typeCheck]) {
-            for (y in obj[typeCheck][x]) {
-                console.log(obj[typeCheck][x][y]);
-                if (obj[typeCheck][x][y][0] === checkPlace[0] && obj[typeCheck][x][y][1] === checkPlace[1]) {
-                    var checkOthers = obj[typeCheck][x];
-                    console.log(checkOthers);
-                    break;
-                }
-            }
-        }
-        for (z1 in checkOthers) {
-            for (z2 in player_placement[0]) {
-                if (checkOthers[z1][0] == player_placement[0][z2][0] && checkOthers[z1][1] == player_placement[0][z2][1]) {
-                    ind = true
-                    //delete the tile entry from game_array etc...
-                    game_array[row][column] = undefined;
-                    for (var i = 0; i < 7; i++) {
-                        for (var j = 0; j < 7; j++) {
-                            detail_array[(row) * 7 + i][(column) * 7 + j] = undefined;
-                            checked_array[(row) * 7 + i][(column) * 7 + j] = undefined;
-                        }
-                    }
-                }
-            }
-        }
-        if (!ind) {
-            player_placement[0].push([checkPlace[0], checkPlace[1]]);
-            player_placement[1].push("player" + current_player);
-        }
-    }
 }
 
-//  /test functions
+//  mapTiles functions
 function checkedAll() {
     for (var i = 0; i < (2 * deckSize - 1); i++) {
         for (var j = 0; j < (2 * deckSize - 1); j++) {
@@ -1119,6 +1133,23 @@ function rotateTile(rotation) {
     }
 }
 
+function resetRotation() {
+    if (current_tile.rotation === 1) {
+
+    } else if (current_tile.rotation === 2) {
+        rotateTile(4);
+        current_tile.rotation = 2;
+    } else if (current_tile.rotation === 3) {
+        rotateTile(3);
+        current_tile.rotation = 3;
+    } else if (current_tile.rotation === 4) {
+        rotateTile(2);
+        current_tile.rotation = 4;
+    } else {
+        console.log("Cannot reset rotate as invalid");
+    }
+}
+
 function resetChecked() {
     for (var i = 0; i < 2 * deckSize - 1; i++) {
         for (var j = 0; j < 2 * deckSize - 1; j++) {
@@ -1134,10 +1165,9 @@ function resetChecked() {
 }
 
 function nextPlayer(noPlayer) {
+    current_player++;
     if (current_player === noPlayer + 1) {
         current_player = 1;
-    } else {
-        current_player++;
     }
 }
 
@@ -1171,6 +1201,16 @@ function isArrayEqual(array1,array2) {
                 return false;
             }
         }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function placedManValidator(arr) {
+    if (Array.isArray(arr) && arr.length === 2 && arr[0]>=0 && arr[0]<=6 && arr[1]>=0 && arr[1]<=6 && arr[0] === Math.floor(arr[0]) && arr[1] === Math.floor(arr[1])) {
+        return true;
+    } else if (arr===-1) {
         return true;
     } else {
         return false;
