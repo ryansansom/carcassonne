@@ -494,6 +494,22 @@ router.post('/placetile', function(req, res, next) {
     }
 });
 
+function newScore() {
+    if (tile_deck.length === 0) {
+        endScore();
+    } else {
+        inGameScore();
+    }
+}
+
+function endScore() {
+    
+}
+
+function inGameScore() {
+    
+}
+
 function checkScore() {
     console.log("in checkScore");
     var scores = JSON.parse(JSON.stringify(player_placement));
@@ -693,13 +709,13 @@ function placedManValidity(row, column, placedMan) {
 
     if (placedMan != -1) {
         var ind = false;
-        var checkPlace = [7 * row + placedMan[0], 7 * column + placedMan[1]];
+        var checkPlace = game2detail(row, column, placedMan);
         console.log(checkPlace);
         var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
         for (x in obj[typeCheck]) {
             for (y in obj[typeCheck][x]) {
                 console.log(obj[typeCheck][x][y]);
-                if (obj[typeCheck][x][y][0] === checkPlace[0] && obj[typeCheck][x][y][1] === checkPlace[1]) {
+                if (isArrayEqual(obj[typeCheck][x][y],checkPlace)) {
                     var checkOthers = obj[typeCheck][x];
                     console.log(checkOthers);
                     break;
@@ -708,7 +724,7 @@ function placedManValidity(row, column, placedMan) {
         }
         for (z1 in checkOthers) {
             for (z2 in player_placement[0]) {
-                if (checkOthers[z1][0] == player_placement[0][z2][0] && checkOthers[z1][1] == player_placement[0][z2][1]) {
+                if (isArrayEqual(checkOthers[z1],player_placement[0][z2])) {
                     ind = true
                     //delete the tile entry from game_array etc...
                     game_array[row][column] = undefined;
@@ -722,7 +738,7 @@ function placedManValidity(row, column, placedMan) {
             }
         }
         if (!ind) {
-            player_placement[0].push([checkPlace[0], checkPlace[1]]);
+            player_placement[0].push(checkPlace);
             player_placement[1].push("player" + current_player);
         }
     }
