@@ -413,6 +413,7 @@ router.get('/getactiveplayer', function (req,res) {res.json(players["player"+cur
 router.get('/getplayerplacement', function (req,res) {res.json(player_placement).end()});
 router.get('/getboard', function (req,res) {res.json(game_array).end()});
 router.get('/getdeck', function (req,res) {res.json(tile_deck).end()});
+router.get('/getmap', function (req,res) {mapTiles();res.json(obj).end()});
 //------------------------------------------
 
 router.get('/generate', function(req, res, next) {
@@ -469,7 +470,7 @@ router.post('/placetile', function(req, res, next) {
                     }
                 }
                 resetChecked();
-                placedManValidity(req.body.row, req.body.column, req.body.placedMan); // update surround so that it is neater
+                placedManValidity(req.body.row, req.body.column, req.body.placedMan);
                 if (game_array[req.body.row][req.body.column] == undefined) {
                     res.status(400).send("Invalid player piece placement");
                     resetRotation();
@@ -688,7 +689,7 @@ function openAround(temp) {
 }
 
 function placedManValidity(row, column, placedMan) {
-    mapTiles(row, column);
+    mapTiles();
 
     if (placedMan != -1) {
         var ind = false;
@@ -727,7 +728,7 @@ function placedManValidity(row, column, placedMan) {
     }
 }
 
-function mapTiles(row, column) {
+function mapTiles() {
     console.log("in mapTiles");
     var Rcnt = 1;
     var Gcnt = 1;
@@ -745,7 +746,7 @@ function mapTiles(row, column) {
         checked_array[x][y] = "Y";
         var cnt = 0;
         while (tempArr[cnt]) {
-            surround(tempArr[cnt][0], tempArr[cnt][1]);
+            surround(tempArr[cnt]);
             cnt++;
         }
         if (detail_array[x][y] == "Z") {
@@ -813,13 +814,9 @@ function checkedAll() {
     return false;
 }
 
-function surround(i, j) {
-    var x2 = "is the num " + i;
-    var y2 = "is the num " + j;
-    var x3 = Number(x2.substr(11, x2.length - 11));
-    var y3 = Number(y2.substr(11, y2.length - 11));
-    var x = x3;
-    var y = y3;
+function surround(arr) {
+    var x = noLink(arr[0]);
+    var y = noLink(arr[1]);
     while (y > -1) {
         if (left(x, y)) {
             //do something
@@ -830,8 +827,8 @@ function surround(i, j) {
         }
         y--;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (x > -1) {
         if (up(x, y)) {
             //do something
@@ -842,8 +839,8 @@ function surround(i, j) {
         }
         x--;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (y < 7 * (2 * deckSize - 1)) {
         if (right(x, y)) {
             //do something
@@ -854,8 +851,8 @@ function surround(i, j) {
         }
         y++;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (x < 7 * (2 * deckSize - 1)) {
         if (down(x, y)) {
             //do something
