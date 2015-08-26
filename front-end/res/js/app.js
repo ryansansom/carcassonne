@@ -4,9 +4,14 @@ info.scale = 1;
 info.scaleMultiplyer = 0.8;
 
 function startGameApp() {
+    //Create game on server
+    console.log(createGame());
+
     //Add canvas and context to the game information object
     info.canvas = document.getElementById('game-board');
     info.ctx = info.canvas.getContext('2d');
+
+
     /*Initialise the width and height of the canvas based on window size and add a window resize listent to update it. */
     updateInfo();
     window.addEventListener('resize', updateInfo);
@@ -83,7 +88,7 @@ function drawBaord() {
     var board = getBoard();
     var boardSize = board.length;
     var c = info.ctx;
-    info.tileSize = info.windW/boardSize;
+    info.tileSize = info.windW / boardSize;
 
     c.clearRect(0, 0, info.windW, info.windH);
     c.strokeStyle = "black";
@@ -98,6 +103,7 @@ function drawBaord() {
     }
 
 }
+
 
 // Tester function to draw a grid
 function drawGrid() {
@@ -133,10 +139,27 @@ function drawCentre() {
     c.strokeRect(horCen - tileWidthCen, verCen - tileHeightCen, info.tileSize, info.tileSize);
 }
 
+////////////////////////////////////////////////////////
+//SERVER CALLS                                        //
+////////////////////////////////////////////////////////
+
+
+//Create Game, need to pass in the an object with the player names
+function createGame() {
+    var players = {};
+    players.players = ["Ryan", "Guillaume"];
+    var xhr = new XMLHttpRequest();
+    var url = "http://localhost:3000/v2/creategame";
+    xhr.open("post", url, false);
+    xhr.setRequestHeader("Content-Type","application/json");
+    xhr.send(JSON.stringify(players));
+    return xhr.responseText;
+}
+
 //gets the board from the server
 function getBoard() {
     var xhr = new XMLHttpRequest();
-    var url = "http://localhost:3000/getboard"
+    var url = "http://localhost:3000/v2/getboard"
     xhr.open("get", url, false);
     xhr.send();
 
@@ -147,16 +170,17 @@ function getBoard() {
 //get the next tile from the server
 function getNextTile() {
     var xhr = new XMLHttpRequest();
-    xhr.open("get", "http://localhost:3000/generate", false);
+    xhr.open("get", "http://localhost:3000/v2/generate", false);
     xhr.send();
 
+    console.log(JSON.parse(xhr.responseText));
     return JSON.parse(xhr.responseText);
 }
 
 //sends the tile placement location to the server
 function placeTile(tile) {
     var xhr = new XMLHttpRequest();
-    xhr.open("post", "http://localhost:3000/placetile", false);
+    xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.send(tile);
 
     return JSON.parse(xhr.responseText);
