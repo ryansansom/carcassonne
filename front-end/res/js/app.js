@@ -12,18 +12,22 @@ function startGameApp() {
     window.addEventListener('resize', updateInfo);
 
     //Draw an initial grid. This is a tester method
-    drawGrid();
+    speed(drawGrid);
+    getNextTile();
+    speed(drawBaord);
     window.addEventListener('resize', drawGrid);
 
     //Zooming listeners
     $('#plus').click(function () {
         info.tileSize /= info.scaleMultiplyer;
-        drawGrid();
+        //        drawGrid();
+        speed(drawGrid);
     });
 
     $('#minus').click(function () {
         info.tileSize *= info.scaleMultiplyer;
-        drawGrid();
+        //        drawGrid();
+        speed(drawGrid);
     });
 
     $('#recentre').click(function () {
@@ -79,6 +83,8 @@ function drawBaord() {
     var board = getBoard();
     var boardSize = board.length;
     var c = info.ctx;
+    info.tileSize = info.windW/boardSize;
+
     c.clearRect(0, 0, info.windW, info.windH);
     c.strokeStyle = "black";
 
@@ -130,10 +136,11 @@ function drawCentre() {
 //gets the board from the server
 function getBoard() {
     var xhr = new XMLHttpRequest();
-    xhr.open("get", "http://localhost:3000/getboard", false);
+    var url = "http://localhost:3000/getboard"
+    xhr.open("get", url, false);
     xhr.send();
 
-    //    console.log(xhr.responseText);
+    //        console.log(xhr.responseText);
     return JSON.parse(xhr.responseText);
 }
 
@@ -153,4 +160,13 @@ function placeTile(tile) {
     xhr.send(tile);
 
     return JSON.parse(xhr.responseText);
+}
+
+//Helper function. Time it takes to run a function
+function speed(fnc) {
+    var d1 = new Date();
+    fnc();
+    var d2 = new Date();
+    console.log(d2.getTime() - d1.getTime());
+    return d2.getTime() - d1.getTime();
 }
