@@ -244,7 +244,7 @@ var tile_master = {
         ]
     },
     "city11we": {
-        "name": "tile19",
+        "name": "city11we",
         "url": "/images/tile19.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
