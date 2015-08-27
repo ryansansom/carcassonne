@@ -3,6 +3,7 @@ info.tileSize = 100;
 info.scale = 1;
 info.scaleMultiplyer = 0.8;
 info.darwOffset = {};
+info.newTile = {};
 
 
 //Funciton that initias the game, and does all the initial set up.
@@ -23,7 +24,7 @@ function startGameApp() {
     speed(drawGrid);
     displayTile(getNextTile());
     speed(drawBaord);
-//    window.addEventListener('resize', drawGrid);
+    //    window.addEventListener('resize', drawGrid);
     window.addEventListener('resize', drawBaord);
 
     //Zooming listeners
@@ -49,6 +50,7 @@ function startGameApp() {
         var test = getBoardPosFromMouse(info.canvas, evt);
         console.log("this tile is at pos: " + JSON.stringify(test));
         fillBoardTile(test.x, test.y);
+        placeTileOnBoard(info.newTile, test.x, test.y);
 
     });
 
@@ -57,10 +59,6 @@ function startGameApp() {
 
     //initial rotation of tile
     rotate('new-tile', 0);
-
-    //    console.log(getBoard());
-    //    console.log(getNextTile());
-    //    console.log(placeTile());
 }
 
 // Update the game info object with the window height and width.
@@ -74,6 +72,8 @@ function rotate(id, deg) {
     if (deg != 0) {
         var currentDeg = getAngle(id);
         deg += currentDeg;
+        info.newTile.rotation = deg/90;
+
     }
     document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
     document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
@@ -95,23 +95,8 @@ function getBoardPosFromMouse(cvs, evt) {
     var bPos = {};
     var mPos = getMousePos(cvs, evt);
     var t = info.tileSize;
-//    console.log(mPos);
-    var offset = info.darwOffset;
-//    console.log("This is the new offset: "+offset)
-    //if mPos is (54, 53) then the bPos is (5, 5);
-//    bPos.x = Math.floor((mPos.x / t)-(t-offset.x));
-//    bPos.y = Math.floor((mPos.y / t)-(t-offset.y));
-//    bPos.x = Math.floor((mPos.x-offset.x) / t);
-//    bPos.y = Math.floor((mPos.y-offset.y) / t);
     bPos.x = Math.floor((mPos.x / info.tileSize));
     bPos.y = Math.floor((mPos.y / info.tileSize));
-
-    console.log("the mpos.x is: "+mPos.x);
-    console.log("The tilesie is: "+t);
-    console.log("The mpos.x/t = "+mPos.x/t);
-    console.log("the floor(mpos.x/t) = " +Math.floor(mPos/t));
-
-//    console.log(bPos);
     return bPos;
 }
 
@@ -134,6 +119,7 @@ c.restore();
 // not quite woring yet.
 function drawBaord() {
     var board = getBoard();
+    //    var boardSize = board.length;
     //    var boardSize = board.length;
     var boardSize = 40;
     var c = info.ctx;
@@ -170,11 +156,9 @@ function drawBaord() {
 function displayTile(tile) {
     var name = tile.name;
     var path = 'res/pics/tiles/original-game/';
-    var src = path+name+'.png';
-    console.log($('#new-tile').attr('src'));
-    console.log(src);
+    var src = path + name + '.png';
+    info.newTile.src = src;
     $('#new-tile').attr('src', src);
-    console.log($('#new-tile').attr('src'));
 }
 
 function blueButton() {
@@ -183,6 +167,21 @@ function blueButton() {
 
 function whiteButton() {
     $(this).css('background', 'white');
+}
+
+function placeTileOnBoard(tile, bx, by) {
+    var c = info.ctx;
+    var t = info.tileSize;
+    var imageObj = new Image();
+    var toRadians = Math.PI/180;
+    var angle = tile.rotation*90;
+    console.log(tile);
+    imageObj.src = tile.src;
+    c.save();
+    c.translate(bx * t +t/2, by * t+t/2)
+    c.rotate(angle*toRadians);
+    c.drawImage(imageObj, -t/2, -t/2, t, t);
+    c.restore();
 }
 
 
@@ -222,6 +221,8 @@ function getNextTile() {
     xhr.send();
 
     console.log(JSON.parse(xhr.responseText));
+    info.newTile = JSON.parse(xhr.responseText);
+    info.newTile.rotation = 0;
     return JSON.parse(xhr.responseText);
 }
 
@@ -285,20 +286,8 @@ function drawCentre() {
 function fillBoardTile(bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
-    //translate to account for tile centering
-    var centreDrawPoint = {};
-    centreDrawPoint.x = info.windW / 2 - info.tileSize / 2;
-    centreDrawPoint.y = info.windH / 2 - info.tileSize / 2;
-    var offset = {};
-    offset.x = centreDrawPoint.x % t;
-    offset.y = centreDrawPoint.y % t;
-//    console.log("this is the offset: " + JSON.stringify(offset));
-//    console.log("the draw point x is: " + bx);
-//    console.log("the tile size is: " + t);
     c.save();
-    //    c.translate(t-offset.x, t-offset.y);
     c.fillStyle = "blue";
-    //    c.fillRect(t-offset.x+(bx * t), by * t, t, t);
     c.fillRect(bx * t, by * t, t, t);
     c.restore();
 }
