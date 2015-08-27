@@ -56,6 +56,10 @@ function startGameApp() {
 
     $('#confirm').mousedown(blueButton);
     $('#confirm').mouseup(whiteButton);
+    $('#confirm').click(function() {
+        var tile = getNextTile();
+        displayTile(tile);
+    });
 
     //initial rotation of tile
     rotate('new-tile', 0);
@@ -159,6 +163,7 @@ function displayTile(tile) {
     var src = path + name + '.png';
     info.newTile.src = src;
     $('#new-tile').attr('src', src);
+    rotate('new-tile', info.newTile.rotation);
 }
 
 function blueButton() {
