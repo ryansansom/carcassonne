@@ -21,7 +21,7 @@ function startGameApp() {
 
     //Draw an initial grid. This is a tester method
     speed(drawGrid);
-    displayNextTile(getNextTile());
+    displayTile(getNextTile());
     speed(drawBaord);
 //    window.addEventListener('resize', drawGrid);
     window.addEventListener('resize', drawBaord);
@@ -51,6 +51,9 @@ function startGameApp() {
         fillBoardTile(test.x, test.y);
 
     });
+
+    $('#confirm').mousedown(blueButton);
+    $('#confirm').mouseup(whiteButton);
 
     //initial rotation of tile
     rotate('new-tile', 0);
@@ -164,7 +167,7 @@ function drawBaord() {
 
 }
 
-function displayNextTile(tile) {
+function displayTile(tile) {
     var name = tile.name;
     var path = 'res/pics/tiles/original-game/';
     var src = path+name+'.png';
@@ -172,6 +175,14 @@ function displayNextTile(tile) {
     console.log(src);
     $('#new-tile').attr('src', src);
     console.log($('#new-tile').attr('src'));
+}
+
+function blueButton() {
+    $(this).css('background', 'blue');
+}
+
+function whiteButton() {
+    $(this).css('background', 'white');
 }
 
 
