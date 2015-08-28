@@ -53,11 +53,17 @@ function startGameApp() {
 
     //Click listeners
     $('#game-board').click(function (evt) {
-        var test = getBoardPosFromMouse(info.canvas, evt);
+        var test = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
         console.log("this tile is at pos: " + JSON.stringify(test));
         fillBoardTile(test.x, test.y);
         placeTileOnBoard(info.newTile, test.x, test.y);
 
+    });
+
+    $('#new-tile').click(function (evt) {
+        var test = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
+        console.log("this bit is at pos: " + JSON.stringify(test));
+        drawMan(test.x, test.y);
     });
 
     $('#confirm').mousedown(blueButton);
@@ -100,13 +106,12 @@ function getAngle(id) {
     return angle;
 }
 
-function getBoardPosFromMouse(cvs, evt) {
+function getBoardPosFromMouse(cvs, evt, len) {
     //set up the board position, the return object
     var bPos = {};
     var mPos = getMousePos(cvs, evt);
-    var t = info.tileSize;
-    bPos.x = Math.floor((mPos.x / info.tileSize));
-    bPos.y = Math.floor((mPos.y / info.tileSize));
+    bPos.x = Math.floor((mPos.x / len));
+    bPos.y = Math.floor((mPos.y / len));
     return bPos;
 }
 
@@ -208,6 +213,7 @@ function drawTileGrid() {
     var tileSplit = info.newTile.tile_split;
     var len = tileSplit.length;
     var splitLen = cnv.width / len;
+    info.splitLen = splitLen;
     for (var y = 0; y < len; y++) {
         for (var x = 0; x < len; x++) {
             c.save();
@@ -217,26 +223,40 @@ function drawTileGrid() {
                 c.fillStyle = 'rgba(0,0,0,0.3)';
                 c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
             }
-//            switch (tileSplit[y][x]) {
-//            case 'Z':
-//                c.fillStyle = 'rgba(0,0,0,0.5)';
-//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-//            case 'C':
-//                c.fillStyle = 'rgba(255,100,0,0.5)';
-//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-//            case 'R':
-//                c.fillStyle = 'rgba(100,100,100,0.5)';
-//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-//            case 'G':
-//                c.fillStyle = 'rgba(0,150,50,0.5)';
-//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            //            switch (tileSplit[y][x]) {
+            //            case 'Z':
+            //                c.fillStyle = 'rgba(0,0,0,0.5)';
+            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            //            case 'C':
+            //                c.fillStyle = 'rgba(255,100,0,0.5)';
+            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            //            case 'R':
+            //                c.fillStyle = 'rgba(100,100,100,0.5)';
+            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            //            case 'G':
+            //                c.fillStyle = 'rgba(0,150,50,0.5)';
+            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
 
-//            }
+            //            }
             c.restore();
 
         }
 
     }
+}
+
+function drawMan(x, y) {
+    var c = info.ctx2;
+    var len = info.splitLen;
+    c.save();
+    c.fillStyle = "blue";
+    c.translate(x * len, y * len);
+    c.beginPath();
+    c.arc(len / 2, len / 2, len / 4, 0, 2 * Math.PI);
+    c.fill();
+    c.restore();
+    console.log('drowMan');
+
 }
 
 
