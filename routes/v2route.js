@@ -328,28 +328,7 @@ var checkedArr;
 var array;
 var tempArr;
 var current_player = 1;
-var players = {
-    "player1": {
-        "name": "Ryan",
-        "points": 0
-    },
-    "player2": {
-        "name": "Guillaume",
-        "points": 0
-    },
-    "player3": {
-        "name": "Ruta",
-        "points": 0
-    },
-    "player4": {
-        "name": "Mindy",
-        "points": 0
-    },
-    "player5": {
-        "name": "Diana",
-        "points": 0
-    }
-};
+var players;
 
 var new_tiles = JSON.parse(JSON.stringify(tile_master));
 var tile_deck = ["city1", "city1", "city1", "city1", "city1", "city11ne", "city11ne", "city11we", "city11we", "city11we", "city1rse", "city1rse", "city1rse", "city1rsw", "city1rsw", "city1rsw", "city1rswe", "city1rswe", "city1rswe", "city1rwe", "city1rwe", "city1rwe", "city1rwe", "city2nw", "city2nw", "city2nw", "city2nwr", "city2nwr", "city2nwr", "city2nws", "city2nws", "city2nwsr", "city2nwsr", "city2we", "city2wes", "city2wes", "city3", "city3", "city3", "city3r", "city3s", "city3sr", "city3sr", "city4", "mon", "mon", "mon", "mon", "monr", "monr", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2ns", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road2sw", "road3", "road3", "road3", "road3", "road4"];
@@ -391,7 +370,7 @@ router.post('/creategame', function(req, res) {
             []
         ];
         players = {};
-        var colours = ["#000000","#FFFFFF","#0000FF","#FF0000","#00FF00"];
+        var colours = ["#000000", "#FFFFFF", "#0000FF", "#FF0000", "#00FF00"];
 
         for (var i = 0; i < limit; i++) {
             var temp = randNum(colours.length);
@@ -401,7 +380,7 @@ router.post('/creategame', function(req, res) {
                 "pieces": 7,
                 "colour": colours[temp]
             };
-            colours.splice(temp,1);
+            colours.splice(temp, 1);
         }
 
         game_array = createArray(2 * tile_deck.length - 1); //needs to be created differently
@@ -436,22 +415,70 @@ router.get('/getmap', function(req, res) {
 //------------------------------------------
 
 router.get('/generate', function(req, res) {
-    if (!game_array) {
-        res.status(400).send("Please use /creategame first");
-    } else if (!game_array[deckSize - 1][deckSize - 1] && tile_deck.length == deckSize) {
-        for (var i = 0; i < tile_deck.length; i++) {
-            if (tile_deck[i] == "city1rwe") {
-                tile_deck.splice(i, 1);
-                current_tile = noLink(new_tiles.city1rwe);
-                current_tile.rotation = 1;
-                res.json(current_tile).end();
-                break;
+    if (tile_deck.length === 0) {
+        //end the game
+        endScore();
+        //add some end of game response here.
+        res.json({
+            "message": "game has ended, run /getplayers to see score - this will be updated later"
+        });
+    } else {
+        if (!game_array) {
+            res.status(400).send("Please use /creategame first");
+        } else if (!game_array[deckSize - 1][deckSize - 1] && tile_deck.length == deckSize) {
+            for (var i = 0; i < tile_deck.length; i++) {
+                if (tile_deck[i] == "city1rwe") {
+                    tile_deck.splice(i, 1);
+                    current_tile = noLink(new_tiles.city1rwe);
+                    current_tile.rotation = 1;
+                    res.json(current_tile).end();
+                    break;
+                }
+            }
+        } else {
+            current_tile = noLink(new_tiles[tile_deck[randNum(tile_deck.length)]]);
+            current_tile.rotation = 1;
+            res.json(current_tile).end();
+        }
+    }
+});
+
+router.get('/generatespecific/:tile', function(req, res) {
+    if (tile_deck.length === 0) {
+        //end the game
+        endScore();
+        //add some end of game response here.
+        res.json({
+            "message": "game has ended, run /getplayers to see score - this will be updated later"
+        });
+    } else {
+        if (!game_array) {
+            res.status(400).send("Please use /creategame first").end();
+        } else if (!game_array[deckSize - 1][deckSize - 1] && tile_deck.length == deckSize) {
+            for (var i = 0; i < tile_deck.length; i++) {
+                if (tile_deck[i] == "city1rwe") {
+                    tile_deck.splice(i, 1);
+                    current_tile = noLink(new_tiles.city1rwe);
+                    current_tile.rotation = 1;
+                    res.json(current_tile).end();
+                    break;
+                }
+            }
+        } else {
+            var ind = false;
+            for (var j in tile_deck) {
+                if (tile_deck[j] === req.params.tile) {
+                    current_tile = noLink(new_tiles[req.params.tile]);
+                    current_tile.rotation = 1;
+                    ind = true;
+                    res.json(current_tile).end();
+                    break;
+                }
+            }
+            if (!ind) {
+                res.status(400).send("no such tile").end();
             }
         }
-    } else {
-        current_tile = noLink(new_tiles[tile_deck[randNum(tile_deck.length)]]);
-        current_tile.rotation = 1;
-        res.json(current_tile).end();
     }
 });
 
@@ -496,15 +523,8 @@ router.post('/placetile', function(req, res) {
                     } else {
                         console.log(player_placement);
                         inGameScore();
-                        if (tile_deck.length === 0) {
-                            //end the game
-                            endScore();
-                            //add some end of game response here.
-                            res.json({"message": "game has ended, run /getplayers to see score - this will be updated later"});
-                        } else {
-                            nextPlayer(Object.keys(players).length);
-                            res.json(current_tile);
-                        }
+                        nextPlayer(Object.keys(players).length);
+                        res.json(current_tile);
                     }
                 } else {
                     res.status(400).send("Not enough remaining pieces to do this");
@@ -563,7 +583,7 @@ function endScore() {
         if (type === "R") {
             console.log("In score - road");
             for (var z in awardPointsTo) {
-                players[awardPointsTo[z]].points+=countTiles.length;
+                players[awardPointsTo[z]].points += countTiles.length;
             }
         } else if (type === "C") {
             console.log("In score - city");
@@ -575,10 +595,10 @@ function endScore() {
                 }
             }
             for (var z in awardPointsTo) {
-                players[awardPointsTo[z]].points+=(countTiles.length + bannerCnt);
+                players[awardPointsTo[z]].points += (countTiles.length + bannerCnt);
             }
         } else if (type === "M") {
-            players[awardPointsTo[0]].points+=monasteryScoring(player_placement[0][player_placement[0].length - 1]);
+            players[awardPointsTo[0]].points += monasteryScoring(player_placement[0][player_placement[0].length - 1]);
         } else if (type === "G") {
             //count the amount of closed cities connecting to the land.
         }
@@ -630,7 +650,7 @@ function inGameScore() {
                 if (type === "R") {
                     console.log("In score - road");
                     for (var z in awardPointsTo) {
-                        players[awardPointsTo[z]].points+=countTiles.length;
+                        players[awardPointsTo[z]].points += countTiles.length;
                     }
                 } else if (type === "C") {
                     console.log("In score - city");
@@ -642,7 +662,7 @@ function inGameScore() {
                         }
                     }
                     for (var z in awardPointsTo) {
-                        players[awardPointsTo[z]].points+=(2 * (countTiles.length + bannerCnt));
+                        players[awardPointsTo[z]].points += (2 * (countTiles.length + bannerCnt));
                     }
                 }
             } else {
