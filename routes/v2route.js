@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var request = require('supertest');
 
 var tile_master = {
     "road2sw": {
@@ -218,7 +217,7 @@ var tile_master = {
     },
     "city2wes": {
         "name": "city2we",
-        "url": "/images/tile16.jpg",
+        "url": "/images/tile17.jpg",
         "banner": true,
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -365,13 +364,13 @@ var player_placement = [
     []
 ];
 
-router.post('/creategame', function(req, res, next) {
+router.post('/creategame', function(req, res) {
     var limit = 0;
     if (req.body.players && Array.isArray(req.body.players)) {
         if (req.body.players.length > 5) {
             limit = 5;
         } else {
-            limit = req.body.players.length
+            limit = req.body.players.length;
         }
     }
     if (limit > 1) {
@@ -387,15 +386,22 @@ router.post('/creategame', function(req, res, next) {
         detail_array;
         checked_array;
         current_tile;
-        player_placement = [[],[]];
-        players = new Object;
+        player_placement = [
+            [],
+            []
+        ];
+        players = {};
+        var colours = ["#000000","#FFFFFF","#0000FF","#FF0000","#00FF00"];
 
         for (var i = 0; i < limit; i++) {
+            var temp = randNum(colours.length);
             players["player" + (i + 1)] = {
                 "name": req.body.players[i],
                 "points": 0,
-                "pieces": 7
+                "pieces": 7,
+                "colour": colours[temp]
             };
+            colours.splice(temp,1);
         }
 
         game_array = createArray(2 * tile_deck.length - 1); //needs to be created differently
@@ -408,35 +414,48 @@ router.post('/creategame', function(req, res, next) {
 });
 
 //------------info gathering----------------
-router.get('/getplayers', function (req,res) {res.json(players).end()});
-router.get('/getactiveplayer', function (req,res) {res.json(players["player"+current_player]).end()});
-router.get('/getplayerplacement', function (req,res) {res.json(player_placement).end()});
-router.get('/getboard', function (req,res) {res.json(game_array).end()});
-router.get('/getdeck', function (req,res) {res.json(tile_deck).end()});
+router.get('/getplayers', function(req, res) {
+    res.json(players).end();
+});
+router.get('/getactiveplayer', function(req, res) {
+    res.json(players["player" + current_player]).end();
+});
+router.get('/getplayerplacement', function(req, res) {
+    res.json(player_placement).end();
+});
+router.get('/getboard', function(req, res) {
+    res.json(game_array).end();
+});
+router.get('/getdeck', function(req, res) {
+    res.json(tile_deck).end();
+});
+router.get('/getmap', function(req, res) {
+    mapTiles();
+    res.json(obj).end();
+});
 //------------------------------------------
 
-router.get('/generate', function(req, res, next) {
+router.get('/generate', function(req, res) {
     if (!game_array) {
-        res.status(400).send("Please use /creategame first")
-    } else if (!game_array[deckSize-1][deckSize-1] && tile_deck.length == deckSize) {
-        for (var i=0;i<tile_deck.length;i++) {
+        res.status(400).send("Please use /creategame first");
+    } else if (!game_array[deckSize - 1][deckSize - 1] && tile_deck.length == deckSize) {
+        for (var i = 0; i < tile_deck.length; i++) {
             if (tile_deck[i] == "city1rwe") {
-                tile_deck.splice(i,1);
-                current_tile = noLink(new_tiles["city1rwe"]);
+                tile_deck.splice(i, 1);
+                current_tile = noLink(new_tiles.city1rwe);
                 current_tile.rotation = 1;
                 res.json(current_tile).end();
                 break;
             }
         }
     } else {
-        var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
-        current_tile = noLink(new_tiles[tile_deck[rand]]);
+        current_tile = noLink(new_tiles[tile_deck[randNum(tile_deck.length)]]);
         current_tile.rotation = 1;
         res.json(current_tile).end();
     }
 });
 
-router.post('/placetile', function(req, res, next) {
+router.post('/placetile', function(req, res) {
     //send this function a json body in form of {"row": 71, "column": 71, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
     rotateTile(req.body.rotation);
     if (!game_array[deckSize - 1][deckSize - 1]) {
@@ -460,29 +479,42 @@ router.post('/placetile', function(req, res, next) {
     } else if (checkAdjPresent(req.body.row, req.body.column) && checkAbove(req.body.row, req.body.column) && checkBelow(req.body.row, req.body.column) && checkLeft(req.body.row, req.body.column) && checkRight(req.body.row, req.body.column)) {
         //add a check for valid player placement
         if (placedManValidator(req.body.placedMan)) {
-            if (players["player" + current_player].pieces > 0) {
-                game_array[req.body.row][req.body.column] = current_tile;
-                for (var i = 0; i < 7; i++) {
-                    for (var j = 0; j < 7; j++) {
-                        detail_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = current_tile.tile_split[i][j];
-                        checked_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = "N";
+            if (current_tile.tile_split[req.body.placedMan[0]][req.body.placedMan[1]] !== "Z") {
+                if (players["player" + current_player].pieces > 0) {
+                    game_array[req.body.row][req.body.column] = current_tile;
+                    for (var i = 0; i < 7; i++) {
+                        for (var j = 0; j < 7; j++) {
+                            detail_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = current_tile.tile_split[i][j];
+                            checked_array[(req.body.row) * 7 + i][(req.body.column) * 7 + j] = "N";
+                        }
                     }
-                }
-                resetChecked();
-                placedManValidity(req.body.row, req.body.column, req.body.placedMan); // update surround so that it is neater
-                if (game_array[req.body.row][req.body.column] == undefined) {
-                    res.status(400).send("Invalid player piece placement");
-                    resetRotation();
+                    resetChecked();
+                    placedManValidity(req.body.row, req.body.column, req.body.placedMan);
+                    if (game_array[req.body.row][req.body.column] === undefined) {
+                        res.status(400).send("Invalid player piece placement - already somebody occupying this space");
+                        resetRotation();
+                    } else {
+                        console.log(player_placement);
+                        inGameScore();
+                        if (tile_deck.length === 0) {
+                            //end the game
+                            endScore();
+                            //add some end of game response here.
+                            res.json({"message": "game has ended, run /getplayers to see score - this will be updated later"});
+                        } else {
+                            nextPlayer(Object.keys(players).length);
+                            res.json(current_tile);
+                        }
+                    }
                 } else {
-                    res.json(current_tile);
-                    console.log(player_placement);
-                    checkScore(); //need a whole rework to scoring
-                    nextPlayer(Object.keys(players).length);
+                    res.status(400).send("Not enough remaining pieces to do this");
+                    resetRotation();
                 }
             } else {
-                res.status(400).send("Not enough remaining pieces to do this");
+                res.status(400).send("Invalid player piece placement - try placing in the centre of where you want");
                 resetRotation();
             }
+
         } else {
             res.status(400).send("Invalid placedMan format - use -1 for no piece placement");
             resetRotation();
@@ -493,47 +525,150 @@ router.post('/placetile', function(req, res, next) {
     }
 });
 
-function checkScore() {
-    console.log("in checkScore");
+function endScore() {
+    while (player_placement[0].length > 0) {
+        var type = detail_array[player_placement[0][player_placement[0].length - 1][0]][player_placement[0][player_placement[0].length - 1][1]];
+        console.log(type);
+        checkallend: for (var x in obj[type]) {
+            for (var y in obj[type][x]) {
+                if (isArrayEqual(obj[type][x][y], player_placement[0][player_placement[0].length - 1])) {
+                    var temp = obj[type][x];
+                    break checkallend;
+                }
+            }
+        }
+        console.log(temp);
+        var points = [];
+        for (var i = 0; i < temp.length; i++) {
+            for (var j = player_placement[0].length - 1; j >= 0; j--) {
+                if (isArrayEqual(temp[i], player_placement[0][j])) {
+                    //push player
+                    points.push(player_placement[1][j]);
+                    players[player_placement[1][j]].pieces++;
+                    player_placement[0].splice(j, 1);
+                    player_placement[1].splice(j, 1);
+                    break;
+                }
+            }
+        }
+        console.log(points);
+        var awardPointsTo = mode(points);
+        var countTiles = [];
+        console.log("forming countTiles");
+        for (var k = 0; k < temp.length; k++) {
+            countTiles.push(detail2game(temp[k]));
+        }
+        countTiles = remove_duplicates(countTiles);
+        console.log(countTiles);
+        if (type === "R") {
+            console.log("In score - road");
+            for (var z in awardPointsTo) {
+                players[awardPointsTo[z]].points+=countTiles.length;
+            }
+        } else if (type === "C") {
+            console.log("In score - city");
+            //check all tiles for banner, for each banner, add 2 points.
+            var bannerCnt = 0;
+            for (var x in countTiles) {
+                if (game_array[countTiles[x][0]][countTiles[x][1]].banner) {
+                    bannerCnt++;
+                }
+            }
+            for (var z in awardPointsTo) {
+                players[awardPointsTo[z]].points+=(countTiles.length + bannerCnt);
+            }
+        } else if (type === "M") {
+            players[awardPointsTo[0]].points+=monasteryScoring(player_placement[0][player_placement[0].length - 1]);
+        } else if (type === "G") {
+            //count the amount of closed cities connecting to the land.
+        }
+    }
+}
+
+function inGameScore() {
+    console.log("in inGameScore");
     var scores = JSON.parse(JSON.stringify(player_placement));
-    for (var i = scores[0].length - 1; i >= 0; i--) {
-        console.log(detail_array[scores[0][i][0]][scores[0][i][1]]);
-        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C") {
-            for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
-                for (y in obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x]) {
-                    if (obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][0] === scores[0][i][0] && obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y][1] === scores[0][i][1]) {
-                        var temp = obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x];
-                        break;
+    while (scores[0].length > 0) {
+        var type = detail_array[scores[0][scores[0].length - 1][0]][scores[0][scores[0].length - 1][1]];
+        console.log(type);
+        if (type === "R" || type === "C") {
+            checkall: for (var x in obj[type]) {
+                for (var y in obj[type][x]) {
+                    if (isArrayEqual(obj[type][x][y], scores[0][scores[0].length - 1])) {
+                        var temp = obj[type][x];
+                        break checkall;
                     }
                 }
             }
             console.log(temp);
             if (!openAround(temp)) {
-                score(temp, scores, detail_array[scores[0][i][0]][scores[0][i][1]]);
-                //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
-                player_placement[0].splice(i, 1);
-                player_placement[1].splice(i, 1);
+                //this is where the scoring happens
+                var points = [];
+                for (var i = 0; i < temp.length; i++) {
+                    for (var j = scores[0].length - 1; j >= 0; j--) {
+                        if (isArrayEqual(temp[i], scores[0][j])) {
+                            //push player
+                            points.push(scores[1][j]);
+                            players[scores[1][j]].pieces++;
+                            player_placement[0].splice(j, 1);
+                            player_placement[1].splice(j, 1);
+                            scores[0].splice(j, 1);
+                            scores[1].splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+                console.log(points);
+                var awardPointsTo = mode(points);
+                var countTiles = [];
+                console.log("forming countTiles");
+                for (var k = 0; k < temp.length; k++) {
+                    countTiles.push(detail2game(temp[k]));
+                }
+                countTiles = remove_duplicates(countTiles);
+                console.log(countTiles);
+                if (type === "R") {
+                    console.log("In score - road");
+                    for (var z in awardPointsTo) {
+                        players[awardPointsTo[z]].points+=countTiles.length;
+                    }
+                } else if (type === "C") {
+                    console.log("In score - city");
+                    //check all tiles for banner, for each banner, add 2 points.
+                    var bannerCnt = 0
+                    for (x in countTiles) {
+                        if (game_array[countTiles[x][0]][countTiles[x][1]].banner) {
+                            bannerCnt++;
+                        }
+                    }
+                    for (var z in awardPointsTo) {
+                        players[awardPointsTo[z]].points+=(2 * (countTiles.length + bannerCnt));
+                    }
+                }
             } else {
-                scores[0].splice(i, 1);
-                scores[1].splice(i, 1);
+                //the type being checked is open, so remove from scores, which is the placements we are checking.
+                scores[0].splice(scores[0].length - 1, 1);
+                scores[1].splice(scores[1].length - 1, 1);
             }
-        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i][0], scores[0][i][1]) === 9) {
-            //Monastery scoring
-
-            player_placement[0].splice(i, 1);
-            player_placement[1].splice(i, 1);
+        } else if (type === "M" && monasteryScoring(scores[0][scores[0].length - 1]) === 9) {
+            players[scores[1][scores[0].length - 1]].points += 9;
+            players[scores[1][scores[0].length - 1]].pieces++;
+            player_placement[0].splice(scores[0].length - 1, 1);
+            player_placement[1].splice(scores[1].length - 1, 1);
+            scores[0].splice(scores[0].length - 1, 1);
+            scores[1].splice(scores[1].length - 1, 1);
         } else {
             //remove as already checked its not what we want
-            scores[0].splice(i, 1);
-            scores[1].splice(i, 1);
+            scores[0].splice(scores[0].length - 1, 1);
+            scores[1].splice(scores[1].length - 1, 1);
         }
     }
 }
 
-function monasteryScoring(x, y) {
+function monasteryScoring(arr) {
     var count = 1;
-    var i = Math.floor(x / 7);
-    var j = Math.floor(y / 7);
+    var i = Math.floor(arr[0] / 7);
+    var j = Math.floor(arr[1] / 7);
     if (game_array[i - 1][j - 1]) {
         count++;
     }
@@ -561,7 +696,44 @@ function monasteryScoring(x, y) {
     return count;
 }
 
-function score(temp, scores, type) {
+/*function checkScore() {
+    console.log("in checkScore");
+    var scores = JSON.parse(JSON.stringify(player_placement));
+    for (var i = scores[0].length - 1; i >= 0; i--) {
+        console.log(detail_array[scores[0][i][0]][scores[0][i][1]]);
+        if (detail_array[scores[0][i][0]][scores[0][i][1]] === "R" || detail_array[scores[0][i][0]][scores[0][i][1]] === "C") {
+            checkall: for (x in obj[detail_array[scores[0][i][0]][scores[0][i][1]]]) {
+                for (y in obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x]) {
+                    if (isArrayEqual(obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x][y], scores[0][i])) {
+                        var temp = obj[detail_array[scores[0][i][0]][scores[0][i][1]]][x];
+                        break checkall;
+                    }
+                }
+            }
+            console.log(temp);
+            if (!openAround(temp)) {
+                score(temp, scores, detail_array[scores[0][i][0]][scores[0][i][1]]);
+                //need to somehow remove from player_placement . Also need to introduct fucntions to handle number of playing pieces limit
+                player_placement[0].splice(i, 1);
+                player_placement[1].splice(i, 1);
+            } else {
+                scores[0].splice(i, 1);
+                scores[1].splice(i, 1);
+            }
+        } else if (detail_array[scores[0][i][0]][scores[0][i][1]] === "M" && monasteryScoring(scores[0][i]) === 9) {
+            //Monastery scoring
+
+            player_placement[0].splice(i, 1);
+            player_placement[1].splice(i, 1);
+        } else {
+            //remove as already checked its not what we want
+            scores[0].splice(i, 1);
+            scores[1].splice(i, 1);
+        }
+    }
+}*/
+
+/*function score(temp, scores, type) {
     console.log("in score");
     console.log("type " + type);
     var points = [];
@@ -603,7 +775,7 @@ function score(temp, scores, type) {
         }
         players[awardPointsTo[z]].points = players[awardPointsTo[z]].points + 2 * (countTiles.length + bannerCnt);
     }
-}
+}*/
 
 function remove_duplicates(arr) {
     //works because a scoring during the game can never be with 1 tile
@@ -647,8 +819,8 @@ function mode(array) {
 function openAround(temp) {
     console.log("in openAround");
     var openCnt = 0;
-    for (x1 in temp) {
-        if (temp[x1][0] != 0) {
+    for (var x1 in temp) {
+        if (temp[x1][0] !== 0) {
             if (!detail_array[temp[x1][0] - 1][temp[x1][1]]) {
                 openCnt++;
             }
@@ -664,7 +836,7 @@ function openAround(temp) {
             openCnt++;
         }
 
-        if (temp[x1][1] != 0) {
+        if (temp[x1][1] !== 0) {
             if (!detail_array[temp[x1][0]][temp[x1][1] - 1]) {
                 openCnt++;
             }
@@ -688,27 +860,27 @@ function openAround(temp) {
 }
 
 function placedManValidity(row, column, placedMan) {
-    mapTiles(row, column);
+    mapTiles();
 
     if (placedMan != -1) {
         var ind = false;
-        var checkPlace = [7 * row + placedMan[0], 7 * column + placedMan[1]];
+        var checkPlace = game2detail(row, column, placedMan);
         console.log(checkPlace);
         var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
-        for (x in obj[typeCheck]) {
-            for (y in obj[typeCheck][x]) {
+        for (var x in obj[typeCheck]) {
+            for (var y in obj[typeCheck][x]) {
                 console.log(obj[typeCheck][x][y]);
-                if (obj[typeCheck][x][y][0] === checkPlace[0] && obj[typeCheck][x][y][1] === checkPlace[1]) {
+                if (isArrayEqual(obj[typeCheck][x][y], checkPlace)) {
                     var checkOthers = obj[typeCheck][x];
                     console.log(checkOthers);
                     break;
                 }
             }
         }
-        for (z1 in checkOthers) {
-            for (z2 in player_placement[0]) {
-                if (checkOthers[z1][0] == player_placement[0][z2][0] && checkOthers[z1][1] == player_placement[0][z2][1]) {
-                    ind = true
+        for (var z1 in checkOthers) {
+            for (var z2 in player_placement[0]) {
+                if (isArrayEqual(checkOthers[z1], player_placement[0][z2])) {
+                    ind = true;
                     //delete the tile entry from game_array etc...
                     game_array[row][column] = undefined;
                     for (var i = 0; i < 7; i++) {
@@ -721,13 +893,13 @@ function placedManValidity(row, column, placedMan) {
             }
         }
         if (!ind) {
-            player_placement[0].push([checkPlace[0], checkPlace[1]]);
+            player_placement[0].push(checkPlace);
             player_placement[1].push("player" + current_player);
         }
     }
 }
 
-function mapTiles(row, column) {
+function mapTiles() {
     console.log("in mapTiles");
     var Rcnt = 1;
     var Gcnt = 1;
@@ -745,7 +917,7 @@ function mapTiles(row, column) {
         checked_array[x][y] = "Y";
         var cnt = 0;
         while (tempArr[cnt]) {
-            surround(tempArr[cnt][0], tempArr[cnt][1]);
+            surround(tempArr[cnt]);
             cnt++;
         }
         if (detail_array[x][y] == "Z") {
@@ -813,13 +985,9 @@ function checkedAll() {
     return false;
 }
 
-function surround(i, j) {
-    var x2 = "is the num " + i;
-    var y2 = "is the num " + j;
-    var x3 = Number(x2.substr(11, x2.length - 11));
-    var y3 = Number(y2.substr(11, y2.length - 11));
-    var x = x3;
-    var y = y3;
+function surround(arr) {
+    var x = noLink(arr[0]);
+    var y = noLink(arr[1]);
     while (y > -1) {
         if (left(x, y)) {
             //do something
@@ -830,8 +998,8 @@ function surround(i, j) {
         }
         y--;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (x > -1) {
         if (up(x, y)) {
             //do something
@@ -842,8 +1010,8 @@ function surround(i, j) {
         }
         x--;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (y < 7 * (2 * deckSize - 1)) {
         if (right(x, y)) {
             //do something
@@ -854,8 +1022,8 @@ function surround(i, j) {
         }
         y++;
     }
-    x = x3;
-    y = y3;
+    x = noLink(arr[0]);
+    y = noLink(arr[1]);
     while (x < 7 * (2 * deckSize - 1)) {
         if (down(x, y)) {
             //do something
@@ -1023,75 +1191,6 @@ function checkRight(row, col) {
     return false;
 }
 
-//is there a tile here?
-function checkAboveTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[6][0] === current_tile.tile_split[0][0] && game_array[rowCheck][colCheck].tile_split[6][1] === current_tile.tile_split[0][1] && game_array[rowCheck][colCheck].tile_split[6][2] === current_tile.tile_split[0][2] && game_array[rowCheck][colCheck].tile_split[6][3] === current_tile.tile_split[0][3] && game_array[rowCheck][colCheck].tile_split[6][4] === current_tile.tile_split[0][4] && game_array[rowCheck][colCheck].tile_split[6][5] === current_tile.tile_split[0][5] && game_array[rowCheck][colCheck].tile_split[6][6] === current_tile.tile_split[0][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkBelowTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][0] === current_tile.tile_split[6][0] && game_array[rowCheck][colCheck].tile_split[0][1] === current_tile.tile_split[6][1] && game_array[rowCheck][colCheck].tile_split[0][2] === current_tile.tile_split[6][2] && game_array[rowCheck][colCheck].tile_split[0][3] === current_tile.tile_split[6][3] && game_array[rowCheck][colCheck].tile_split[0][4] === current_tile.tile_split[6][4] && game_array[rowCheck][colCheck].tile_split[0][5] === current_tile.tile_split[6][5] && game_array[rowCheck][colCheck].tile_split[0][6] === current_tile.tile_split[6][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkLeftTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][6] === current_tile.tile_split[0][0] && game_array[rowCheck][colCheck].tile_split[1][6] === current_tile.tile_split[1][0] && game_array[rowCheck][colCheck].tile_split[2][6] === current_tile.tile_split[2][0] && game_array[rowCheck][colCheck].tile_split[3][6] === current_tile.tile_split[3][0] && game_array[rowCheck][colCheck].tile_split[4][6] === current_tile.tile_split[4][0] && game_array[rowCheck][colCheck].tile_split[5][6] === current_tile.tile_split[5][0] && game_array[rowCheck][colCheck].tile_split[6][6] === current_tile.tile_split[6][0]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkRightTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][0] === current_tile.tile_split[0][6] && game_array[rowCheck][colCheck].tile_split[1][0] === current_tile.tile_split[1][6] && game_array[rowCheck][colCheck].tile_split[2][0] === current_tile.tile_split[2][6] && game_array[rowCheck][colCheck].tile_split[3][0] === current_tile.tile_split[3][6] && game_array[rowCheck][colCheck].tile_split[4][0] === current_tile.tile_split[4][6] && game_array[rowCheck][colCheck].tile_split[5][0] === current_tile.tile_split[5][6] && game_array[rowCheck][colCheck].tile_split[6][0] === current_tile.tile_split[6][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
 function rotateTile(rotation) {
     var newArr = [
         [0, 0, 0, 0, 0, 0, 0],
@@ -1190,13 +1289,13 @@ function game2detail(x, y, arr) {
     return [7 * x + arr[0], 7 * y + arr[1]];
 }
 
-function detail2game(x, y) {
-    return [Math.floor(x / 7), Math.floor(y / 7)];
+function detail2game(arr) {
+    return [Math.floor(arr[0] / 7), Math.floor(arr[1] / 7)];
 }
 
-function isArrayEqual(array1,array2) {
-    if (array1.length = array2.length) {
-        for (var i=0;i<array1.length;i++) {
+function isArrayEqual(array1, array2) {
+    if (array1.length === array2.length) {
+        for (var i = 0; i < array1.length; i++) {
             if (array1[i] !== array2[i]) {
                 return false;
             }
@@ -1208,9 +1307,9 @@ function isArrayEqual(array1,array2) {
 }
 
 function placedManValidator(arr) {
-    if (Array.isArray(arr) && arr.length === 2 && arr[0]>=0 && arr[0]<=6 && arr[1]>=0 && arr[1]<=6 && arr[0] === Math.floor(arr[0]) && arr[1] === Math.floor(arr[1])) {
+    if (Array.isArray(arr) && arr.length === 2 && arr[0] >= 0 && arr[0] <= 6 && arr[1] >= 0 && arr[1] <= 6 && arr[0] === Math.floor(arr[0]) && arr[1] === Math.floor(arr[1])) {
         return true;
-    } else if (arr===-1) {
+    } else if (arr === -1) {
         return true;
     } else {
         return false;
