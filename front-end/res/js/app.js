@@ -14,6 +14,11 @@ function startGameApp() {
     //Add canvas and context to the game information object
     info.canvas = document.getElementById('game-board');
     info.ctx = info.canvas.getContext('2d');
+    document.getElementById('new-tile').width = 200;
+    document.getElementById('new-tile').height = 200;
+    info.canvas2 = document.getElementById('new-tile');
+    info.ctx2 = info.canvas2.getContext('2d');
+
 
 
     /*Initialise the width and height of the canvas based on window size and add a window resize listent to update it. */
@@ -158,11 +163,16 @@ function drawBaord() {
 }
 
 function displayTile(tile) {
+    var c = info.ctx2;
     var name = tile.name;
     var path = 'res/pics/tiles/original-game/';
     var src = path + name + '.png';
     info.newTile.src = src;
-    $('#new-tile').attr('src', src);
+    var img = new Image();
+    img.addEventListener('load', function() {
+        c.drawImage(img, 0, 0, 200, 200);
+    });
+    img.src = src;
     rotate('new-tile', info.newTile.rotation);
 }
 
