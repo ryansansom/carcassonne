@@ -1,4 +1,4 @@
-canvas {
+#game-board {
     background-image: url("../pics/bk.jpg");
     margin: 0;
     padding: 0;
@@ -32,9 +32,10 @@ canvas {
 
 }
 
-img {
+#new-tile {
     width: 200px;
     height: 200px;
+/*    background-color: white;*/
 }
 
 #zoom-btn-wrapper {
