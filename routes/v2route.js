@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var request = require('supertest');
 
 var tile_master = {
     "road2sw": {
@@ -218,7 +217,7 @@ var tile_master = {
     },
     "city2wes": {
         "name": "city2we",
-        "url": "/images/tile16.jpg",
+        "url": "/images/tile17.jpg",
         "banner": true,
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -244,7 +243,7 @@ var tile_master = {
         ]
     },
     "city11we": {
-        "name": "tile19",
+        "name": "city11we",
         "url": "/images/tile19.jpg",
         "tile_split": [
             ["Z", "G", "G", "G", "G", "G", "Z"],
@@ -365,13 +364,13 @@ var player_placement = [
     []
 ];
 
-router.post('/creategame', function(req, res, next) {
+router.post('/creategame', function(req, res) {
     var limit = 0;
     if (req.body.players && Array.isArray(req.body.players)) {
         if (req.body.players.length > 5) {
             limit = 5;
         } else {
-            limit = req.body.players.length
+            limit = req.body.players.length;
         }
     }
     if (limit > 1) {
@@ -391,14 +390,18 @@ router.post('/creategame', function(req, res, next) {
             [],
             []
         ];
-        players = new Object;
+        players = {};
+        var colours = ["#000000","#FFFFFF","#0000FF","#FF0000","#00FF00"];
 
         for (var i = 0; i < limit; i++) {
+            var temp = randNum(colours.length);
             players["player" + (i + 1)] = {
                 "name": req.body.players[i],
                 "points": 0,
-                "pieces": 7
+                "pieces": 7,
+                "colour": colours[temp]
             };
+            colours.splice(temp,1);
         }
 
         game_array = createArray(2 * tile_deck.length - 1); //needs to be created differently
@@ -412,48 +415,47 @@ router.post('/creategame', function(req, res, next) {
 
 //------------info gathering----------------
 router.get('/getplayers', function(req, res) {
-    res.json(players).end()
+    res.json(players).end();
 });
 router.get('/getactiveplayer', function(req, res) {
-    res.json(players["player" + current_player]).end()
+    res.json(players["player" + current_player]).end();
 });
 router.get('/getplayerplacement', function(req, res) {
-    res.json(player_placement).end()
+    res.json(player_placement).end();
 });
 router.get('/getboard', function(req, res) {
-    res.json(game_array).end()
+    res.json(game_array).end();
 });
 router.get('/getdeck', function(req, res) {
-    res.json(tile_deck).end()
+    res.json(tile_deck).end();
 });
 router.get('/getmap', function(req, res) {
     mapTiles();
-    res.json(obj).end()
+    res.json(obj).end();
 });
 //------------------------------------------
 
-router.get('/generate', function(req, res, next) {
+router.get('/generate', function(req, res) {
     if (!game_array) {
-        res.status(400).send("Please use /creategame first")
+        res.status(400).send("Please use /creategame first");
     } else if (!game_array[deckSize - 1][deckSize - 1] && tile_deck.length == deckSize) {
         for (var i = 0; i < tile_deck.length; i++) {
             if (tile_deck[i] == "city1rwe") {
                 tile_deck.splice(i, 1);
-                current_tile = noLink(new_tiles["city1rwe"]);
+                current_tile = noLink(new_tiles.city1rwe);
                 current_tile.rotation = 1;
                 res.json(current_tile).end();
                 break;
             }
         }
     } else {
-        var rand = Math.floor((Math.random() * tile_deck.length) + 1) - 1;
-        current_tile = noLink(new_tiles[tile_deck[rand]]);
+        current_tile = noLink(new_tiles[tile_deck[randNum(tile_deck.length)]]);
         current_tile.rotation = 1;
         res.json(current_tile).end();
     }
 });
 
-router.post('/placetile', function(req, res, next) {
+router.post('/placetile', function(req, res) {
     //send this function a json body in form of {"row": 71, "column": 71, "rotation": 4, "placedMan": [3,6]}, set content type header to application/json.
     rotateTile(req.body.rotation);
     if (!game_array[deckSize - 1][deckSize - 1]) {
@@ -488,7 +490,7 @@ router.post('/placetile', function(req, res, next) {
                     }
                     resetChecked();
                     placedManValidity(req.body.row, req.body.column, req.body.placedMan);
-                    if (game_array[req.body.row][req.body.column] == undefined) {
+                    if (game_array[req.body.row][req.body.column] === undefined) {
                         res.status(400).send("Invalid player piece placement - already somebody occupying this space");
                         resetRotation();
                     } else {
@@ -527,8 +529,8 @@ function endScore() {
     while (player_placement[0].length > 0) {
         var type = detail_array[player_placement[0][player_placement[0].length - 1][0]][player_placement[0][player_placement[0].length - 1][1]];
         console.log(type);
-        checkallend: for (x in obj[type]) {
-            for (y in obj[type][x]) {
+        checkallend: for (var x in obj[type]) {
+            for (var y in obj[type][x]) {
                 if (isArrayEqual(obj[type][x][y], player_placement[0][player_placement[0].length - 1])) {
                     var temp = obj[type][x];
                     break checkallend;
@@ -560,19 +562,21 @@ function endScore() {
         console.log(countTiles);
         if (type === "R") {
             console.log("In score - road");
-            for (z in awardPointsTo) {
+            for (var z in awardPointsTo) {
                 players[awardPointsTo[z]].points+=countTiles.length;
             }
         } else if (type === "C") {
             console.log("In score - city");
             //check all tiles for banner, for each banner, add 2 points.
-            var bannerCnt = 0
-            for (x in countTiles) {
+            var bannerCnt = 0;
+            for (var x in countTiles) {
                 if (game_array[countTiles[x][0]][countTiles[x][1]].banner) {
                     bannerCnt++;
                 }
             }
-            players[awardPointsTo[z]].points+=(countTiles.length + bannerCnt);
+            for (var z in awardPointsTo) {
+                players[awardPointsTo[z]].points+=(countTiles.length + bannerCnt);
+            }
         } else if (type === "M") {
             players[awardPointsTo[0]].points+=monasteryScoring(player_placement[0][player_placement[0].length - 1]);
         } else if (type === "G") {
@@ -588,8 +592,8 @@ function inGameScore() {
         var type = detail_array[scores[0][scores[0].length - 1][0]][scores[0][scores[0].length - 1][1]];
         console.log(type);
         if (type === "R" || type === "C") {
-            checkall: for (x in obj[type]) {
-                for (y in obj[type][x]) {
+            checkall: for (var x in obj[type]) {
+                for (var y in obj[type][x]) {
                     if (isArrayEqual(obj[type][x][y], scores[0][scores[0].length - 1])) {
                         var temp = obj[type][x];
                         break checkall;
@@ -625,7 +629,7 @@ function inGameScore() {
                 console.log(countTiles);
                 if (type === "R") {
                     console.log("In score - road");
-                    for (z in awardPointsTo) {
+                    for (var z in awardPointsTo) {
                         players[awardPointsTo[z]].points+=countTiles.length;
                     }
                 } else if (type === "C") {
@@ -637,7 +641,9 @@ function inGameScore() {
                             bannerCnt++;
                         }
                     }
-                    players[awardPointsTo[z]].points+=(2 * (countTiles.length + bannerCnt));
+                    for (var z in awardPointsTo) {
+                        players[awardPointsTo[z]].points+=(2 * (countTiles.length + bannerCnt));
+                    }
                 }
             } else {
                 //the type being checked is open, so remove from scores, which is the placements we are checking.
@@ -813,8 +819,8 @@ function mode(array) {
 function openAround(temp) {
     console.log("in openAround");
     var openCnt = 0;
-    for (x1 in temp) {
-        if (temp[x1][0] != 0) {
+    for (var x1 in temp) {
+        if (temp[x1][0] !== 0) {
             if (!detail_array[temp[x1][0] - 1][temp[x1][1]]) {
                 openCnt++;
             }
@@ -830,7 +836,7 @@ function openAround(temp) {
             openCnt++;
         }
 
-        if (temp[x1][1] != 0) {
+        if (temp[x1][1] !== 0) {
             if (!detail_array[temp[x1][0]][temp[x1][1] - 1]) {
                 openCnt++;
             }
@@ -861,8 +867,8 @@ function placedManValidity(row, column, placedMan) {
         var checkPlace = game2detail(row, column, placedMan);
         console.log(checkPlace);
         var typeCheck = detail_array[checkPlace[0]][checkPlace[1]];
-        for (x in obj[typeCheck]) {
-            for (y in obj[typeCheck][x]) {
+        for (var x in obj[typeCheck]) {
+            for (var y in obj[typeCheck][x]) {
                 console.log(obj[typeCheck][x][y]);
                 if (isArrayEqual(obj[typeCheck][x][y], checkPlace)) {
                     var checkOthers = obj[typeCheck][x];
@@ -871,10 +877,10 @@ function placedManValidity(row, column, placedMan) {
                 }
             }
         }
-        for (z1 in checkOthers) {
-            for (z2 in player_placement[0]) {
+        for (var z1 in checkOthers) {
+            for (var z2 in player_placement[0]) {
                 if (isArrayEqual(checkOthers[z1], player_placement[0][z2])) {
-                    ind = true
+                    ind = true;
                     //delete the tile entry from game_array etc...
                     game_array[row][column] = undefined;
                     for (var i = 0; i < 7; i++) {
@@ -1185,75 +1191,6 @@ function checkRight(row, col) {
     return false;
 }
 
-//is there a tile here?
-function checkAboveTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[6][0] === current_tile.tile_split[0][0] && game_array[rowCheck][colCheck].tile_split[6][1] === current_tile.tile_split[0][1] && game_array[rowCheck][colCheck].tile_split[6][2] === current_tile.tile_split[0][2] && game_array[rowCheck][colCheck].tile_split[6][3] === current_tile.tile_split[0][3] && game_array[rowCheck][colCheck].tile_split[6][4] === current_tile.tile_split[0][4] && game_array[rowCheck][colCheck].tile_split[6][5] === current_tile.tile_split[0][5] && game_array[rowCheck][colCheck].tile_split[6][6] === current_tile.tile_split[0][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkBelowTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][0] === current_tile.tile_split[6][0] && game_array[rowCheck][colCheck].tile_split[0][1] === current_tile.tile_split[6][1] && game_array[rowCheck][colCheck].tile_split[0][2] === current_tile.tile_split[6][2] && game_array[rowCheck][colCheck].tile_split[0][3] === current_tile.tile_split[6][3] && game_array[rowCheck][colCheck].tile_split[0][4] === current_tile.tile_split[6][4] && game_array[rowCheck][colCheck].tile_split[0][5] === current_tile.tile_split[6][5] && game_array[rowCheck][colCheck].tile_split[0][6] === current_tile.tile_split[6][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkLeftTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][6] === current_tile.tile_split[0][0] && game_array[rowCheck][colCheck].tile_split[1][6] === current_tile.tile_split[1][0] && game_array[rowCheck][colCheck].tile_split[2][6] === current_tile.tile_split[2][0] && game_array[rowCheck][colCheck].tile_split[3][6] === current_tile.tile_split[3][0] && game_array[rowCheck][colCheck].tile_split[4][6] === current_tile.tile_split[4][0] && game_array[rowCheck][colCheck].tile_split[5][6] === current_tile.tile_split[5][0] && game_array[rowCheck][colCheck].tile_split[6][6] === current_tile.tile_split[6][0]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
-function checkRightTile(row, col) {
-    var rowCheck = row - 1;
-    var colCheck = col;
-    if (rowCheck !== -1) {
-        if (game_array[rowCheck][colCheck]) {
-            if (game_array[rowCheck][colCheck].tile_split[0][0] === current_tile.tile_split[0][6] && game_array[rowCheck][colCheck].tile_split[1][0] === current_tile.tile_split[1][6] && game_array[rowCheck][colCheck].tile_split[2][0] === current_tile.tile_split[2][6] && game_array[rowCheck][colCheck].tile_split[3][0] === current_tile.tile_split[3][6] && game_array[rowCheck][colCheck].tile_split[4][0] === current_tile.tile_split[4][6] && game_array[rowCheck][colCheck].tile_split[5][0] === current_tile.tile_split[5][6] && game_array[rowCheck][colCheck].tile_split[6][0] === current_tile.tile_split[6][6]) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-    return false;
-}
-
 function rotateTile(rotation) {
     var newArr = [
         [0, 0, 0, 0, 0, 0, 0],
@@ -1357,7 +1294,7 @@ function detail2game(arr) {
 }
 
 function isArrayEqual(array1, array2) {
-    if (array1.length = array2.length) {
+    if (array1.length === array2.length) {
         for (var i = 0; i < array1.length; i++) {
             if (array1[i] !== array2[i]) {
                 return false;
