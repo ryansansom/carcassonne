@@ -25,10 +25,11 @@ function startGameApp() {
     updateInfo();
     window.addEventListener('resize', updateInfo);
 
-    //Draw an initial grid. This is a tester method
+    //Draw an initial grid.
     speed(drawGrid);
-    displayTile(getNextTile());
     speed(drawBaord);
+    displayTile(getNextTile());
+    //    drawTileGrid();
     //    window.addEventListener('resize', drawGrid);
     window.addEventListener('resize', drawBaord);
 
@@ -61,7 +62,7 @@ function startGameApp() {
 
     $('#confirm').mousedown(blueButton);
     $('#confirm').mouseup(whiteButton);
-    $('#confirm').click(function() {
+    $('#confirm').click(function () {
         var tile = getNextTile();
         displayTile(tile);
     });
@@ -81,7 +82,7 @@ function rotate(id, deg) {
     if (deg != 0) {
         var currentDeg = getAngle(id);
         deg += currentDeg;
-        info.newTile.rotation = deg/90;
+        info.newTile.rotation = deg / 90;
 
     }
     document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
@@ -169,8 +170,9 @@ function displayTile(tile) {
     var src = path + name + '.png';
     info.newTile.src = src;
     var img = new Image();
-    img.addEventListener('load', function() {
+    img.addEventListener('load', function () {
         c.drawImage(img, 0, 0, 200, 200);
+        drawTileGrid();
     });
     img.src = src;
     rotate('new-tile', info.newTile.rotation);
@@ -188,15 +190,53 @@ function placeTileOnBoard(tile, bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
     var imageObj = new Image();
-    var toRadians = Math.PI/180;
-    var angle = tile.rotation*90;
+    var toRadians = Math.PI / 180;
+    var angle = tile.rotation * 90;
     console.log(tile);
     imageObj.src = tile.src;
     c.save();
-    c.translate(bx * t +t/2, by * t+t/2)
-    c.rotate(angle*toRadians);
-    c.drawImage(imageObj, -t/2, -t/2, t, t);
+    c.translate(bx * t + t / 2, by * t + t / 2)
+    c.rotate(angle * toRadians);
+    c.drawImage(imageObj, -t / 2, -t / 2, t, t);
     c.restore();
+}
+
+function drawTileGrid() {
+    var cnv = info.canvas2;
+    var c = info.ctx2;
+    var tile = info.newTile;
+    var tileSplit = info.newTile.tile_split;
+    var len = tileSplit.length;
+    var splitLen = cnv.width / len;
+    for (var y = 0; y < len; y++) {
+        for (var x = 0; x < len; x++) {
+            c.save();
+            c.strokeStyle = 'black';
+            c.strokeRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            if (tileSplit[y][x] == 'Z') {
+                c.fillStyle = 'rgba(0,0,0,0.3)';
+                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+            }
+//            switch (tileSplit[y][x]) {
+//            case 'Z':
+//                c.fillStyle = 'rgba(0,0,0,0.5)';
+//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+//            case 'C':
+//                c.fillStyle = 'rgba(255,100,0,0.5)';
+//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+//            case 'R':
+//                c.fillStyle = 'rgba(100,100,100,0.5)';
+//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+//            case 'G':
+//                c.fillStyle = 'rgba(0,150,50,0.5)';
+//                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+
+//            }
+            c.restore();
+
+        }
+
+    }
 }
 
 
