@@ -412,6 +412,10 @@ router.get('/getmap', function(req, res) {
     mapTiles();
     res.json(obj).end();
 });
+router.get('/endscore', function(req, res) {
+    endScore();
+    res.json(players).end();
+});
 //------------------------------------------
 
 router.get('/generate', function(req, res) {
@@ -601,6 +605,62 @@ function endScore() {
             players[awardPointsTo[0]].points += monasteryScoring(player_placement[0][player_placement[0].length - 1]);
         } else if (type === "G") {
             //count the amount of closed cities connecting to the land.
+            var grassScore = 0;
+            //identify and store closed cities
+            var closed_cities;
+            for (var x in obj.C) {
+                if (!openAround(obj.C[x])) {
+                    closed_cities[x] = obj.C[x];
+                }
+            }
+            grasscheck: for (var i=0;i<temp.length;i++) {
+                if (detail_array[temp[i][0] - 1][temp[i][1]] === "C") {
+                    //check against closed_cities
+                    for (var x in closed_cities) {
+                        for (var y in closed_cities[x]) {
+                            if (isArrayEqual(closed_cities[x][y],[temp[i][0] - 1,temp[i][1]])) {
+                                grassScore+=3;
+                                delete closed_cities[x];
+                                continue grasscheck;
+                            }
+                        }
+                    }
+                }
+                if (detail_array[temp[i][0] + 1][temp[i][1]] === "C") {
+                    for (var x in closed_cities) {
+                        for (var y in closed_cities[x]) {
+                            if (isArrayEqual(closed_cities[x][y],[temp[i][0] + 1,temp[i][1]])) {
+                                grassScore+=3;
+                                delete closed_cities[x];
+                                continue grasscheck;
+                            }
+                        }
+                    }
+                }
+                if (detail_array[temp[i][0]][temp[i][1] - 1] === "C") {
+                    for (var x in closed_cities) {
+                        for (var y in closed_cities[x]) {
+                            if (isArrayEqual(closed_cities[x][y],[temp[i][0],temp[i][1]-1])) {
+                                grassScore+=3;
+                                delete closed_cities[x];
+                                continue grasscheck;
+                            }
+                        }
+                    }
+                }
+                if (detail_array[temp[i][0]][temp[i][1] + 1] === "C") {
+                    for (var x in closed_cities) {
+                        for (var y in closed_cities[x]) {
+                            if (isArrayEqual(closed_cities[x][y],[temp[i][0],temp[i][1]+1])) {
+                                grassScore+=3;
+                                delete closed_cities[x];
+                                continue grasscheck;
+                            }
+                        }
+                    }
+                }
+            }
+            players[awardPointsTo[z]].points += grassScore;
         }
     }
 }
