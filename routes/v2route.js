@@ -503,6 +503,7 @@ router.post('/placetile', function(req, res) {
             var temp1 = req.body.placedMan;
             player_placement[0].push([7 * req.body.row + temp1[0], 7 * req.body.column + temp1[1]]);
             player_placement[1].push("player" + current_player);
+            players["player" + current_player].pieces--;
         }
         console.log(player_placement);
         res.json(current_tile);
@@ -526,6 +527,7 @@ router.post('/placetile', function(req, res) {
                         resetRotation();
                     } else {
                         console.log(player_placement);
+                        players["player" + current_player].pieces--;
                         inGameScore();
                         nextPlayer(Object.keys(players).length);
                         res.json(current_tile);
@@ -550,6 +552,7 @@ router.post('/placetile', function(req, res) {
 });
 
 function endScore() {
+    mapTiles();
     while (player_placement[0].length > 0) {
         var type = detail_array[player_placement[0][player_placement[0].length - 1][0]][player_placement[0][player_placement[0].length - 1][1]];
         console.log(type);
@@ -607,7 +610,7 @@ function endScore() {
             //count the amount of closed cities connecting to the land.
             var grassScore = 0;
             //identify and store closed cities
-            var closed_cities;
+            var closed_cities = {};
             for (var x in obj.C) {
                 if (!openAround(obj.C[x])) {
                     closed_cities[x] = obj.C[x];
@@ -660,7 +663,9 @@ function endScore() {
                     }
                 }
             }
-            players[awardPointsTo[z]].points += grassScore;
+            for (var z in awardPointsTo) {
+                players[awardPointsTo[z]].points += grassScore;
+            }
         }
     }
 }
