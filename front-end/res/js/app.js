@@ -55,7 +55,6 @@ function startGameApp() {
     //Click listeners
     $('#game-board').click(function (evt) {
         var test = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
-        console.log("this tile is at pos: " + JSON.stringify(test));
         fillBoardTile(test.x, test.y);
         placeTileOnBoard(info.newTile, test.x, test.y);
 
@@ -63,15 +62,19 @@ function startGameApp() {
 
     $('#new-tile').click(function (evt) {
         var test = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
-        console.log("this bit is at pos: " + JSON.stringify(test));
         placeMan(test.x, test.y);
     });
 
     $('#confirm').mousedown(blueButton);
     $('#confirm').mouseup(whiteButton);
     $('#confirm').click(function () {
-        var tile = getNextTile();
-        displayTile(tile);
+        if (validPlay()) {
+            var tile = getNextTile();
+            displayTile(tile);
+        } else {
+            alert("Your move is invalid.");
+        }
+
     });
 
     //initial rotation of tile
@@ -193,13 +196,15 @@ function whiteButton() {
     $(this).css('background', 'white');
 }
 
+//TODO enable people to try and place down the tile several times
 function placeTileOnBoard(tile, bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
-    //    var imageObj = new Image();
     var toRadians = Math.PI / 180;
     var angle = tile.rotation * 90;
-    //    imageObj.src = tile.src;
+    info.newTile.row = by;
+    info.newTile.column = bx;
+
     c.save();
     c.translate(bx * t + t / 2, by * t + t / 2)
     c.rotate(angle * toRadians);
@@ -209,7 +214,7 @@ function placeTileOnBoard(tile, bx, by) {
     //draw man
     if (info.placedMan) {
         c.save();
-        c.translate(bx*t, by*t);
+        c.translate(bx * t, by * t);
         drawMan(info.placedMan[0], info.placedMan[1], t, c);
         c.restore();
     }
@@ -251,23 +256,36 @@ function drawMan(x, y, tileSize, ctx) {
     c.restore();
 }
 
+//TODO Clean up. only use info.newTile.placedMan instead of info.placedMan
 function placeMan(x, y) {
     //    displayTile(info.newTile);
     if (info.placedMan) {
         if (info.placedMan[0] == x && info.placedMan[1] == y) {
             info.placedMan = [];
+            info.newTile.placedMan = [];
             displayTile(info.newTile);
         } else {
             displayTile(info.newTile);
             info.placedMan = [x, y];
+            info.newTile.placedMan = [x, y];
             drawMan(x, y, info.canvas2.width, info.ctx2);
         }
     } else {
         info.placedMan = [x, y];
+        info.newTile.placedMan = [x, y];
         drawMan(x, y, info.canvas2.width, info.ctx2);
     }
 }
 
+function validPlay() {
+    console.log(info.newTile);
+    if (info.newTile.placedMan) {
+        placeTile(info.newTile);
+        return true;
+    } else {
+        return false;
+    }
+}
 
 ////////////////////////////////////////////////////////
 //SERVER CALLS                                        //
@@ -283,7 +301,6 @@ function createGame() {
     xhr.open("post", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(players));
-    console.log(xhr.responseText);
     return xhr.responseText;
 }
 
@@ -293,8 +310,6 @@ function getBoard() {
     var url = "http://localhost:3000/v2/getboard"
     xhr.open("get", url, false);
     xhr.send();
-
-    //        console.log(xhr.responseText);
     return JSON.parse(xhr.responseText);
 }
 
@@ -303,8 +318,6 @@ function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/v2/generate", false);
     xhr.send();
-
-    console.log(JSON.parse(xhr.responseText));
     info.newTile = JSON.parse(xhr.responseText);
     info.newTile.rotation = 0;
     setnewTileImgPath(info.newTile);
@@ -315,21 +328,20 @@ function getNextTile() {
 
 //sends the tile placement location to the server
 function placeTile(tile) {
+    var postInfo = {};
+    postInfo.row = tile.row;
+    postInfo.column = tile.column;
+    postInfo.rotation = tile.rotation;
+    postInfo.placedMan = tile.placedMan;
     var xhr = new XMLHttpRequest();
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
-    xhr.send(tile);
-
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(postInfo));
+    console.log("placeTile.responseText "+xhr.responseText);
     return JSON.parse(xhr.responseText);
 }
 
-//Helper function. Time it takes to run a function
-function speed(fnc) {
-    var d1 = new Date();
-    fnc();
-    var d2 = new Date();
-    console.log(d2.getTime() - d1.getTime());
-    return d2.getTime() - d1.getTime();
-}
+
 
 ////////////////////////////////////////////////////////
 //Test functions to help development                  //
@@ -377,4 +389,12 @@ function fillBoardTile(bx, by) {
     c.fillStyle = "blue";
     c.fillRect(bx * t, by * t, t, t);
     c.restore();
+}
+
+//Helper function. Time it takes to run a function
+function speed(fnc) {
+    var d1 = new Date();
+    fnc();
+    var d2 = new Date();
+    return d2.getTime() - d1.getTime();
 }
