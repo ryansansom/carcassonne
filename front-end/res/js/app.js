@@ -27,24 +27,24 @@ function startGameApp() {
     window.addEventListener('resize', updateInfo);
 
     //Draw an initial grid.
-    speed(drawGrid);
-    speed(drawBaord);
+    getBoard();
+    drawBaord();
     displayTile(getNextTile());
-    //    drawTileGrid();
-    //    window.addEventListener('resize', drawGrid);
     window.addEventListener('resize', drawBaord);
 
     //Zooming listeners
     $('#plus').click(function () {
         info.tileSize /= info.scaleMultiplyer;
         //        drawGrid();
-        speed(drawGrid);
+        //        speed(drawGrid);
+        drawBaord();
     });
 
     $('#minus').click(function () {
         info.tileSize *= info.scaleMultiplyer;
         //        drawGrid();
-        speed(drawGrid);
+        //        speed(drawGrid);
+        drawBaord();
     });
 
     $('#recentre').click(function () {
@@ -69,6 +69,7 @@ function startGameApp() {
     $('#confirm').mouseup(whiteButton);
     $('#confirm').click(function () {
         if (validPlay()) {
+            getBoard();
             var tile = getNextTile();
             displayTile(tile);
         } else {
@@ -138,17 +139,10 @@ c.restore();
 
 // not quite woring yet.
 function drawBaord() {
-    var board = getBoard();
-    //    var boardSize = board.length;
-    //    var boardSize = board.length;
-    var boardSize = 40;
+    var board = info.gameBoard;
+    var boardSize = board.length;
     var c = info.ctx;
-    //set tile size
-    info.tileSize = info.windW / boardSize;
     var t = info.tileSize;
-    //set drawOffset to draw from centre.
-    info.darwOffset.x = (info.windW / 2 - t / 2) % t;
-    info.darwOffset.y = (info.windH / 2 - t / 2) % t;
 
     c.clearRect(0, 0, info.windW, info.windH);
     c.strokeStyle = "black";
@@ -163,11 +157,12 @@ function drawBaord() {
         }
     }*/
     //DRAW SO THE 1ST TILE IS IN THE TOP RIGHT
-    for (var gridX = 0; gridX < boardSize; gridX++) {
-        for (var gridY = 0; gridY < boardSize; gridY++) {
+    for (var y = 0; y < boardSize; y++) {
+        for (var x = 0; x < boardSize; x++) {
             c.save();
-            c.strokeRect(t * gridX, t * gridY, t, t);
+            c.strokeRect(t * x, t * y, t, t);
             c.restore();
+            if (board[y][x]) console.log("not null: " + typeof board);
         }
     }
 
@@ -310,6 +305,8 @@ function getBoard() {
     var url = "http://localhost:3000/v2/getboard"
     xhr.open("get", url, false);
     xhr.send();
+    info.gameBoard = JSON.parse(xhr.responseText);
+    console.log(info.gameBoard);
     return JSON.parse(xhr.responseText);
 }
 
@@ -337,7 +334,7 @@ function placeTile(tile) {
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(postInfo));
-    console.log("placeTile.responseText "+xhr.responseText);
+    console.log("placeTile.responseText " + xhr.responseText);
     return JSON.parse(xhr.responseText);
 }
 
