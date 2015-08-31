@@ -4,6 +4,7 @@ info.scale = 1;
 info.scaleMultiplyer = 0.8;
 info.darwOffset = {};
 info.newTile = {};
+info.newTileImg = new Image();
 
 
 //Funciton that initias the game, and does all the initial set up.
@@ -63,7 +64,7 @@ function startGameApp() {
     $('#new-tile').click(function (evt) {
         var test = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
         console.log("this bit is at pos: " + JSON.stringify(test));
-        drawMan(test.x, test.y);
+        placeMan(test.x, test.y);
     });
 
     $('#confirm').mousedown(blueButton);
@@ -84,6 +85,7 @@ function updateInfo() {
 }
 
 //rotates the element by 'id' by a give degree
+//TODO on rotate i need to ajust the position of the PlacedMan
 function rotate(id, deg) {
     if (deg != 0) {
         var currentDeg = getAngle(id);
@@ -168,20 +170,20 @@ function drawBaord() {
 
 }
 
-function displayTile(tile) {
-    var c = info.ctx2;
+function setnewTileImgPath(tile) {
     var name = tile.name;
     var path = 'res/pics/tiles/original-game/';
     var src = path + name + '.png';
     info.newTile.src = src;
-    var img = new Image();
-    img.addEventListener('load', function () {
-        c.drawImage(img, 0, 0, 200, 200);
-        drawTileGrid();
-    });
-    img.src = src;
-    rotate('new-tile', info.newTile.rotation);
 }
+
+function displayTile() {
+    var c = info.ctx2;
+    var img = info.newTileImg;
+    c.drawImage(img, 0, 0, 200, 200);
+    drawTileGrid();
+}
+
 
 function blueButton() {
     $(this).css('background', 'blue');
@@ -194,16 +196,25 @@ function whiteButton() {
 function placeTileOnBoard(tile, bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
-    var imageObj = new Image();
+    //    var imageObj = new Image();
     var toRadians = Math.PI / 180;
     var angle = tile.rotation * 90;
-    console.log(tile);
-    imageObj.src = tile.src;
+    //    imageObj.src = tile.src;
     c.save();
     c.translate(bx * t + t / 2, by * t + t / 2)
     c.rotate(angle * toRadians);
-    c.drawImage(imageObj, -t / 2, -t / 2, t, t);
+    c.drawImage(info.newTileImg, -t / 2, -t / 2, t, t);
     c.restore();
+
+    //draw man
+    if (info.placedMan) {
+        c.save();
+        c.translate(bx*t, by*t);
+        drawMan(info.placedMan[0], info.placedMan[1], t, c);
+        c.restore();
+    }
+
+
 }
 
 function drawTileGrid() {
@@ -223,31 +234,14 @@ function drawTileGrid() {
                 c.fillStyle = 'rgba(0,0,0,0.3)';
                 c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
             }
-            //            switch (tileSplit[y][x]) {
-            //            case 'Z':
-            //                c.fillStyle = 'rgba(0,0,0,0.5)';
-            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-            //            case 'C':
-            //                c.fillStyle = 'rgba(255,100,0,0.5)';
-            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-            //            case 'R':
-            //                c.fillStyle = 'rgba(100,100,100,0.5)';
-            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-            //            case 'G':
-            //                c.fillStyle = 'rgba(0,150,50,0.5)';
-            //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
-
-            //            }
             c.restore();
-
         }
-
     }
 }
 
-function drawMan(x, y) {
-    var c = info.ctx2;
-    var len = info.splitLen;
+function drawMan(x, y, tileSize, ctx) {
+    var c = ctx;
+    var len = tileSize / 7;
     c.save();
     c.fillStyle = "blue";
     c.translate(x * len, y * len);
@@ -255,8 +249,23 @@ function drawMan(x, y) {
     c.arc(len / 2, len / 2, len / 4, 0, 2 * Math.PI);
     c.fill();
     c.restore();
-    console.log('drowMan');
+}
 
+function placeMan(x, y) {
+    //    displayTile(info.newTile);
+    if (info.placedMan) {
+        if (info.placedMan[0] == x && info.placedMan[1] == y) {
+            info.placedMan = [];
+            displayTile(info.newTile);
+        } else {
+            displayTile(info.newTile);
+            info.placedMan = [x, y];
+            drawMan(x, y, info.canvas2.width, info.ctx2);
+        }
+    } else {
+        info.placedMan = [x, y];
+        drawMan(x, y, info.canvas2.width, info.ctx2);
+    }
 }
 
 
@@ -298,6 +307,9 @@ function getNextTile() {
     console.log(JSON.parse(xhr.responseText));
     info.newTile = JSON.parse(xhr.responseText);
     info.newTile.rotation = 0;
+    setnewTileImgPath(info.newTile);
+    info.newTileImg.onload = displayTile;
+    info.newTileImg.src = info.newTile.src;
     return JSON.parse(xhr.responseText);
 }
 
