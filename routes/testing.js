@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken');
 //-------------------------------------------------------------------------------------------------------------------------------
 // Guillaume - Ignore these next 2 functions as they were work-related. I will remove when I dont need them for work any more...
 router.post('/test', function(req, res) {
-    req.body.username = req.body.username.toLowerCase();
+    req.body.Quantity = Number(req.body.Quantity);
     res.send(req.body).end();
 });
 
