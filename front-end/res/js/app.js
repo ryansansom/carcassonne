@@ -5,6 +5,10 @@ info.scaleMultiplyer = 0.8;
 info.darwOffset = {};
 info.newTile = {};
 info.newTileImg = new Image();
+info.currentPos = {
+    x: -1,
+    y: -1
+};
 info.newTilePlaced = false;
 
 var imgs = {};
@@ -61,6 +65,7 @@ function startGameApp() {
     $('#game-board').click(function (evt) {
         var pos = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
         fillBoardTile(pos.x, pos.y);
+        console.log('Current Pos Old: ' + JSON.stringify(info.currentPos));
         placeTileOnBoard(info.newTile, pos.x, pos.y);
 
     });
@@ -180,11 +185,11 @@ function drawBaord() {
                 c.rotate(Math.PI / 180 * angle);
                 //move to top right of current board pos
                 c.translate(-t / 2, -t / 2);
-                console.log("the img object contains: "+(JSON.stringify(imgs.toString())));
-                console.log('the tile src: '+tile.src);
+                console.log("the img object contains: " + (JSON.stringify(imgs.toString())));
+                console.log('the tile src: ' + tile.src);
                 c.drawImage(imgs.city1, 0, 0, t, t);
-                imgs.city1.src = tile.src;
-                console.log('the img src: '+imgs.city1.src);
+                imgs.city1.src = 'res/pics/tiles/original-game/city3.png';
+                console.log('the img src: ' + imgs.city1.src);
                 c.drawImage(imgs.city1, 10, 10, 80, 80);
                 c.restore();
 
@@ -233,36 +238,28 @@ function placeTileOnBoard(tile, bx, by) {
     var t = info.tileSize;
     var toRadians = Math.PI / 180;
     var angle = tile.rotation * 90;
+    var cPos = info.currentPos;
     info.newTile.row = by;
     info.newTile.column = bx;
 
-    if (info.newTilePlaced) {
-        //update board with new tile
-        placeTileOnBoard2(bx, by);
-        //redraw
+    if (cPos.x == bx && cPos.y == by) {
+        console.log('cPos: ' + JSON.stringify(cPos));
+        removeTileFromBoard(bx, by);
+        info.newTilePlaced = false;
         drawBaord();
-        //place time anew
-        c.save();
-        c.translate(bx * t + t / 2, by * t + t / 2)
-        c.rotate(angle * toRadians);
-        c.drawImage(info.newTileImg, -t / 2, -t / 2, t, t);
-        c.restore();
-
-        //draw man
-        if (info.placedMan) {
-            c.save();
-            c.translate(bx * t, by * t);
-            drawMan(info.placedMan[0], info.placedMan[1], t, c);
-            c.restore();
-        }
-        info.newTilePlaced = true;
     } else {
         //update board with new tile
+        removeTileFromBoard(cPos.x, cPos.y);
+        drawBaord()
         placeTileOnBoard2(bx, by);
+        updateCurrentPos(bx, by);
+
         c.save();
-        c.translate(bx * t + t / 2, by * t + t / 2)
+        //rotate img from centre
         c.rotate(angle * toRadians);
-        c.drawImage(info.newTileImg, -t / 2, -t / 2, t, t);
+        //move to centre of tiles
+        c.translate(bx * t, by * t);
+        c.drawImage(info.newTileImg, 0, 0, t, t);
         c.restore();
 
         //draw man
@@ -272,15 +269,24 @@ function placeTileOnBoard(tile, bx, by) {
             drawMan(info.placedMan[0], info.placedMan[1], t, c);
             c.restore();
         }
-        info.newTilePlaced = true;
     }
-
-    getBoardTile(bx, by);
 }
 
 function placeTileOnBoard2(x, y) {
     var tile = info.newTile;
+    info.currentPos.x = x;
+    info.currentPos.y = y;
     info.gameBoard[x][y] = tile;
+}
+
+function removeTileFromBoard(x, y) {
+    if (x >= 0 || y >= 0) info.gameBoard[x][y] = null;
+}
+
+function updateCurrentPos(x, y) {
+    info.currentPos.x = x;
+    info.currentPos.y = y;
+    console.log('Current Pos Updated: ' + JSON.stringify(info.currentPos));
 }
 
 function getBoardTile(x, y) {
@@ -394,6 +400,8 @@ function getNextTile() {
     setnewTileImgPath(info.newTile);
     info.newTileImg.onload = displayTile;
     info.newTileImg.src = info.newTile.src;
+    info.currentPos.x = -1;
+    info.currentPos.y = -1;
     return JSON.parse(xhr.responseText);
 }
 
