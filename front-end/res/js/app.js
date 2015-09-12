@@ -41,6 +41,9 @@ function startGameApp() {
     displayTile(getNextTile());
     window.addEventListener('resize', drawBaord);
 
+    //Initialise the web-kit rotations
+    rotate('new-tile', 0);
+
     //Zooming listeners
     $('#plus').click(function () {
         info.tileSize /= info.scaleMultiplyer;
@@ -63,9 +66,8 @@ function startGameApp() {
 
     //Click listeners
     $('#game-board').click(function (evt) {
+
         var pos = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
-        fillBoardTile(pos.x, pos.y);
-        console.log('Current Pos Old: ' + JSON.stringify(info.currentPos));
         placeTileOnBoard(info.newTile, pos.x, pos.y);
 
     });
@@ -88,8 +90,6 @@ function startGameApp() {
 
     });
 
-    //initial rotation of tile
-    rotate('new-tile', 0);
 }
 
 // Update the game info object with the window height and width.
@@ -104,12 +104,32 @@ function rotate(id, deg) {
     if (deg != 0) {
         var currentDeg = getAngle(id);
         deg += currentDeg;
-        info.newTile.rotation = deg / 90;
-
+        switch (deg) {
+        case 0:
+        case 360:
+        case -360:
+            info.newTile.rotation = 1;
+            break;
+        case 90:
+        case -270:
+            info.newTile.rotation = 2;
+            break;
+        case 180:
+        case -180:
+            info.newTile.rotation = 3;
+            break;
+        case 270:
+        case -90:
+            info.newTile.rotation = 4;
+            break;
+        }
     }
+
     document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
     document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
     document.getElementById(id).style.transform = "rotate(" + deg + "deg)";
+    console.log('rotated tile. new angle is: ' + deg + ' new rotation is: ' + info.newTile.rotation);
+    drawBaord();
 }
 
 //Get the angle of rotation of the element 'id' transformation style.
@@ -199,9 +219,6 @@ function drawBaord() {
 
 }
 
-//info.newTileImg.onload = displayTile;
-//info.newTileImg.src = info.newTile.src;
-
 function drawTile(tile) {
     var c = info.ctx;
     var t = info.tileSize;
@@ -221,6 +238,7 @@ function displayTile() {
     var img = info.newTileImg;
     c.drawImage(img, 0, 0, 200, 200);
     drawTileGrid();
+    console.log('tile has been drawn');
 }
 
 
@@ -237,28 +255,32 @@ function placeTileOnBoard(tile, bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
     var toRadians = Math.PI / 180;
-    var angle = tile.rotation * 90;
+    var angle = (tile.rotation-1) * 90;
+    console.log('tile.rotaion '+tile.rotation+' angle '+angle);
     var cPos = info.currentPos;
     info.newTile.row = by;
     info.newTile.column = bx;
 
-    if (cPos.x == bx && cPos.y == by) {
-        console.log('cPos: ' + JSON.stringify(cPos));
+    if (cPos.x == bx && cPos.y == by && info.newTilePlaced) {
         removeTileFromBoard(bx, by);
         info.newTilePlaced = false;
         drawBaord();
+        console.log('removed tile from front-end baord. Pos: ' + JSON.stringify(cPos));
     } else {
         //update board with new tile
         removeTileFromBoard(cPos.x, cPos.y);
-        drawBaord()
+        drawBaord();
         placeTileOnBoard2(bx, by);
         updateCurrentPos(bx, by);
+        info.newTilePlaced = true;
 
         c.save();
+        //move to the centre of current tile
+        c.translate(bx*t + t/2, by*t + t/2)
         //rotate img from centre
         c.rotate(angle * toRadians);
-        //move to centre of tiles
-        c.translate(bx * t, by * t);
+        //move to top right corner of given tile
+        c.translate(-t/2, -t/2);
         c.drawImage(info.newTileImg, 0, 0, t, t);
         c.restore();
 
@@ -268,7 +290,9 @@ function placeTileOnBoard(tile, bx, by) {
             c.translate(bx * t, by * t);
             drawMan(info.placedMan[0], info.placedMan[1], t, c);
             c.restore();
+
         }
+        console.log('placed tile on front-end board. Pos: ' + JSON.stringify(cPos));
     }
 }
 
@@ -286,7 +310,6 @@ function removeTileFromBoard(x, y) {
 function updateCurrentPos(x, y) {
     info.currentPos.x = x;
     info.currentPos.y = y;
-    console.log('Current Pos Updated: ' + JSON.stringify(info.currentPos));
 }
 
 function getBoardTile(x, y) {
@@ -353,9 +376,11 @@ function placeMan(x, y) {
 }
 
 function validPlay() {
-    console.log(info.newTile);
-    if (info.newTile.placedMan) {
-        placeTile(info.newTile);
+    if (info.newTilePlaced) {
+        console.log('tile placed successfully to server');
+        var resp = placeTile(info.newTile);
+        //        resp = JSON.parse(resp);
+        console.log('resp from server: ' + resp);
         return true;
     } else {
         return false;
@@ -375,6 +400,7 @@ function createGame() {
     var url = "http://localhost:3000/v2/creategame";
     xhr.open("post", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send(JSON.stringify(players));
     return xhr.responseText;
 }
@@ -384,9 +410,10 @@ function getBoard() {
     var xhr = new XMLHttpRequest();
     var url = "http://localhost:3000/v2/getboard"
     xhr.open("get", url, false);
+    xhr.setRequestHeader("Access-Control-Allow-Origin", "true");
     xhr.send();
     info.gameBoard = JSON.parse(xhr.responseText);
-    console.log(info.gameBoard);
+    console.log('got board from server succesfully')
     return JSON.parse(xhr.responseText);
 }
 
@@ -394,9 +421,10 @@ function getBoard() {
 function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/v2/generate", false);
+    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send();
     info.newTile = JSON.parse(xhr.responseText);
-    info.newTile.rotation = 0;
+    info.newTile.rotation = 1;
     setnewTileImgPath(info.newTile);
     info.newTileImg.onload = displayTile;
     info.newTileImg.src = info.newTile.src;
@@ -415,9 +443,10 @@ function placeTile(tile) {
     var xhr = new XMLHttpRequest();
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send(JSON.stringify(postInfo));
     console.log("placeTile.responseText " + xhr.responseText);
-    return JSON.parse(xhr.responseText);
+    return xhr.responseText;
 }
 
 
@@ -458,16 +487,6 @@ function drawCentre() {
     var tileHeightCen = info.tileSize / 2;
     c.strokeStyle = "red";
     c.strokeRect(horCen - tileWidthCen, verCen - tileHeightCen, info.tileSize, info.tileSize);
-}
-
-//tester function that draws on a given board pos
-function fillBoardTile(bx, by) {
-    var c = info.ctx;
-    var t = info.tileSize;
-    c.save();
-    c.fillStyle = "blue";
-    c.fillRect(bx * t, by * t, t, t);
-    c.restore();
 }
 
 //Helper function. Time it takes to run a function
