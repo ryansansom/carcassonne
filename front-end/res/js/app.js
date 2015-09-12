@@ -38,7 +38,8 @@ function startGameApp() {
     //Draw an initial grid.
     getBoard();
     drawBaord();
-    displayTile(getNextTile());
+    getNextTile()
+    displayTile();
     window.addEventListener('resize', drawBaord);
 
     //Initialise the web-kit rotations
@@ -83,7 +84,7 @@ function startGameApp() {
         if (validPlay()) {
             getBoard();
             var tile = getNextTile();
-            displayTile(tile);
+            displayTile();
         } else {
             alert("Your move is invalid.");
         }
@@ -102,7 +103,8 @@ function updateInfo() {
 //TODO on rotate i need to ajust the position of the PlacedMan
 function rotate(id, deg) {
     if (deg != 0) {
-        var currentDeg = getAngle(id);
+        //        var currentDeg = getAngle(id);
+        var currentDeg = (info.newTile.rotation - 1) * 90;
         deg += currentDeg;
         switch (deg) {
         case 0:
@@ -125,9 +127,22 @@ function rotate(id, deg) {
         }
     }
 
-    document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
-    document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
-    document.getElementById(id).style.transform = "rotate(" + deg + "deg)";
+    displayTile();
+    //    var c = info.ctx2;
+    //    var t = info.canvas2.width;
+    //
+    //    c.save();
+    //    //more point to centre of new tile
+    //    c.translate(t/2, t/2);
+    //    //rotate on centre axis
+    //    c.rotate((info.newTile.rotation-1)*90);
+    //    //move back to top right corner
+    //    c.translate(-t/2, -t/2);
+    //    c.drawImage(info.newTileImg, 0, 0, t, t);
+    //    c.restore();
+    //    document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
+    //    document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
+    //    document.getElementById(id).style.transform = "rotate(" + deg + "deg)";
     console.log('rotated tile. new angle is: ' + deg + ' new rotation is: ' + info.newTile.rotation);
     drawBaord();
 }
@@ -193,11 +208,9 @@ function drawBaord() {
             c.strokeRect(t * x, t * y, t, t);
             c.restore();
             if (board[x][y]) {
-                console.log("not null: " + board[x][y]);
-                //                drawTile();
                 var t = info.tileSize;
                 var tile = board[x][y];
-                var angle = tile.rotation * 90;
+                var angle = (tile.rotation - 1) * 90;
                 c.save();
                 //move to centre of current board pos on loop
                 c.translate(x * t + t / 2, y * t + t / 2);
@@ -205,26 +218,30 @@ function drawBaord() {
                 c.rotate(Math.PI / 180 * angle);
                 //move to top right of current board pos
                 c.translate(-t / 2, -t / 2);
-                console.log("the img object contains: " + (JSON.stringify(imgs.toString())));
-                console.log('the tile src: ' + tile.src);
-                c.drawImage(imgs.city1, 0, 0, t, t);
-                imgs.city1.src = 'res/pics/tiles/original-game/city3.png';
-                console.log('the img src: ' + imgs.city1.src);
-                c.drawImage(imgs.city1, 10, 10, 80, 80);
+                c.drawImage(info.newTileImg, 0, 0, t, t);
                 c.restore();
+
+                //draw man
+                if (info.placedMan) {
+                    c.save();
+                    c.translate(x * t, y * t);
+                    drawMan(info.placedMan[0], info.placedMan[1], t, c);
+                    c.restore();
+
+                }
 
             }
         }
     }
-
+    console.log('finished drawing baord');
 }
 
-function drawTile(tile) {
-    var c = info.ctx;
-    var t = info.tileSize;
-    var rdns = Math.PI / 180;
-    var angle = tile.rotation * 90;
-}
+//function drawTile(tile) {
+//    var c = info.ctx;
+//    var t = info.tileSize;
+//    var rdns = Math.PI / 180;
+//    var angle = tile.rotation * 90;
+//}
 
 function setnewTileImgPath(tile) {
     var name = tile.name;
@@ -235,12 +252,24 @@ function setnewTileImgPath(tile) {
 
 function displayTile() {
     var c = info.ctx2;
+    var t = info.canvas2.width;
+    var r = (info.newTile.rotation - 1) * 90;
     var img = info.newTileImg;
-    c.drawImage(img, 0, 0, 200, 200);
-    drawTileGrid();
-    console.log('tile has been drawn');
-}
 
+    c.save();
+    //more point to centre of new tile
+    c.translate(t / 2, t / 2);
+    //rotate on centre axis
+    c.rotate(Math.PI / 180 * r);
+    //move back to top right corner
+    c.translate(-t / 2, -t / 2);
+    c.drawImage(img, 0, 0, 200, 200);
+    c.restore();
+    drawTileGrid();
+    if (info.newTile.placedMan) {
+        drawMan(info.newTile.placedMan[0], info.newTile.placedMan[1], t, c);
+    }
+}
 
 function blueButton() {
     $(this).css('background', 'blue');
@@ -255,8 +284,8 @@ function placeTileOnBoard(tile, bx, by) {
     var c = info.ctx;
     var t = info.tileSize;
     var toRadians = Math.PI / 180;
-    var angle = (tile.rotation-1) * 90;
-    console.log('tile.rotaion '+tile.rotation+' angle '+angle);
+    var angle = (tile.rotation - 1) * 90;
+    console.log('tile.rotaion ' + tile.rotation + ' angle ' + angle);
     var cPos = info.currentPos;
     info.newTile.row = by;
     info.newTile.column = bx;
@@ -276,11 +305,11 @@ function placeTileOnBoard(tile, bx, by) {
 
         c.save();
         //move to the centre of current tile
-        c.translate(bx*t + t/2, by*t + t/2)
-        //rotate img from centre
+        c.translate(bx * t + t / 2, by * t + t / 2)
+            //rotate img from centre
         c.rotate(angle * toRadians);
         //move to top right corner of given tile
-        c.translate(-t/2, -t/2);
+        c.translate(-t / 2, -t / 2);
         c.drawImage(info.newTileImg, 0, 0, t, t);
         c.restore();
 
@@ -343,15 +372,17 @@ function drawTileGrid() {
 }
 
 function drawMan(x, y, tileSize, ctx) {
-    var c = ctx;
-    var len = tileSize / 7;
-    c.save();
-    c.fillStyle = "blue";
-    c.translate(x * len, y * len);
-    c.beginPath();
-    c.arc(len / 2, len / 2, len / 4, 0, 2 * Math.PI);
-    c.fill();
-    c.restore();
+    if (x == -1 && y == -1) {} else {
+        var c = ctx;
+        var len = tileSize / 7;
+        c.save();
+        c.fillStyle = "blue";
+        c.translate(x * len, y * len);
+        c.beginPath();
+        c.arc(len / 2, len / 2, len / 4, 0, 2 * Math.PI);
+        c.fill();
+        c.restore();
+    }
 }
 
 //TODO Clean up. only use info.newTile.placedMan instead of info.placedMan
@@ -359,20 +390,24 @@ function placeMan(x, y) {
     //    displayTile(info.newTile);
     if (info.placedMan) {
         if (info.placedMan[0] == x && info.placedMan[1] == y) {
-            info.placedMan = [];
-            info.newTile.placedMan = [];
+            info.placedMan = [-1, -1];
+            info.newTile.placedMan = [-1, -1];
             displayTile(info.newTile);
         } else {
             displayTile(info.newTile);
             info.placedMan = [x, y];
             info.newTile.placedMan = [x, y];
-            drawMan(x, y, info.canvas2.width, info.ctx2);
+//            drawMan(x, y, info.canvas2.width, info.ctx2);
+            displayTile();
         }
     } else {
         info.placedMan = [x, y];
         info.newTile.placedMan = [x, y];
         drawMan(x, y, info.canvas2.width, info.ctx2);
+
     }
+
+    drawBaord();
 }
 
 function validPlay() {
