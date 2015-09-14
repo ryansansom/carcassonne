@@ -190,6 +190,9 @@ function drawBaord() {
     var t = info.tileSize;
 
     c.clearRect(0, 0, info.windW, info.windH);
+//    c.font = "48px serif";
+//    c.textAlign = "center";
+//    c.fillText("hello world", info.windW / 2, info.windH / 2);
     c.strokeStyle = "black";
 
     /* //DRAW SO THE CENTRE TILE IS IN THE CENTRE
@@ -202,13 +205,18 @@ function drawBaord() {
         }
     }*/
     //DRAW SO THE 1ST TILE IS IN THE TOP RIGHT
+    var count = 0;
     for (var x = 0; x < boardSize; x++) {
         for (var y = 0; y < boardSize; y++) {
+            count++;
             c.save();
-            c.strokeRect(t * x, t * y, t, t);
+            c.translate(t*x, t*y);
+            c.strokeRect(0, 0, t, t);
+            c.font = "20px serif";
+            c.textAlign = "center";
+            c.fillText(count.toString(), t-20, t-5);
             c.restore();
             if (board[x][y]) {
-                var t = info.tileSize;
                 var tile = board[x][y];
                 var angle = (tile.rotation - 1) * 90;
                 c.save();
@@ -229,14 +237,18 @@ function drawBaord() {
                     c.restore();
 
                 }
-
             }
+
         }
     }
+    c.font = "20px serif";
+    c.fillText('hello world', 0, 0);
+
+    console.log('there were: ' + count.toString() + ' loops');
     console.log('finished drawing baord');
 }
 
-//function drawTile(tile) {
+//function drawTileNum() {
 //    var c = info.ctx;
 //    var t = info.tileSize;
 //    var rdns = Math.PI / 180;
@@ -397,7 +409,7 @@ function placeMan(x, y) {
             displayTile(info.newTile);
             info.placedMan = [x, y];
             info.newTile.placedMan = [x, y];
-//            drawMan(x, y, info.canvas2.width, info.ctx2);
+            //            drawMan(x, y, info.canvas2.width, info.ctx2);
             displayTile();
         }
     } else {
