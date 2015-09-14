@@ -46,20 +46,11 @@ function startGameApp() {
     rotate('new-tile', 0);
 
     //Zooming listeners
-    $('#plus').click(function () {
-        info.tileSize /= info.scaleMultiplyer;
-        drawBaord();
-    });
+    $('#plus').click(zoomPlus);
 
-    $('#minus').click(function () {
-        info.tileSize *= info.scaleMultiplyer;
-        drawBaord();
-    });
+    $('#minus').click(zoomMinus);
 
-    $('#recentre').click(function () {
-        info.tileSize = 100;
-        drawGrid();
-    });
+    $('#recentre').click(recentre);
 
     //Click listeners
     $('#game-board').click(function (evt) {
@@ -88,6 +79,22 @@ function startGameApp() {
     });
 
 }
+function zoomPlus() {
+    info.tileSize /= info.scaleMultiplyer;
+    drawBaord();
+}
+
+function zoomMinus() {
+    info.tileSize *= info.scaleMultiplyer;
+    drawBaord();
+}
+
+function recentre() {
+    info.tileSize = 100;
+    drawBaord();
+}
+
+
 
 // Update the game info object with the window height and width.
 function updateInfo() {
