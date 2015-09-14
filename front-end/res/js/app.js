@@ -46,61 +46,77 @@ function startGameApp() {
     rotate('new-tile', 0);
 
     //Zooming listeners
-    $('#plus').click(zoomPlus);
-
-    $('#minus').click(zoomMinus);
-
-    $('#recentre').click(recentre);
+    $('#plus').click(onClickZoomPlus);
+    $('#minus').click(onClickZoomMinus);
+    $('#recentre').click(onClickRecentre);
 
     //Click listeners
-    $('#game-board').click(function (evt) {
-
-        var pos = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
-        placeTileOnBoard(info.newTile, pos.x, pos.y);
-
-    });
-
-    $('#new-tile').click(function (evt) {
-        var test = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
-        placeMan(test.x, test.y);
-    });
-
+    $('#game-board').click(onClickPlaceTile);
+    $('#new-tile').click(onClickPlaceMan);
     $('#confirm').mousedown(blueButton);
     $('#confirm').mouseup(whiteButton);
-    $('#confirm').click(function () {
-        if (validPlay()) {
-            getBoard();
-            var tile = getNextTile();
-            displayTile();
-        } else {
-            alert("Your move is invalid.");
-        }
-
-    });
+    $('#confirm').click(onClickConfirmMove);
 
 }
-function zoomPlus() {
+
+////////////////////////////////////////////////////////
+//LISTENER ACTIONs                                    //
+////////////////////////////////////////////////////////
+
+
+function onClickZoomPlus() {
     info.tileSize /= info.scaleMultiplyer;
     drawBaord();
+    console.log("zoomed in.");
 }
 
-function zoomMinus() {
+function onClickZoomMinus() {
     info.tileSize *= info.scaleMultiplyer;
     drawBaord();
+    console.log("zoomed out.");
 }
 
-function recentre() {
+function onClickRecentre() {
     info.tileSize = 100;
     drawBaord();
+    console.log("recentered and rezised baord.");
 }
 
+function onDragTranslateBoard() {
 
+}
+
+function onClickPlaceTile(evt) {
+    var pos = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
+    placeTileOnBoard(info.newTile, pos.x, pos.y);
+}
+
+function onClickPlaceMan(evt) {
+    var pos = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
+    placeMan(pos.x, pos.y);
+}
+
+function onClickConfirmMove() {
+    if (validPlay()) {
+        getBoard();
+        var tile = getNextTile();
+        displayTile();
+    } else {
+        alert("Your move is invalid.");
+    }
+
+}
 
 // Update the game info object with the window height and width.
 function updateInfo() {
     info.windW = document.getElementById("game-board").width;
     info.windH = document.getElementById("game-board").height;
 }
+
+////////////////////////////////////////////////////////
+//GAME FUNCTIONS                                      //
+////////////////////////////////////////////////////////
+
 
 //rotates the element by 'id' by a give degree
 //TODO on rotate i need to ajust the position of the PlacedMan
