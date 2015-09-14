@@ -1,4 +1,9 @@
-var info = new Object();
+// main variables
+var info = {};
+info.canvas;
+info.canvas2
+info.ctx;
+info.ctx2;
 info.tileSize = 100;
 info.scale = 1;
 info.scaleMultiplyer = 0.8;
@@ -10,6 +15,14 @@ info.currentPos = {
     y: -1
 };
 info.newTilePlaced = false;
+
+// panning variables
+var panInfo = {};
+panInfo.mouseDown = false;
+panInfo.startOffSetX = 0;
+panInfo.startOffSetY = 0;
+panInfo.offSetX = 0;
+panInfo.offSetY = 0;
 
 var imgs = {};
 imgs.city1 = new Image();
@@ -29,8 +42,6 @@ function startGameApp() {
     info.canvas2 = document.getElementById('new-tile');
     info.ctx2 = info.canvas2.getContext('2d');
 
-
-
     /*Initialise the width and height of the canvas based on window size and add a window resize listent to update it. */
     updateInfo();
     window.addEventListener('resize', updateInfo);
@@ -42,13 +53,19 @@ function startGameApp() {
     displayTile();
     window.addEventListener('resize', drawBaord);
 
-    //Initialise the web-kit rotations
-    rotate('new-tile', 0);
-
     //Zooming listeners
     $('#plus').click(onClickZoomPlus);
     $('#minus').click(onClickZoomMinus);
     $('#recentre').click(onClickRecentre);
+
+    //dragging listenter
+    $('#game-board').mousemove(onDragTranslateBoard);
+    $('#game-board').mouseup(mouseDownOff);
+    $('#game-board').mousedown(mouseDownOn);
+    $('#game-board').mousedown(startOffSet);
+    $('#game-board').mouseover(mouseDownOff);
+    $('#game-board').mouseout(mouseDownOff);
+
 
     //Click listeners
     $('#game-board').click(onClickPlaceTile);
@@ -78,12 +95,19 @@ function onClickZoomMinus() {
 
 function onClickRecentre() {
     info.tileSize = 100;
+    panInfo.offSetX = 0;
+    panInfo.offSetY = 0;
     drawBaord();
     console.log("recentered and rezised baord.");
 }
 
-function onDragTranslateBoard() {
-
+function onDragTranslateBoard(evt) {
+    if (panInfo.mouseDown) {
+        panInfo.offSetX = parseInt(evt.clientX - panInfo.startOffSetX);
+        panInfo.offSetY = parseInt(evt.clientY - panInfo.startOffSetY);
+        drawBaord();
+//        console.log('offset X,Y: [' + panInfo.offSetX + ', ' + panInfo.offSetY + ']');
+    }
 }
 
 function onClickPlaceTile(evt) {
@@ -111,6 +135,21 @@ function onClickConfirmMove() {
 function updateInfo() {
     info.windW = document.getElementById("game-board").width;
     info.windH = document.getElementById("game-board").height;
+}
+
+function mouseDownOff() {
+    panInfo.mouseDown = false;
+    console.log('the mouse is up');
+}
+
+function mouseDownOn() {
+    panInfo.mouseDown = true;
+    console.log('the mouse is down');
+}
+
+function startOffSet(evt) {
+    panInfo.startOffSetX = evt.clientX - panInfo.offSetX;
+    panInfo.startOffSetY = evt.clientY - panInfo.offSetY;
 }
 
 ////////////////////////////////////////////////////////
@@ -147,23 +186,9 @@ function rotate(id, deg) {
     }
 
     displayTile();
-    //    var c = info.ctx2;
-    //    var t = info.canvas2.width;
-    //
-    //    c.save();
-    //    //more point to centre of new tile
-    //    c.translate(t/2, t/2);
-    //    //rotate on centre axis
-    //    c.rotate((info.newTile.rotation-1)*90);
-    //    //move back to top right corner
-    //    c.translate(-t/2, -t/2);
-    //    c.drawImage(info.newTileImg, 0, 0, t, t);
-    //    c.restore();
-    //    document.getElementById(id).style.WebkitTransform = "rotate(" + deg + "deg)";
-    //    document.getElementById(id).style.msTransform = "rotate(" + deg + "deg)";
-    //    document.getElementById(id).style.transform = "rotate(" + deg + "deg)";
-    console.log('rotated tile. new angle is: ' + deg + ' new rotation is: ' + info.newTile.rotation);
     drawBaord();
+
+    console.log('rotated tile. new angle is: ' + deg + ' new rotation is: ' + info.newTile.rotation);
 }
 
 //Get the angle of rotation of the element 'id' transformation style.
@@ -208,6 +233,8 @@ function drawBaord() {
         for (var col = 0; col < boardSize; col++) {
             count++;
             c.save();
+            //Paning
+            c.translate(panInfo.offSetX, panInfo.offSetY);
             //move to centre of the screen
             c.translate(info.windW / 2, info.windH / 2);
             //move to the centre of the grid
