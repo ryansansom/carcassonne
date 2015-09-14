@@ -48,15 +48,11 @@ function startGameApp() {
     //Zooming listeners
     $('#plus').click(function () {
         info.tileSize /= info.scaleMultiplyer;
-        //        drawGrid();
-        //        speed(drawGrid);
         drawBaord();
     });
 
     $('#minus').click(function () {
         info.tileSize *= info.scaleMultiplyer;
-        //        drawGrid();
-        //        speed(drawGrid);
         drawBaord();
     });
 
@@ -174,86 +170,54 @@ function getMousePos(cvs, evt) {
     };
 }
 
-/*
-magic code that centers the grid!
-c.save();
-c.translate(info.windW / 2 - info.tileSize / 2, info.windH / 2 - info.tileSize / 2);
-c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
-c.restore();
-*/
-
-// not quite woring yet.
+//TODO get tile name to draw right board tiles.
+//TODO ajust for drawman
 function drawBaord() {
     var board = info.gameBoard;
     var boardSize = board.length;
     var c = info.ctx;
     var t = info.tileSize;
+    var count = 0;
 
     c.clearRect(0, 0, info.windW, info.windH);
-//    c.font = "48px serif";
-//    c.textAlign = "center";
-//    c.fillText("hello world", info.windW / 2, info.windH / 2);
     c.strokeStyle = "black";
-
-    /* //DRAW SO THE CENTRE TILE IS IN THE CENTRE
-    for (var gridX = ~(boardSize / 2); gridX < boardSize; gridX++) {
-        for (var gridY = ~(boardSize / 2); gridY < boardSize; gridY++) {
-            c.save();
-            c.translate(boardSize / 2 - info.tileSize / 2, boardSize / 2 - info.tileSize / 2);
-            c.strokeRect(info.tileSize * gridX, info.tileSize * gridY, info.tileSize, info.tileSize);
-            c.restore();
-        }
-    }*/
-    //DRAW SO THE 1ST TILE IS IN THE TOP RIGHT
-    var count = 0;
-    for (var x = 0; x < boardSize; x++) {
-        for (var y = 0; y < boardSize; y++) {
+    for (var row = 0; row < boardSize; row++) {
+        for (var col = 0; col < boardSize; col++) {
             count++;
             c.save();
-            c.translate(t*x, t*y);
+            //move to centre of the screen
+            c.translate(info.windW / 2, info.windH / 2);
+            //move to the centre of the grid
+            c.translate(-1 * boardSize / 2 * t - t / 2, -1 * boardSize / 2 * t - t / 2);
+            //move rectangle drawing along
+            c.translate(t * col, t * row);
             c.strokeRect(0, 0, t, t);
-            c.font = "20px serif";
-            c.textAlign = "center";
-            c.fillText(count.toString(), t-20, t-5);
-            c.restore();
-            if (board[x][y]) {
-                var tile = board[x][y];
+
+            //draw tile image
+            if (board[row][col]) {
+                var tile = board[row][col];
                 var angle = (tile.rotation - 1) * 90;
+
                 c.save();
-                //move to centre of current board pos on loop
-                c.translate(x * t + t / 2, y * t + t / 2);
+                //move to center of tile to rotate
+                c.translate(t / 2, t / 2);
                 // rotate to current rotaion
                 c.rotate(Math.PI / 180 * angle);
-                //move to top right of current board pos
+                //move back to top rght corner
                 c.translate(-t / 2, -t / 2);
                 c.drawImage(info.newTileImg, 0, 0, t, t);
                 c.restore();
 
                 //draw man
                 if (info.placedMan) {
-                    c.save();
-                    c.translate(x * t, y * t);
                     drawMan(info.placedMan[0], info.placedMan[1], t, c);
-                    c.restore();
-
                 }
             }
-
+            c.restore();
         }
     }
-    c.font = "20px serif";
-    c.fillText('hello world', 0, 0);
-
-    console.log('there were: ' + count.toString() + ' loops');
     console.log('finished drawing baord');
 }
-
-//function drawTileNum() {
-//    var c = info.ctx;
-//    var t = info.tileSize;
-//    var rdns = Math.PI / 180;
-//    var angle = tile.rotation * 90;
-//}
 
 function setnewTileImgPath(tile) {
     var name = tile.name;
