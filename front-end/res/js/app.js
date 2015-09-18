@@ -27,7 +27,52 @@ panInfo.offSetY = 0;
 var imgs = {};
 imgs.city1rwe = new Image();
 imgs.city1rwe.src = 'res/pics/tiles/original-game/city1rwe.png';
-imgs.city1rwe.name = 'city1rwe';
+imgs.city1 = new Image();
+imgs.city1.src ='res/pics/tiles/original-game/city1.png';
+imgs.city1rse = new Image();
+imgs.city1rse.src ='res/pics/tiles/original-game/city1rse.png';
+imgs.city1rsw = new Image();
+imgs.city1rsw.src ='res/pics/tiles/original-game/city1rsw.png';
+imgs.city1rswe = new Image();
+imgs.city1rswe.src ='res/pics/tiles/original-game/city1rswe.png';
+imgs.city2nw = new Image();
+imgs.city2nw.src ='res/pics/tiles/original-game/city2nw.png';
+imgs.city2nws = new Image();
+imgs.city2nws.src ='res/pics/tiles/original-game/city2nws.png';
+imgs.city2nwsr = new Image();
+imgs.city2nwsr.src ='res/pics/tiles/original-game/city2nwsr.png';
+imgs.city2we = new Image();
+imgs.city2we.src ='res/pics/tiles/original-game/city2we.png';
+imgs.city2wes = new Image();
+imgs.city2wes.src ='res/pics/tiles/original-game/city2wes.png';
+imgs.city3 = new Image();
+imgs.city3.src ='res/pics/tiles/original-game/city3.png';
+imgs.city3r = new Image();
+imgs.city3r.src ='res/pics/tiles/original-game/city3r.png';
+imgs.city3s = new Image();
+imgs.city3s.src ='res/pics/tiles/original-game/city3s.png';
+imgs.city3sr = new Image();
+imgs.city3sr.src ='res/pics/tiles/original-game/city3sr.png';
+imgs.city4= new Image();
+imgs.city4.src ='res/pics/tiles/original-game/city4.png';
+imgs.city11ne= new Image();
+imgs.city11ne.src ='res/pics/tiles/original-game/city11ne.png';
+imgs.city11we= new Image();
+imgs.city11we.src ='res/pics/tiles/original-game/city11we.png';
+imgs.mon= new Image();
+imgs.mon.src ='res/pics/tiles/original-game/mon.png';
+imgs.monr= new Image();
+imgs.monr.src ='res/pics/tiles/original-game/monr.png';
+imgs.road2ns= new Image();
+imgs.road2ns.src ='res/pics/tiles/original-game/road2ns.png';
+imgs.road2sw= new Image();
+imgs.road2sw.src ='res/pics/tiles/original-game/road2sw.png';
+imgs.road3= new Image();
+imgs.road3.src ='res/pics/tiles/original-game/road3.png';
+imgs.road4= new Image();
+imgs.road4.src ='res/pics/tiles/original-game/road4.png';
+
+
 
 //Funciton that initias the game, and does all the initial set up.
 function startGameApp() {
