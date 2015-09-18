@@ -25,9 +25,9 @@ panInfo.offSetX = 0;
 panInfo.offSetY = 0;
 
 var imgs = {};
-imgs.city1 = new Image();
-imgs.city1.src = 'res/pics/tiles/original-game/city1.png';
-imgs.city1.name = 'city1';
+imgs.city1rwe = new Image();
+imgs.city1rwe.src = 'res/pics/tiles/original-game/city1rwe.png';
+imgs.city1rwe.name = 'city1rwe';
 
 //Funciton that initias the game, and does all the initial set up.
 function startGameApp() {
@@ -106,17 +106,17 @@ function onDragTranslateBoard(evt) {
         panInfo.offSetX = parseInt(evt.clientX - panInfo.startOffSetX);
         panInfo.offSetY = parseInt(evt.clientY - panInfo.startOffSetY);
         drawBaord();
-//        console.log('offset X,Y: [' + panInfo.offSetX + ', ' + panInfo.offSetY + ']');
+        //        console.log('offset X,Y: [' + panInfo.offSetX + ', ' + panInfo.offSetY + ']');
     }
 }
 
 function onClickPlaceTile(evt) {
-    var pos = getBoardPosFromMouse(info.canvas, evt, info.tileSize);
+    var pos = getBoardPosFromMouse(info.canvas, evt);
     placeTileOnBoard(info.newTile, pos.x, pos.y);
 }
 
 function onClickPlaceMan(evt) {
-    var pos = getBoardPosFromMouse(info.canvas2, evt, info.splitLen);
+    var pos = getNewTilePosFromMouse(info.canvas2, evt);
     placeMan(pos.x, pos.y);
 }
 
@@ -201,12 +201,40 @@ function getAngle(id) {
     return angle;
 }
 
-function getBoardPosFromMouse(cvs, evt, len) {
+function getBoardPosFromMouse(cvs, evt) {
     //set up the board position, the return object
     var bPos = {};
     var mPos = getMousePos(cvs, evt);
-    bPos.x = Math.floor((mPos.x / len));
-    bPos.y = Math.floor((mPos.y / len));
+    var baordSize = info.gameBoard.length;
+    var t = info.tileSize;
+
+    var centreBoard = (baordSize / 2 * t) - (t / 2);
+
+    // adjust for gameBoard centering
+    mPos.x = mPos.x + centreBoard;
+    mPos.y = mPos.y + centreBoard;
+    // adjust for screen centering
+    mPos.x = mPos.x - info.windW / 2;
+    mPos.y = mPos.y - info.windH / 2;
+    // adjust for panning offset
+    mPos.x = mPos.x - panInfo.offSetX;
+    mPos.y = mPos.y - panInfo.offSetY;
+
+    //translate mouse position into a game tile position
+    bPos.x = Math.floor((mPos.x / info.tileSize + 1));
+    bPos.y = Math.floor((mPos.y / info.tileSize + 1));
+
+    console.log('mPos = this bPos: ' + bPos.x + ',' + bPos.y);
+    return bPos;
+}
+
+function getNewTilePosFromMouse(cvs, evt) {
+    //set up the board position, the return object
+    var bPos = {};
+    var mPos = getMousePos(cvs, evt);
+
+    bPos.x = Math.floor((mPos.x / info.splitLen));
+    bPos.y = Math.floor((mPos.y / info.splitLen));
     return bPos;
 }
 
@@ -242,11 +270,20 @@ function drawBaord() {
             //move rectangle drawing along
             c.translate(t * col, t * row);
             c.strokeRect(0, 0, t, t);
+            //display tile coordinates on baord
+            c.fillText('('+col+','+row+')', 0, 0);
 
             //draw tile image
             if (board[row][col]) {
                 var tile = board[row][col];
                 var angle = (tile.rotation - 1) * 90;
+                var img;
+//                //get pre-loaded image file.
+//                for(var i = 0; i<imgs.length; i++) {
+//                    if(imgs[i].name == tile.name) {
+//                        img = imgs[i];
+//                    }
+//                }
 
                 c.save();
                 //move to center of tile to rotate
@@ -255,7 +292,9 @@ function drawBaord() {
                 c.rotate(Math.PI / 180 * angle);
                 //move back to top rght corner
                 c.translate(-t / 2, -t / 2);
-                c.drawImage(info.newTileImg, 0, 0, t, t);
+                c.drawImage(imgs[tile.name], 0, 0, t, t);
+                console.log('generated img:'+imgs[tile.name]);
+                console.log('new tile img'+info.newTileImg);
                 c.restore();
 
                 //draw man
@@ -311,7 +350,6 @@ function placeTileOnBoard(tile, bx, by) {
     var t = info.tileSize;
     var toRadians = Math.PI / 180;
     var angle = (tile.rotation - 1) * 90;
-    console.log('tile.rotaion ' + tile.rotation + ' angle ' + angle);
     var cPos = info.currentPos;
     info.newTile.row = by;
     info.newTile.column = bx;
@@ -324,8 +362,8 @@ function placeTileOnBoard(tile, bx, by) {
     } else {
         //update board with new tile
         removeTileFromBoard(cPos.x, cPos.y);
-        drawBaord();
         placeTileOnBoard2(bx, by);
+        drawBaord();
         updateCurrentPos(bx, by);
         info.newTilePlaced = true;
 
@@ -355,11 +393,11 @@ function placeTileOnBoard2(x, y) {
     var tile = info.newTile;
     info.currentPos.x = x;
     info.currentPos.y = y;
-    info.gameBoard[x][y] = tile;
+    info.gameBoard[y][x] = tile;
 }
 
 function removeTileFromBoard(x, y) {
-    if (x >= 0 || y >= 0) info.gameBoard[x][y] = null;
+    if (x >= 0 || y >= 0) info.gameBoard[y][x] = null;
 }
 
 function updateCurrentPos(x, y) {
@@ -369,7 +407,7 @@ function updateCurrentPos(x, y) {
 
 function getBoardTile(x, y) {
     //return the tile at pos [x,y] or null
-    var result = info.gameBoard[x][y];
+    var result = info.gameBoard[y][x];
 
     console.log(result);
     return result;
