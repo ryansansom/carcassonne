@@ -1313,7 +1313,7 @@ function rotateTile(rotation) {
         current_tile.tile_split = newArr;
         current_tile.rotation = 4;
     } else {
-        console.log("Invalid rotation - no change made");
+        console.log("Invalid rotation - rotation = "+rotation);
     }
 }
 
