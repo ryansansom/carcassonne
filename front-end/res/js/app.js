@@ -9,6 +9,8 @@ info.scale = 1;
 info.scaleMultiplyer = 0.8;
 info.darwOffset = {};
 info.newTile = {};
+info.newTile.placedMan = [-1, -1];
+info.newTile.pos = null;
 info.newTileImg = new Image();
 info.currentPos = {
     x: -1,
@@ -28,49 +30,49 @@ var imgs = {};
 imgs.city1rwe = new Image();
 imgs.city1rwe.src = 'res/pics/tiles/original-game/city1rwe.png';
 imgs.city1 = new Image();
-imgs.city1.src ='res/pics/tiles/original-game/city1.png';
+imgs.city1.src = 'res/pics/tiles/original-game/city1.png';
 imgs.city1rse = new Image();
-imgs.city1rse.src ='res/pics/tiles/original-game/city1rse.png';
+imgs.city1rse.src = 'res/pics/tiles/original-game/city1rse.png';
 imgs.city1rsw = new Image();
-imgs.city1rsw.src ='res/pics/tiles/original-game/city1rsw.png';
+imgs.city1rsw.src = 'res/pics/tiles/original-game/city1rsw.png';
 imgs.city1rswe = new Image();
-imgs.city1rswe.src ='res/pics/tiles/original-game/city1rswe.png';
+imgs.city1rswe.src = 'res/pics/tiles/original-game/city1rswe.png';
 imgs.city2nw = new Image();
-imgs.city2nw.src ='res/pics/tiles/original-game/city2nw.png';
+imgs.city2nw.src = 'res/pics/tiles/original-game/city2nw.png';
 imgs.city2nws = new Image();
-imgs.city2nws.src ='res/pics/tiles/original-game/city2nws.png';
+imgs.city2nws.src = 'res/pics/tiles/original-game/city2nws.png';
 imgs.city2nwsr = new Image();
-imgs.city2nwsr.src ='res/pics/tiles/original-game/city2nwsr.png';
+imgs.city2nwsr.src = 'res/pics/tiles/original-game/city2nwsr.png';
 imgs.city2we = new Image();
-imgs.city2we.src ='res/pics/tiles/original-game/city2we.png';
+imgs.city2we.src = 'res/pics/tiles/original-game/city2we.png';
 imgs.city2wes = new Image();
-imgs.city2wes.src ='res/pics/tiles/original-game/city2wes.png';
+imgs.city2wes.src = 'res/pics/tiles/original-game/city2wes.png';
 imgs.city3 = new Image();
-imgs.city3.src ='res/pics/tiles/original-game/city3.png';
+imgs.city3.src = 'res/pics/tiles/original-game/city3.png';
 imgs.city3r = new Image();
-imgs.city3r.src ='res/pics/tiles/original-game/city3r.png';
+imgs.city3r.src = 'res/pics/tiles/original-game/city3r.png';
 imgs.city3s = new Image();
-imgs.city3s.src ='res/pics/tiles/original-game/city3s.png';
+imgs.city3s.src = 'res/pics/tiles/original-game/city3s.png';
 imgs.city3sr = new Image();
-imgs.city3sr.src ='res/pics/tiles/original-game/city3sr.png';
-imgs.city4= new Image();
-imgs.city4.src ='res/pics/tiles/original-game/city4.png';
-imgs.city11ne= new Image();
-imgs.city11ne.src ='res/pics/tiles/original-game/city11ne.png';
-imgs.city11we= new Image();
-imgs.city11we.src ='res/pics/tiles/original-game/city11we.png';
-imgs.mon= new Image();
-imgs.mon.src ='res/pics/tiles/original-game/mon.png';
-imgs.monr= new Image();
-imgs.monr.src ='res/pics/tiles/original-game/monr.png';
-imgs.road2ns= new Image();
-imgs.road2ns.src ='res/pics/tiles/original-game/road2ns.png';
-imgs.road2sw= new Image();
-imgs.road2sw.src ='res/pics/tiles/original-game/road2sw.png';
-imgs.road3= new Image();
-imgs.road3.src ='res/pics/tiles/original-game/road3.png';
-imgs.road4= new Image();
-imgs.road4.src ='res/pics/tiles/original-game/road4.png';
+imgs.city3sr.src = 'res/pics/tiles/original-game/city3sr.png';
+imgs.city4 = new Image();
+imgs.city4.src = 'res/pics/tiles/original-game/city4.png';
+imgs.city11ne = new Image();
+imgs.city11ne.src = 'res/pics/tiles/original-game/city11ne.png';
+imgs.city11we = new Image();
+imgs.city11we.src = 'res/pics/tiles/original-game/city11we.png';
+imgs.mon = new Image();
+imgs.mon.src = 'res/pics/tiles/original-game/mon.png';
+imgs.monr = new Image();
+imgs.monr.src = 'res/pics/tiles/original-game/monr.png';
+imgs.road2ns = new Image();
+imgs.road2ns.src = 'res/pics/tiles/original-game/road2ns.png';
+imgs.road2sw = new Image();
+imgs.road2sw.src = 'res/pics/tiles/original-game/road2sw.png';
+imgs.road3 = new Image();
+imgs.road3.src = 'res/pics/tiles/original-game/road3.png';
+imgs.road4 = new Image();
+imgs.road4.src = 'res/pics/tiles/original-game/road4.png';
 
 
 
@@ -170,6 +172,7 @@ function onClickConfirmMove() {
         getBoard();
         var tile = getNextTile();
         displayTile();
+        drawBaord();
     } else {
         alert("Your move is invalid.");
     }
@@ -184,12 +187,12 @@ function updateInfo() {
 
 function mouseDownOff() {
     panInfo.mouseDown = false;
-    console.log('the mouse is up');
+    //    console.log('the mouse is up');
 }
 
 function mouseDownOn() {
     panInfo.mouseDown = true;
-    console.log('the mouse is down');
+    //    console.log('the mouse is down');
 }
 
 function startOffSet(evt) {
@@ -231,7 +234,7 @@ function rotate(id, deg) {
     }
 
     displayTile();
-    drawBaord();
+    if (info.newTilePlaced) drawBaord();
 
     console.log('rotated tile. new angle is: ' + deg + ' new rotation is: ' + info.newTile.rotation);
 }
@@ -269,7 +272,7 @@ function getBoardPosFromMouse(cvs, evt) {
     bPos.x = Math.floor((mPos.x / info.tileSize + 1));
     bPos.y = Math.floor((mPos.y / info.tileSize + 1));
 
-    console.log('mPos = this bPos: ' + bPos.x + ',' + bPos.y);
+    //    console.log('mPos = this bPos: ' + bPos.x + ',' + bPos.y);
     return bPos;
 }
 
@@ -316,19 +319,13 @@ function drawBaord() {
             c.translate(t * col, t * row);
             c.strokeRect(0, 0, t, t);
             //display tile coordinates on baord
-            c.fillText('('+col+','+row+')', 0, 0);
+            //            c.fillText('('+col+','+row+')', 0, 0);
 
             //draw tile image
             if (board[row][col]) {
                 var tile = board[row][col];
                 var angle = (tile.rotation - 1) * 90;
                 var img;
-//                //get pre-loaded image file.
-//                for(var i = 0; i<imgs.length; i++) {
-//                    if(imgs[i].name == tile.name) {
-//                        img = imgs[i];
-//                    }
-//                }
 
                 c.save();
                 //move to center of tile to rotate
@@ -338,13 +335,11 @@ function drawBaord() {
                 //move back to top rght corner
                 c.translate(-t / 2, -t / 2);
                 c.drawImage(imgs[tile.name], 0, 0, t, t);
-                console.log('generated img:'+imgs[tile.name]);
-                console.log('new tile img'+info.newTileImg);
                 c.restore();
 
                 //draw man
-                if (info.placedMan) {
-                    drawMan(info.placedMan[0], info.placedMan[1], t, c);
+                if (tile.placedMan) {
+                    drawMan(tile.placedMan[0], tile.placedMan[1], t, c);
                 }
             }
             c.restore();
@@ -399,38 +394,41 @@ function placeTileOnBoard(tile, bx, by) {
     info.newTile.row = by;
     info.newTile.column = bx;
 
-    if (cPos.x == bx && cPos.y == by && info.newTilePlaced) {
-        removeTileFromBoard(bx, by);
-        info.newTilePlaced = false;
-        drawBaord();
-        console.log('removed tile from front-end baord. Pos: ' + JSON.stringify(cPos));
-    } else {
-        //update board with new tile
-        removeTileFromBoard(cPos.x, cPos.y);
-        placeTileOnBoard2(bx, by);
-        drawBaord();
-        updateCurrentPos(bx, by);
-        info.newTilePlaced = true;
+    if (!info.gameBoard[by][bx]) {
 
-        c.save();
-        //move to the centre of current tile
-        c.translate(bx * t + t / 2, by * t + t / 2)
-            //rotate img from centre
-        c.rotate(angle * toRadians);
-        //move to top right corner of given tile
-        c.translate(-t / 2, -t / 2);
-        c.drawImage(info.newTileImg, 0, 0, t, t);
-        c.restore();
+        if (cPos.x == bx && cPos.y == by && info.newTilePlaced) {
+            removeTileFromBoard(bx, by);
+            info.newTilePlaced = false;
+            drawBaord();
+            console.log('removed tile from front-end baord. Pos: ' + JSON.stringify(cPos));
+        } else {
+            //update board with new tile
+            removeTileFromBoard(cPos.x, cPos.y);
+            placeTileOnBoard2(bx, by);
+            drawBaord();
+            updateCurrentPos(bx, by);
+            info.newTilePlaced = true;
 
-        //draw man
-        if (info.placedMan) {
             c.save();
-            c.translate(bx * t, by * t);
-            drawMan(info.placedMan[0], info.placedMan[1], t, c);
+            //move to the centre of current tile
+            c.translate(bx * t + t / 2, by * t + t / 2)
+                //rotate img from centre
+            c.rotate(angle * toRadians);
+            //move to top right corner of given tile
+            c.translate(-t / 2, -t / 2);
+            c.drawImage(info.newTileImg, 0, 0, t, t);
             c.restore();
 
+            //draw man
+            if (info.newTile.placedMan) {
+                c.save();
+                c.translate(bx * t, by * t);
+                drawMan(info.newTile.placedMan[0], info.newTile.placedMan[1], t, c);
+                c.restore();
+
+            }
+            console.log('placed tile on front-end board. Pos: ' + JSON.stringify(cPos));
         }
-        console.log('placed tile on front-end board. Pos: ' + JSON.stringify(cPos));
     }
 }
 
@@ -471,9 +469,24 @@ function drawTileGrid() {
             c.save();
             c.strokeStyle = 'black';
             c.strokeRect(x * splitLen, y * splitLen, splitLen, splitLen);
-            if (tileSplit[y][x] == 'Z') {
-                c.fillStyle = 'rgba(0,0,0,0.3)';
+            switch (tileSplit[y][x]) {
+            case 'Z':
+                c.fillStyle = 'rgba(0,0,0,0.4)';
                 c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                break;
+                //USE below to highlight true zoning.
+                //            case 'R':
+                //                c.fillStyle = 'rgba(255,255,255,0.5)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                break;
+                //            case 'C':
+                //                c.fillStyle = 'rgba(255,0,0,0.2)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                break;
+                //                    case 'G':
+                //                    c.fillStyle = 'rgba(0,255,0,0.2)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                    break;
             }
             c.restore();
         }
@@ -496,27 +509,30 @@ function drawMan(x, y, tileSize, ctx) {
 
 //TODO Clean up. only use info.newTile.placedMan instead of info.placedMan
 function placeMan(x, y) {
-    //    displayTile(info.newTile);
-    if (info.placedMan) {
-        if (info.placedMan[0] == x && info.placedMan[1] == y) {
-            info.placedMan = [-1, -1];
-            info.newTile.placedMan = [-1, -1];
-            displayTile(info.newTile);
+    if (info.newTile.tile_split[x][y] != 'Z') {
+        if (info.placedMan) {
+            console.log("Man was at: [" + info.newTile.placedMan[0] + "," + info.newTile.placedMan[1] + "]");
+            if (info.newTile.placedMan[0] == x && info.newTile.placedMan[1] == y) {
+                info.newTile.placedMan = [-1, -1];
+                displayTile();
+                console.log("Removed man from: [" + x + "," + y + "]");
+            } else {
+                displayTile(info.newTile);
+                info.newTile.placedMan = [x, y];
+                displayTile();
+                console.log("Moved man to: [" + x + "," + y + "]");
+            }
         } else {
-            displayTile(info.newTile);
             info.placedMan = [x, y];
             info.newTile.placedMan = [x, y];
-            //            drawMan(x, y, info.canvas2.width, info.ctx2);
-            displayTile();
-        }
-    } else {
-        info.placedMan = [x, y];
-        info.newTile.placedMan = [x, y];
-        drawMan(x, y, info.canvas2.width, info.ctx2);
+            //use drawMan instead of displayTile because tile does not need to be redrawn
+            drawMan(x, y, info.canvas2.width, info.ctx2);
+            console.log("Placed man on: [" + x + "," + y + "]");
 
+        }
     }
 
-    drawBaord();
+    if (info.newTilePlaced) drawBaord();
 }
 
 function validPlay() {
@@ -564,8 +580,10 @@ function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/v2/generate", false);
     xhr.send();
+    //    console.log("tile generated is: "+ xhr.responseText);
     info.newTile = JSON.parse(xhr.responseText);
-    info.newTile.rotation = 1;
+    //need to add placedMan because server does not
+    info.newTile.placedMan = [-1, -1];
     setnewTileImgPath(info.newTile);
     info.newTileImg.onload = displayTile;
     info.newTileImg.src = info.newTile.src;
@@ -585,7 +603,6 @@ function placeTile(tile) {
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(postInfo));
-    console.log("placeTile.responseText " + xhr.responseText);
     return xhr.responseText;
 }
 
