@@ -544,7 +544,6 @@ function createGame() {
     var url = "http://localhost:3000/v2/creategame";
     xhr.open("post", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send(JSON.stringify(players));
     return xhr.responseText;
 }
@@ -554,7 +553,6 @@ function getBoard() {
     var xhr = new XMLHttpRequest();
     var url = "http://localhost:3000/v2/getboard"
     xhr.open("get", url, false);
-    xhr.setRequestHeader("Access-Control-Allow-Origin", "true");
     xhr.send();
     info.gameBoard = JSON.parse(xhr.responseText);
     console.log('got board from server succesfully')
@@ -565,7 +563,6 @@ function getBoard() {
 function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/v2/generate", false);
-    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send();
     info.newTile = JSON.parse(xhr.responseText);
     info.newTile.rotation = 1;
@@ -587,7 +584,6 @@ function placeTile(tile) {
     var xhr = new XMLHttpRequest();
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
     xhr.send(JSON.stringify(postInfo));
     console.log("placeTile.responseText " + xhr.responseText);
     return xhr.responseText;
