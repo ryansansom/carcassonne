@@ -10,6 +10,7 @@ info.scaleMultiplyer = 0.8;
 info.darwOffset = {};
 info.newTile = {};
 info.newTile.placedMan = [-1, -1];
+info.newTile.pos = null;
 info.newTileImg = new Image();
 info.currentPos = {
     x: -1,
@@ -337,8 +338,8 @@ function drawBaord() {
                 c.restore();
 
                 //draw man
-                if (info.newTile.placedMan) {
-                    drawMan(info.newTile.placedMan[0], info.newTile.placedMan[1], t, c);
+                if (tile.placedMan) {
+                    drawMan(tile.placedMan[0], tile.placedMan[1], t, c);
                 }
             }
             c.restore();
@@ -559,8 +560,10 @@ function getNextTile() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "http://localhost:3000/v2/generate", false);
     xhr.send();
+//    console.log("tile generated is: "+ xhr.responseText);
     info.newTile = JSON.parse(xhr.responseText);
-    info.newTile.rotation = 1;
+    //need to add placedMan because server does not
+    info.newTile.placedMan = [-1, -1];
     setnewTileImgPath(info.newTile);
     info.newTileImg.onload = displayTile;
     info.newTileImg.src = info.newTile.src;
@@ -580,7 +583,6 @@ function placeTile(tile) {
     xhr.open("post", "http://localhost:3000/v2/placetile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(postInfo));
-    console.log("placeTile.responseText " + xhr.responseText);
     return xhr.responseText;
 }
 
