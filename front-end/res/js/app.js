@@ -394,7 +394,7 @@ function placeTileOnBoard(tile, bx, by) {
     info.newTile.row = by;
     info.newTile.column = bx;
 
-    if (!info.gameBoard[by][bx]){
+    if (!info.gameBoard[by][bx]) {
 
         if (cPos.x == bx && cPos.y == by && info.newTilePlaced) {
             removeTileFromBoard(bx, by);
@@ -469,9 +469,24 @@ function drawTileGrid() {
             c.save();
             c.strokeStyle = 'black';
             c.strokeRect(x * splitLen, y * splitLen, splitLen, splitLen);
-            if (tileSplit[y][x] == 'Z') {
-                c.fillStyle = 'rgba(0,0,0,0.3)';
+            switch (tileSplit[y][x]) {
+            case 'Z':
+                c.fillStyle = 'rgba(0,0,0,0.4)';
                 c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                break;
+                //USE below to highlight true zoning.
+                //            case 'R':
+                //                c.fillStyle = 'rgba(255,255,255,0.5)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                break;
+                //            case 'C':
+                //                c.fillStyle = 'rgba(255,0,0,0.2)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                break;
+                //                    case 'G':
+                //                    c.fillStyle = 'rgba(0,255,0,0.2)';
+                //                c.fillRect(x * splitLen, y * splitLen, splitLen, splitLen);
+                //                    break;
             }
             c.restore();
         }
@@ -494,25 +509,27 @@ function drawMan(x, y, tileSize, ctx) {
 
 //TODO Clean up. only use info.newTile.placedMan instead of info.placedMan
 function placeMan(x, y) {
-    if (info.placedMan) {
-        console.log("Man was at: [" + info.newTile.placedMan[0] + "," + info.newTile.placedMan[1] + "]");
-        if (info.newTile.placedMan[0] == x && info.newTile.placedMan[1] == y) {
-            info.newTile.placedMan = [-1, -1];
-            displayTile();
-            console.log("Removed man from: [" + x + "," + y + "]");
+    if (info.newTile.tile_split[x][y] != 'Z') {
+        if (info.placedMan) {
+            console.log("Man was at: [" + info.newTile.placedMan[0] + "," + info.newTile.placedMan[1] + "]");
+            if (info.newTile.placedMan[0] == x && info.newTile.placedMan[1] == y) {
+                info.newTile.placedMan = [-1, -1];
+                displayTile();
+                console.log("Removed man from: [" + x + "," + y + "]");
+            } else {
+                displayTile(info.newTile);
+                info.newTile.placedMan = [x, y];
+                displayTile();
+                console.log("Moved man to: [" + x + "," + y + "]");
+            }
         } else {
-            displayTile(info.newTile);
+            info.placedMan = [x, y];
             info.newTile.placedMan = [x, y];
-            displayTile();
-            console.log("Moved man to: [" + x + "," + y + "]");
-        }
-    } else {
-        info.placedMan = [x, y];
-        info.newTile.placedMan = [x, y];
-        //use drawMan instead of displayTile because tile does not need to be redrawn
-        drawMan(x, y, info.canvas2.width, info.ctx2);
-        console.log("Placed man on: [" + x + "," + y + "]");
+            //use drawMan instead of displayTile because tile does not need to be redrawn
+            drawMan(x, y, info.canvas2.width, info.ctx2);
+            console.log("Placed man on: [" + x + "," + y + "]");
 
+        }
     }
 
     if (info.newTilePlaced) drawBaord();
